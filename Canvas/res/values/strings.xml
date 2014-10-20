@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Canvas</string>
+    <string name="tab_todo">Coming Up</string>
+    <string name="tab_assignments">Assignments</string>
+    <string name="tab_announcements">Announcements</string>
+    <string name="tab_grades">Grades</string>
+    <string name="tab_files">Files</string>
+    <string name="tab_syllabus">Syllabus</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action1</string>
+    <string name="action_settings">Settings</string>
+    <string name="login">Login</string>
+    <string name="username">Username:</string>
+    <string name="password">Password:</string>
+    <string name="userVal"></string>
+    <string name="passVal"></string>
+    <string name="empty"></string>
+    <string name="title_activity_dashboard">Dashboard</string>
+    <string name="title_activity_base">Base</string>
+    <string name="menu_dashboard">Dashboard</string>
+    <string name="menu_grades">Grades</string>
+    <string name="menu_messages">Messages</string>
+    <string name="menu_logout">Logout</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="title_activity_course">CourseActivity</string>
+    <string name="refresh">Refresh</string>
+    <string name="title_activity_messages">Messages</string>
+    <string name="title_activity_information">Information</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_message_item">Message</string>
+
+</resources>

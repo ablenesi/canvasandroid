@@ -24,3 +24,22 @@ proguard/
 
 # Log Files
 *.log
+
+# Eclipse Files
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+
+# AppCompat
+appcompat_v7/*

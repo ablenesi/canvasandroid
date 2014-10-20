@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="edu.ubbcluj.canvasAndroid"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="10"
+        android:targetSdkVersion="18" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="edu.ubbcluj.canvasAndroid.LoginActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="edu.ubbcluj.canvasAndroid.DashBoardActivity"
+            android:label="@string/title_activity_dashboard"
+            android:parentActivityName="edu.ubbcluj.canvasAndroid.DashBoardActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
+        </activity>
+        <activity
+            android:name="edu.ubbcluj.canvasAndroid.BaseActivity"
+            android:label="@string/title_activity_base"
+            android:parentActivityName="edu.ubbcluj.canvasAndroid.DashBoardActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="edu.ubbcluj.canvasAndroid.CourseActivity"
+            android:label="@string/title_activity_course"
+            android:noHistory="true"
+            android:parentActivityName="edu.ubbcluj.canvasAndroid.DashBoardActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
+        </activity>
+        <activity
+            android:name="edu.ubbcluj.canvasAndroid.MessagesActivity"
+            android:label="@string/title_activity_messages"
+            android:noHistory="true"
+            android:parentActivityName="edu.ubbcluj.canvasAndroid.DashBoardActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
+        </activity>
+        <activity
+            android:name="edu.ubbcluj.canvasAndroid.MessageItemActivity"
+            android:label="@string/title_activity_message_item"
+            android:noHistory="true"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
+        </activity>
+        <activity
+            android:name="edu.ubbcluj.canvasAndroid.InformationActivity"
+            android:label="@string/title_activity_information"
+            android:noHistory="true"
+            android:parentActivityName="edu.ubbcluj.canvasAndroid.DashBoardActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
+        </activity>
+    </application>
+
+</manifest>
