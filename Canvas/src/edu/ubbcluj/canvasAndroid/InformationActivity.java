@@ -203,7 +203,7 @@ public class InformationActivity extends BaseActivity {
 		
 		private String formatDate(String date) {
 			if (!date.startsWith("No")) {
-				String newDate = date.substring(0, date.indexOf('+'));
+				String newDate = date.substring(0, date.indexOf('Z'));
 				newDate = newDate.replace("T", "\n");
 				
 				return newDate;
