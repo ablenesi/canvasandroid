@@ -33,6 +33,7 @@ import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 
+@SuppressWarnings("deprecation")
 public class CourseActivity extends BaseActivity implements
 		ActionBar.TabListener {
 
@@ -61,11 +62,10 @@ public class CourseActivity extends BaseActivity implements
 		// Set up the action bar.
 		actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
+		
 		// get the course id
 		Bundle bundle = getIntent().getExtras();
 		courseID = bundle.getInt("id");
-
 		courseName = bundle.getString("name");
 
 		// Create the adapter that will return a fragment for each of the three
@@ -74,7 +74,7 @@ public class CourseActivity extends BaseActivity implements
 				getSupportFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
-		mViewPager = (ViewPager) findViewById(R.id.pager2);
+		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
 		// When swiping between different sections, select the corresponding
@@ -109,27 +109,6 @@ public class CourseActivity extends BaseActivity implements
 		// TODO Auto-generated method stub
 		super.restoreActionBar();
 		actionBar.setTitle(courseName);
-	}
-
-	@Override
-	public void onNavigationDrawerItemSelected(int position) {
-
-		// open new activity for the selected course (does not save the
-		// previous)
-		Intent courseIntent = new Intent(this, CourseActivity.class);
-
-		Bundle bundle = new Bundle();
-		// courseID
-		bundle.putInt("id",
-				mNavigationDrawerFragment.getActiveCourses().get(position)
-						.getId());
-		// course name
-		bundle.putString("name", mNavigationDrawerFragment.getActiveCourses()
-				.get(position).getName());
-
-		courseIntent.putExtras(bundle); // Put the id to the Course Intent
-		startActivity(courseIntent);
-
 	}
 
 	@Override

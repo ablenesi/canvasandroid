@@ -72,11 +72,6 @@ public class BaseActivity extends ActionBarActivity implements
 
 		courseIntent.putExtras(bundle); // Put the id to the Course Intent
 		startActivity(courseIntent);
-
-		// fragmentManager
-		// .beginTransaction()
-		// .replace(R.id.container,
-		// PlaceholderFragment.newInstance(position + 1)).commit();
 	}
 
 	public void onSectionAttached(int number) {
