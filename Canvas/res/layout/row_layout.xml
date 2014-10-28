@@ -20,5 +20,6 @@
         android:layout_height="wrap_content"
         android:text="@+id/label"
         android:textSize="20sp"
+        android:textColor="#000"
         android:layout_toRightOf="@+id/icon" />
 </RelativeLayout>

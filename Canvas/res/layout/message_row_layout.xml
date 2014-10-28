@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="#000" />
 
     <TextView
         android:id="@+id/body"
@@ -19,7 +20,8 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_below="@+id/author"
-        android:textSize="14sp" />
+        android:textSize="14sp" 
+        android:textColor="#000"/>
 
     <TextView
         android:id="@+id/date"
@@ -28,6 +30,7 @@
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/author"
         android:gravity="right|top"
-        android:textSize="10sp" />
+        android:textSize="10sp" 
+        android:textColor="#000"/>
 
 </RelativeLayout>

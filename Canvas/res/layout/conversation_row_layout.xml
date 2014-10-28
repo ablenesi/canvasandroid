@@ -22,6 +22,7 @@
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/icon"
         android:textSize="14sp"
+        android:textColor="#000"
         android:textStyle="bold" />
 
     <TextView
@@ -31,7 +32,8 @@
         android:layout_marginTop="8dp"
         android:layout_toRightOf="@+id/label"
         android:gravity="right|top"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        android:textColor="#000" />
 
     <TextView
         android:id="@+id/clock"
@@ -40,7 +42,8 @@
         android:layout_below="@+id/date"
         android:layout_toRightOf="@+id/label"
         android:gravity="right|top"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        android:textColor="#000" />
 
     <TextView
         android:id="@+id/last_message"
@@ -48,6 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/label"
         android:layout_toRightOf="@+id/icon"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:textColor="#000" />
 
 </RelativeLayout>
