@@ -17,10 +17,12 @@ import org.apache.http.protocol.HttpContext;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.LoginActivity;
 import edu.ubbcluj.canvasAndroid.backend.repository.UserDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.backend.util.network.RestHttpClient;
@@ -46,7 +48,7 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements User
 		context = new BasicHttpContext();
 		httpClient = RestHttpClient.getNewHttpClient();
 		httpResponse = null;
-
+		
 		List<NameValuePair> nameValuePairList = new ArrayList<NameValuePair>();
 		nameValuePairList.add(new BasicNameValuePair("pseudonym_session[unique_id]", username));
 		nameValuePairList.add(new BasicNameValuePair("pseudonym_session[password]", password));
@@ -122,6 +124,9 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements User
 
 	public void setUsername(String username) {
 		this.username = username;
+		if (!username.contains("@")) {
+			this.username = username.concat(PropertyProvider.getProperty("default_email"));
+		}
 	}
 
 	public String getPassword() {
