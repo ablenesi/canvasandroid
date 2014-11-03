@@ -3,6 +3,7 @@ package edu.ubbcluj.canvasAndroid;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterConversation;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.model.Conversation;
 
 public class MessagesActivity extends BaseActivity {
@@ -26,6 +28,12 @@ public class MessagesActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// set the shared preferences with the Base activity sharedpreferences
+		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
+				.getInstance();
+		sPreferences.init(MessagesActivity.this.getSharedPreferences(
+				"CanvasAndroid", Context.MODE_PRIVATE));
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()

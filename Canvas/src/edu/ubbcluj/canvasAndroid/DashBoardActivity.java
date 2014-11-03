@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -17,6 +19,7 @@ import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterActivityStream;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.model.ActivityStream;
 
 public class DashBoardActivity extends BaseActivity {
@@ -25,7 +28,7 @@ public class DashBoardActivity extends BaseActivity {
 	private List<ActivityStream> activityStream;
 
 	private CustomArrayAdapterActivityStream adapter;
-	
+
 	private ListView list;
 	private View viewContainer;
 
@@ -34,12 +37,21 @@ public class DashBoardActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
+		Log.d("LifeCycle-dash", "onCreate");
+
+		// set the shared preferences with the Dashboard activity
+		// sharedpreferences
+		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
+				.getInstance();
+		sPreferences.init(DashBoardActivity.this.getSharedPreferences(
+				"CanvasAndroid", Context.MODE_PRIVATE));
+
 		// Set the progressbar visibility
 		list = (ListView) findViewById(R.id.list);
 		viewContainer = findViewById(R.id.linProg);
 		viewContainer.setVisibility(View.VISIBLE);
-		
+
 		// Get the activity stream
 		df = DAOFactory.getInstance();
 
@@ -51,61 +63,69 @@ public class DashBoardActivity extends BaseActivity {
 		list.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
 				ActivityStream as = activityStream.get(position);
-				
+
 				if (as.getType().equals("Announcement")) {
-					Intent informationIntent = new Intent(DashBoardActivity.this, InformationActivity.class);
-					
+					Intent informationIntent = new Intent(
+							DashBoardActivity.this, InformationActivity.class);
+
 					Bundle bundle = new Bundle();
-					
-					bundle.putSerializable("activity_type", InformationActivity.AnnouncementInformation);
-					bundle.putInt("course_id", as.getCourseId());						
+
+					bundle.putSerializable("activity_type",
+							InformationActivity.AnnouncementInformation);
+					bundle.putInt("course_id", as.getCourseId());
 					bundle.putInt("announcement_id", as.getSecondaryId());
 					informationIntent.putExtras(bundle);
 					startActivity(informationIntent);
 				}
-				
+
 				if (as.getType().equals("Submission")) {
-					Intent informationIntent = new Intent(DashBoardActivity.this, InformationActivity.class);
-					
+					Intent informationIntent = new Intent(
+							DashBoardActivity.this, InformationActivity.class);
+
 					Bundle bundle = new Bundle();
-					
-					bundle.putSerializable("activity_type", InformationActivity.AssignmentInformation);
-					bundle.putInt("course_id", as.getCourseId());						
+
+					bundle.putSerializable("activity_type",
+							InformationActivity.AssignmentInformation);
+					bundle.putInt("course_id", as.getCourseId());
 					bundle.putInt("assignment_id", as.getSecondaryId());
 					informationIntent.putExtras(bundle);
 					startActivity(informationIntent);
 				}
-				
+
 				if (as.getType().equals("Message")) {
-					Intent informationIntent = new Intent(DashBoardActivity.this, InformationActivity.class);
-					
+					Intent informationIntent = new Intent(
+							DashBoardActivity.this, InformationActivity.class);
+
 					Bundle bundle = new Bundle();
-					
-					bundle.putSerializable("activity_type", InformationActivity.AssignmentInformation);
-					bundle.putInt("course_id", as.getCourseId());						
+
+					bundle.putSerializable("activity_type",
+							InformationActivity.AssignmentInformation);
+					bundle.putInt("course_id", as.getCourseId());
 					bundle.putInt("assignment_id", as.getSecondaryId());
 					informationIntent.putExtras(bundle);
 					startActivity(informationIntent);
 				}
-				
+
 				if (as.getType().equals("Conversation")) {
-					Intent messagesItemIntent = new Intent(DashBoardActivity.this, MessageItemActivity.class);
-					
-					Bundle bundle = new Bundle();					
+					Intent messagesItemIntent = new Intent(
+							DashBoardActivity.this, MessageItemActivity.class);
+
+					Bundle bundle = new Bundle();
 					bundle.putInt("id", as.getSecondaryId());
 					messagesItemIntent.putExtras(bundle);
 					startActivity(messagesItemIntent);
 				}
-			
+
 			}
 		});
-		
-		//dashboardDao.setDba(this);
-		
+
+		// dashboardDao.setDba(this);
+
 		dashboardDao.addInformationListener(new InformationListener() {
-			
+
 			@Override
 			public void onComplete(InformationEvent e) {
 				ActivityStreamDAO asd = (ActivityStreamDAO) e.getSource();
@@ -113,19 +133,66 @@ public class DashBoardActivity extends BaseActivity {
 				setActivityStream(asd.getData());
 			}
 		});
-		
+
 		((AsyncTask<String, Void, String>) dashboardDao)
-				.execute(new String[] { PropertyProvider.getProperty("url") + "/api/v1/users/self/activity_stream" });
-		
+				.execute(new String[] { PropertyProvider.getProperty("url")
+						+ "/api/v1/users/self/activity_stream" });
 
 		// Initialize the dashboard list
 		setList();
 	}
 
-	
+	@Override
+	protected void onStart() {
+		Log.d("LifeCycle-dash", "onStart");
+		super.onStart();
+	}
+
+	@Override
+	protected void onRestart() {
+		Log.d("LifeCycle-dash", "onRestart");
+		super.onRestart();
+	}
+
+	@Override
+	protected void onResume() {
+		Log.d("LifeCycle-dash", "onResume");
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		Log.d("LifeCycle-dash", "onPause");
+		super.onPause();
+	}
+
+	@Override
+	protected void onStop() {
+		Log.d("LifeCycle-dash", "onStop");
+		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		Log.d("LifeCycle-dash", "onDestroy");
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		Log.d("LifeCycle-dash", "onSaveInsatace");
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		Log.d("LifeCycle-dash", "onRestoreInsatace");
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
 	@Override
 	public void onBackPressed() {
-		 moveTaskToBack(true);
+		moveTaskToBack(true);
 	}
 
 	public void setList() {

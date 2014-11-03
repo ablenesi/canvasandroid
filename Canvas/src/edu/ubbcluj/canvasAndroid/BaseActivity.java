@@ -3,6 +3,7 @@ package edu.ubbcluj.canvasAndroid;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +20,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
+import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
 
 public class BaseActivity extends ActionBarActivity implements
@@ -40,6 +44,14 @@ public class BaseActivity extends ActionBarActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		Log.d("LifeCycle-base", "onCreate");
+
+		// set the shared preferences with the Base activity sharedpreferences
+		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
+				.getInstance();
+		sPreferences.init(BaseActivity.this.getSharedPreferences(
+				"CanvasAndroid", Context.MODE_PRIVATE));
+
 		setContentView(R.layout.activity_base);
 
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
@@ -50,8 +62,56 @@ public class BaseActivity extends ActionBarActivity implements
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
-		
+
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+
+	@Override
+	protected void onStart() {
+		Log.d("LifeCycle-base", "onStart");
+		super.onStart();
+	}
+
+	@Override
+	protected void onRestart() {
+		Log.d("LifeCycle-base", "onRestart");
+		super.onRestart();
+	}
+
+	@Override
+	protected void onResume() {
+		Log.d("LifeCycle-base", "onResume");
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		Log.d("LifeCycle-base", "onPause");
+		super.onPause();
+	}
+
+	@Override
+	protected void onStop() {
+		Log.d("LifeCycle-base", "onStop");
+		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		Log.d("LifeCycle-base", "onDestroy");
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		Log.d("LifeCycle-base", "onSaveInsatace");
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		Log.d("LifeCycle-base", "onRestoreInsatace");
+		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 	@Override
@@ -122,25 +182,21 @@ public class BaseActivity extends ActionBarActivity implements
 			return true;
 
 		case R.id.dashboard:
-			if (this.getClass() == DashBoardActivity.class)
-			{
+			if (this.getClass() == DashBoardActivity.class) {
 				RestInformationDAO.clearData();
 				finish();
 				startActivity(getIntent());
-			}
-			else {
+			} else {
 				Intent intent = new Intent(this, DashBoardActivity.class);
 				startActivity(intent);
 			}
 			return true;
 		case R.id.messages:
-			if (this.getClass() == MessagesActivity.class)
-			{
+			if (this.getClass() == MessagesActivity.class) {
 				RestInformationDAO.clearData();
 				finish();
 				startActivity(getIntent());
-			}
-			else {
+			} else {
 				Intent intent = new Intent(this, MessagesActivity.class);
 				startActivity(intent);
 			}
@@ -153,7 +209,7 @@ public class BaseActivity extends ActionBarActivity implements
 			startActivity(intent);
 
 			return true;
-			
+
 		}
 
 		return super.onOptionsItemSelected(item);

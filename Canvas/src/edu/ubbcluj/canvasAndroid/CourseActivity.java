@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterAssignm
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterToDo;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 
@@ -59,10 +61,16 @@ public class CourseActivity extends BaseActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// set the shared prefferences with the Course activity sharedpreferences
+		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
+				.getInstance();
+		sPreferences.init(CourseActivity.this.getSharedPreferences(
+				"CanvasAndroid", Context.MODE_PRIVATE));
+
 		// Set up the action bar.
 		actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		
+
 		// get the course id
 		Bundle bundle = getIntent().getExtras();
 		courseID = bundle.getInt("id");
@@ -163,12 +171,12 @@ public class CourseActivity extends BaseActivity implements
 				return getString(R.string.tab_assignments).toUpperCase(l);
 			case 2:
 				return getString(R.string.tab_announcements).toUpperCase(l);
-			/*case 3:
-				return getString(R.string.tab_grades).toUpperCase(l);
-			case 4:
-				return getString(R.string.tab_files).toUpperCase(l);
-			case 5:
-				return getString(R.string.tab_syllabus).toUpperCase(l);*/
+				/*
+				 * case 3: return getString(R.string.tab_grades).toUpperCase(l);
+				 * case 4: return getString(R.string.tab_files).toUpperCase(l);
+				 * case 5: return
+				 * getString(R.string.tab_syllabus).toUpperCase(l);
+				 */
 			}
 			return null;
 		}
@@ -234,22 +242,25 @@ public class CourseActivity extends BaseActivity implements
 				list.setOnItemClickListener(new OnItemClickListener() {
 
 					@Override
-					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
 						Assignment assignment = assignments.get(position);
-						
-						Intent assignmentIntent = new Intent(getActivity(), InformationActivity.class);
-						
+
+						Intent assignmentIntent = new Intent(getActivity(),
+								InformationActivity.class);
+
 						Bundle bundle = new Bundle();
-						bundle.putSerializable("activity_type", InformationActivity.AssignmentInformation);
+						bundle.putSerializable("activity_type",
+								InformationActivity.AssignmentInformation);
 						bundle.putInt("course_id", assignment.getCourseId());
 						bundle.putInt("assignment_id", assignment.getId());
-						
+
 						assignmentIntent.putExtras(bundle);
-						
+
 						startActivity(assignmentIntent);
 					}
 				});
-				
+
 				assignments = new ArrayList<Assignment>();
 				todoDao = df.getToDoDAO();
 				todoDao.setCourseId(courseID);
@@ -287,38 +298,44 @@ public class CourseActivity extends BaseActivity implements
 				list.setOnItemClickListener(new OnItemClickListener() {
 
 					@Override
-					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
 						Assignment assignment = assignments.get(position);
-						
-						Intent assignmentIntent = new Intent(getActivity(), InformationActivity.class);
-						
+
+						Intent assignmentIntent = new Intent(getActivity(),
+								InformationActivity.class);
+
 						Bundle bundle = new Bundle();
-						bundle.putSerializable("activity_type", InformationActivity.AssignmentInformation);
+						bundle.putSerializable("activity_type",
+								InformationActivity.AssignmentInformation);
 						bundle.putInt("course_id", assignment.getCourseId());
 						bundle.putInt("assignment_id", assignment.getId());
-						
+
 						assignmentIntent.putExtras(bundle);
-						
+
 						startActivity(assignmentIntent);
 					}
 				});
-				
+
 				assignments = new ArrayList<Assignment>();
 
-				//assignmentsDao.setPlaceholderFragment(this);
-				assignmentsDao.addInformationListener(new InformationListener() {
-					
-					@Override
-					public void onComplete(InformationEvent e) {
-						AssignmentsDAO ad = (AssignmentsDAO) e.getSource();
-						
-						setProgressGone();
-						setAssignments(ad.getData());
-						assignmentsAdapter = new CustomArrayAdapterAssignments(getActivity(),assignments);
-						list.setAdapter(assignmentsAdapter);						
-					}
-				});
-				
+				// assignmentsDao.setPlaceholderFragment(this);
+				assignmentsDao
+						.addInformationListener(new InformationListener() {
+
+							@Override
+							public void onComplete(InformationEvent e) {
+								AssignmentsDAO ad = (AssignmentsDAO) e
+										.getSource();
+
+								setProgressGone();
+								setAssignments(ad.getData());
+								assignmentsAdapter = new CustomArrayAdapterAssignments(
+										getActivity(), assignments);
+								list.setAdapter(assignmentsAdapter);
+							}
+						});
+
 				((AsyncTask<String, Void, String>) assignmentsDao)
 						.execute(new String[] { PropertyProvider
 								.getProperty("url")
@@ -333,47 +350,57 @@ public class CourseActivity extends BaseActivity implements
 				list = (ListView) rootView.findViewById(R.id.list);
 				viewContainer = rootView.findViewById(R.id.linProg);
 				viewContainer.setVisibility(View.VISIBLE);
-				
+
 				list.setOnItemClickListener(new OnItemClickListener() {
 
 					@Override
-					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
 						Announcement announcement = announcements.get(position);
-						
-						Intent announcementIntent = new Intent(getActivity(), InformationActivity.class);
-						
+
+						Intent announcementIntent = new Intent(getActivity(),
+								InformationActivity.class);
+
 						Bundle bundle = new Bundle();
-						bundle.putSerializable("activity_type", InformationActivity.AnnouncementInformation);
-						bundle.putInt("course_id", announcement.getCourseId());						
-						bundle.putInt("announcement_id", announcement.getAnnouncementId());
-						
+						bundle.putSerializable("activity_type",
+								InformationActivity.AnnouncementInformation);
+						bundle.putInt("course_id", announcement.getCourseId());
+						bundle.putInt("announcement_id",
+								announcement.getAnnouncementId());
+
 						announcementIntent.putExtras(bundle);
 
 						startActivity(announcementIntent);
 					}
 				});
-				
+
 				AnnouncementDAO announcementDao;
 				announcementDao = df.getAnnouncementDAO();
-				
-				announcementDao.addInformationListener(new InformationListener() {
-					
-					@Override
-					public void onComplete(InformationEvent e) {
-						AnnouncementDAO ad = (AnnouncementDAO) e.getSource();
-						
-						setProgressGone();
-						setAnnouncement(ad.getData());
-						announcementAdapter = new CustomArrayAdapterAnnouncements(getActivity(),announcements);
-						list.setAdapter(announcementAdapter);						
-					}
-				});
-				
-				((AsyncTask<String, Void, String>) announcementDao).execute(new String[] { PropertyProvider.getProperty("url")
-						+ "/api/v1/courses/" + courseID + "/activity_stream" });				
-				
-				break;	
-				
+
+				announcementDao
+						.addInformationListener(new InformationListener() {
+
+							@Override
+							public void onComplete(InformationEvent e) {
+								AnnouncementDAO ad = (AnnouncementDAO) e
+										.getSource();
+
+								setProgressGone();
+								setAnnouncement(ad.getData());
+								announcementAdapter = new CustomArrayAdapterAnnouncements(
+										getActivity(), announcements);
+								list.setAdapter(announcementAdapter);
+							}
+						});
+
+				((AsyncTask<String, Void, String>) announcementDao)
+						.execute(new String[] { PropertyProvider
+								.getProperty("url")
+								+ "/api/v1/courses/"
+								+ courseID + "/activity_stream" });
+
+				break;
+
 			default:
 				rootView = inflater.inflate(R.layout.fragment_course, null);
 			}
@@ -388,7 +415,7 @@ public class CourseActivity extends BaseActivity implements
 		public void setAnnouncement(List<Announcement> announcement) {
 			this.announcements = announcement;
 		}
-		
+
 		// Hide progressbar
 		public void setProgressGone() {
 			viewContainer.setVisibility(View.GONE);
