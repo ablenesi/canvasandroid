@@ -230,41 +230,37 @@ public class CourseActivity extends BaseActivity implements
 
 			switch (sectionNumber) {
 			case 1:
-				ToDoDAO todoDao;
-
 				rootView = inflater.inflate(R.layout.fragment_assignment, null);
-
+				
 				// Set the progressbar visibility
 				list = (ListView) rootView.findViewById(R.id.list);
 				viewContainer = rootView.findViewById(R.id.linProg);
 				viewContainer.setVisibility(View.VISIBLE);
-
+				
+				ToDoDAO todoDao;
+				todoDao = df.getToDoDAO();
+				
 				list.setOnItemClickListener(new OnItemClickListener() {
 
 					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
+					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 						Assignment assignment = assignments.get(position);
-
-						Intent assignmentIntent = new Intent(getActivity(),
-								InformationActivity.class);
-
+						
+						Intent assignmentIntent = new Intent(getActivity(), InformationActivity.class);
+						
 						Bundle bundle = new Bundle();
-						bundle.putSerializable("activity_type",
-								InformationActivity.AssignmentInformation);
+						bundle.putSerializable("activity_type", InformationActivity.AssignmentInformation);
 						bundle.putInt("course_id", assignment.getCourseId());
 						bundle.putInt("assignment_id", assignment.getId());
-
+						
 						assignmentIntent.putExtras(bundle);
-
+						
 						startActivity(assignmentIntent);
 					}
 				});
-
+				
 				assignments = new ArrayList<Assignment>();
-				todoDao = df.getToDoDAO();
-				todoDao.setCourseId(courseID);
-
+				
 				todoDao.addInformationListener(new InformationListener() {
 
 					@Override
@@ -278,11 +274,11 @@ public class CourseActivity extends BaseActivity implements
 						list.setAdapter(toDoAdapter);
 					}
 				});
-
+				
 				((AsyncTask<String, Void, String>) todoDao)
-						.execute(new String[] { PropertyProvider
-								.getProperty("url") + "/api/v1/users/self/todo" });
-
+				.execute(new String[] { PropertyProvider
+						.getProperty("url") + "/api/v1/courses/"
+								+ courseID + "/todo" });
 				break;
 			case 2:
 				rootView = inflater.inflate(R.layout.fragment_assignment, null);

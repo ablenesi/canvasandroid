@@ -76,11 +76,7 @@ implements ToDoDAO {
 			} else {
 				for (int i = 0; i < jArr.length(); i++) {
 					JSONObject jObj = jArr.getJSONObject(i);
-					currentCourseId = jObj.getInt("course_id");
-
-					if (currentCourseId == this.courseId) {
-						data.add(convertJSONtoStr(jObj));
-					}	
+					data.add(convertJSONtoStr(jObj));
 				}
 				
 				if (data.size() == 0) {
