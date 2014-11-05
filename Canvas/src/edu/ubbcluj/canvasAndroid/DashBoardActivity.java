@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.AsyncTask.Status;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,10 +29,12 @@ public class DashBoardActivity extends BaseActivity {
 	private List<ActivityStream> activityStream;
 
 	private CustomArrayAdapterActivityStream adapter;
-
+	
 	private ListView list;
 	private View viewContainer;
 
+	private AsyncTask<String, Void, String> asyncTask;
+	
 	@SuppressWarnings("unchecked")
 	@SuppressLint("NewApi")
 	@Override
@@ -134,8 +137,8 @@ public class DashBoardActivity extends BaseActivity {
 			}
 		});
 
-		((AsyncTask<String, Void, String>) dashboardDao)
-				.execute(new String[] { PropertyProvider.getProperty("url")
+		asyncTask = ((AsyncTask<String, Void, String>) dashboardDao);
+		asyncTask.execute(new String[] { PropertyProvider.getProperty("url")
 						+ "/api/v1/users/self/activity_stream" });
 
 		// Initialize the dashboard list
@@ -169,6 +172,9 @@ public class DashBoardActivity extends BaseActivity {
 	@Override
 	protected void onStop() {
 		Log.d("LifeCycle-dash", "onStop");
+		if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
+			asyncTask.cancel(true);
+		}
 		super.onStop();
 	}
 

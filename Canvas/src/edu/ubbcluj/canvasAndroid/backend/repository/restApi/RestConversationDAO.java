@@ -61,6 +61,7 @@ public class RestConversationDAO extends AsyncTask<String, Void, String> impleme
 			JSONArray jArr = new JSONArray(jsonSource);
 
 			for (int i = 0; i < jArr.length(); i++) {
+				if ( isCancelled() ) break;
 				JSONObject obj = jArr.getJSONObject(i);
 				data.add(convertJSONtoAS(obj));
 			}
@@ -69,6 +70,10 @@ public class RestConversationDAO extends AsyncTask<String, Void, String> impleme
 			Log.e("Json", e.getMessage(), new Error());
 		}
 
+		if ( isCancelled() ) {
+			Log.d("AsyncTask", "Conversation asynctask cancelled");
+		}
+		
 		return response;
 		
 	}

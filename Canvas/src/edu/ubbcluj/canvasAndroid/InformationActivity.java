@@ -3,6 +3,7 @@ package edu.ubbcluj.canvasAndroid;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.AsyncTask.Status;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -32,7 +33,7 @@ public class InformationActivity extends BaseActivity {
 	private static int courseID;
 	private static int assignmentID;
 	private static int announcementID;
-
+	
 	private static String activityTitle = "Information";
 
 	private static View progressContainer;
@@ -80,6 +81,8 @@ public class InformationActivity extends BaseActivity {
 		private Assignment assignment;
 		private Announcement announcement;
 
+		private AsyncTask<String, Void, String> asyncTask;
+		
 		TextView textViews[] = null;
 
 		public PlaceholderFragment() {
@@ -133,8 +136,8 @@ public class InformationActivity extends BaseActivity {
 					}
 				});
 
-				((AsyncTask<String, Void, String>) assignmentDAO)
-						.execute(new String[] { PropertyProvider
+				asyncTask = ((AsyncTask<String, Void, String>) assignmentDAO);
+				asyncTask.execute(new String[] { PropertyProvider
 								.getProperty("url")
 								+ "/api/v1/courses/"
 								+ courseID + "/assignments/" + assignmentID });
@@ -173,8 +176,8 @@ public class InformationActivity extends BaseActivity {
 							}
 						});
 
-				((AsyncTask<String, Void, String>) announcementDAO)
-						.execute(new String[] { PropertyProvider
+				asyncTask = ((AsyncTask<String, Void, String>) announcementDAO);
+				asyncTask.execute(new String[] { PropertyProvider
 								.getProperty("url")
 								+ "/api/v1/courses/"
 								+ courseID
@@ -244,6 +247,14 @@ public class InformationActivity extends BaseActivity {
 			}
 
 			return date;
+		}
+		
+		@Override
+		public void onStop() {
+			if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
+				asyncTask.cancel(true);
+			}
+			super.onStop();
 		}
 
 	}

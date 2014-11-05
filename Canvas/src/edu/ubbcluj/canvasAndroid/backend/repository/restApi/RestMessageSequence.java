@@ -65,6 +65,7 @@ public class RestMessageSequence extends AsyncTask<String, Void, String>
 			ArrayList<Person> participants = new ArrayList<Person>();
 
 			for (int i = 0; i < participantsArr.length(); i++) {
+				if ( isCancelled() ) break;
 				JSONObject participant = participantsArr.getJSONObject(i);
 				int id = participant.getInt("id");
 				String name = participant.getString("name");
@@ -75,6 +76,7 @@ public class RestMessageSequence extends AsyncTask<String, Void, String>
 			JSONArray messagesArr = jObj.getJSONArray("messages");
 
 			for (int i = messagesArr.length() - 1; i >= 0; i--) {
+				if ( isCancelled() ) break;
 				JSONObject messageObj = messagesArr.getJSONObject(i);
 				data.add(convertJSONtoMS(messageObj, participants));
 			}
@@ -83,6 +85,10 @@ public class RestMessageSequence extends AsyncTask<String, Void, String>
 			Log.e("Json", e.getMessage(), new Error());
 		}
 
+		if ( isCancelled() ) {
+			Log.d("AsyncTask", "MessageSequence asynctask cancelled");
+		}
+		
 		return response;
 
 	}

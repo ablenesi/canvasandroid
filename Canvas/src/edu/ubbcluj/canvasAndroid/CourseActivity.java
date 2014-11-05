@@ -7,6 +7,7 @@ import java.util.Locale;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -198,10 +199,12 @@ public class CourseActivity extends BaseActivity implements
 		private DAOFactory df;
 		private List<Assignment> assignments;
 		private List<Announcement> announcements;
-
+		
 		private CustomArrayAdapterAssignments assignmentsAdapter;
 		private CustomArrayAdapterToDo toDoAdapter;
 		private CustomArrayAdapterAnnouncements announcementAdapter;
+		
+		private AsyncTask<String, Void, String> asyncTask;
 
 		/**
 		 * Returns a new instance of this fragment for the given section number.
@@ -279,8 +282,8 @@ public class CourseActivity extends BaseActivity implements
 					}
 				});
 
-				((AsyncTask<String, Void, String>) todoDao)
-						.execute(new String[] { PropertyProvider
+				asyncTask = ((AsyncTask<String, Void, String>) todoDao);
+				asyncTask.execute(new String[] { PropertyProvider
 								.getProperty("url") + "/api/v1/users/self/todo" });
 
 				break;
@@ -336,8 +339,8 @@ public class CourseActivity extends BaseActivity implements
 							}
 						});
 
-				((AsyncTask<String, Void, String>) assignmentsDao)
-						.execute(new String[] { PropertyProvider
+				asyncTask = ((AsyncTask<String, Void, String>) assignmentsDao);
+				asyncTask.execute(new String[] { PropertyProvider
 								.getProperty("url")
 								+ "/api/v1/courses/"
 								+ courseID + "/assignments" });
@@ -393,8 +396,8 @@ public class CourseActivity extends BaseActivity implements
 							}
 						});
 
-				((AsyncTask<String, Void, String>) announcementDao)
-						.execute(new String[] { PropertyProvider
+				asyncTask = ((AsyncTask<String, Void, String>) announcementDao);
+				asyncTask.execute(new String[] { PropertyProvider
 								.getProperty("url")
 								+ "/api/v1/courses/"
 								+ courseID + "/activity_stream" });
@@ -408,6 +411,14 @@ public class CourseActivity extends BaseActivity implements
 			return rootView;
 		}
 
+		@Override
+		public void onStop() {
+			if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
+				asyncTask.cancel(true);
+			}
+			super.onStop();
+		}
+		
 		public void setAssignments(List<Assignment> assignment) {
 			this.assignments = assignment;
 		}

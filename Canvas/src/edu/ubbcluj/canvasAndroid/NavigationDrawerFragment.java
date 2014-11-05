@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.AsyncTask.Status;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -72,6 +73,8 @@ public class NavigationDrawerFragment extends Fragment {
 	private List<ActiveCourse> activeCourses;
 	private BaseActivity baseActivity;
 
+	private AsyncTask<String, Void, String> asyncTask;
+	
 	public BaseActivity getBaseActivity() {
 		return baseActivity;
 	}
@@ -132,14 +135,22 @@ public class NavigationDrawerFragment extends Fragment {
 		activeCourses = new ArrayList<ActiveCourse>();
 
 		coursesDao.setNdf(this);
-		((AsyncTask<String, Void, String>) coursesDao)
-				.execute(new String[] { PropertyProvider.getProperty("url")
+		asyncTask = ((AsyncTask<String, Void, String>) coursesDao);
+		asyncTask.execute(new String[] { PropertyProvider.getProperty("url")
 						+ "/api/v1/courses" });
 
 		mDrawerList.setItemChecked(mCurrentSelectedPosition, true);
 		setMenu();
 
 		return mDrawerList;
+	}
+	
+	@Override
+	public void onStop() {
+		if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
+			asyncTask.cancel(true);
+		}
+		super.onStop();
 	}
 
 	public boolean isDrawerOpen() {
