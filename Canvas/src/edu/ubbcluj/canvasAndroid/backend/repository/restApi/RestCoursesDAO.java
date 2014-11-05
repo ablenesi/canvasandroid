@@ -40,12 +40,17 @@ public class RestCoursesDAO extends AsyncTask<String, Void, String> implements
 			JSONArray jArr = new JSONArray(jsonSource);
 			
 			for (int i = 0; i < jArr.length(); i++) {
+				if ( isCancelled() ) break;
 				JSONObject jObj = jArr.getJSONObject(i);
 				data.add(convertJSONtoStr(jObj));
 			}
 			
 		} catch (JSONException e) {
 			Log.e("Json Courses", e.getMessage(), new Error());
+		}
+		
+		if ( isCancelled() ) {
+			Log.d("AsyncTask", "Courses asynctask cancelled");
 		}
 		
 		return response;

@@ -49,6 +49,7 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 				JSONArray jArr = new JSONArray(jsonSource);
 
 				for (int i = 0; i < jArr.length(); i++) {
+					if ( isCancelled() ) break;
 					JSONObject jObj = jArr.getJSONObject(i);
 					data.add(convertJSONtoStr(jObj));
 				}
@@ -65,6 +66,10 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 			}
 		}
 
+		if ( isCancelled() ) {
+			Log.d("AsyncTask", "Assignment asynctask cancelled");
+		}
+		
 		return response;
 	}
 

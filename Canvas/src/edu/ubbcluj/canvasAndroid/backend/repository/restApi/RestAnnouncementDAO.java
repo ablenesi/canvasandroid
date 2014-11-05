@@ -71,6 +71,7 @@ public class RestAnnouncementDAO extends AsyncTask<String, Void, String> impleme
 				JSONArray jArr = new JSONArray(jsonSource);
 
 				for (int i = 0; i < jArr.length(); i++) {
+					if ( isCancelled() ) break;
 					JSONObject obj = jArr.getJSONObject(i);
 
 					if (obj.getString("type").compareTo("Announcement") == 0)
@@ -85,6 +86,10 @@ public class RestAnnouncementDAO extends AsyncTask<String, Void, String> impleme
 			Log.e("Json", e.getMessage(), new Error());
 		}
 
+		if ( isCancelled() ) {
+			Log.d("AsyncTask", "Announcement asynctask cancelled");
+		}
+		
 		return response;
 	}
 

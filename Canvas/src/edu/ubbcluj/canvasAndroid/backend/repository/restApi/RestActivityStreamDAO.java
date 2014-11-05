@@ -71,6 +71,7 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 			JSONArray jArr = new JSONArray(jsonSource);
 
 			for (int i = 0; i < jArr.length(); i++) {
+				if ( isCancelled() ) break;
 				JSONObject obj = jArr.getJSONObject(i);
 				data.add(convertJSONtoAS(obj));
 			}
@@ -79,6 +80,10 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 			Log.e("Json", e.getMessage(), new Error());
 		}
 
+		if ( isCancelled() ) {
+			Log.d("AsyncTask", "ActivityStream asynctask cancelled");
+		}
+		
 		return response;
 	}
 

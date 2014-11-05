@@ -75,6 +75,7 @@ implements ToDoDAO {
 				data.add(ass);
 			} else {
 				for (int i = 0; i < jArr.length(); i++) {
+					if ( isCancelled() ) break;
 					JSONObject jObj = jArr.getJSONObject(i);
 					data.add(convertJSONtoStr(jObj));
 				}
@@ -88,6 +89,10 @@ implements ToDoDAO {
 			Log.e("Error getting toDo informations!", e.getMessage(), new Error());
 		}
 
+		if ( isCancelled() ) {
+			Log.d("AsyncTask", "Todo asynctask cancelled");
+		}
+		
 		return response;
 	}
 	

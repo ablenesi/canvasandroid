@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.AsyncTask.Status;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,8 @@ public class MessageItemActivity extends BaseActivity {
 		private DAOFactory df;
 		private List<MessageSequence> messageSequence;
 
+		private AsyncTask<String, Void, String> asyncTask;
+		
 		private CustomArrayAdapterMessage adapter;
 
 		public PlaceholderFragment() {
@@ -98,13 +101,21 @@ public class MessageItemActivity extends BaseActivity {
 						}
 					});
 
-			((AsyncTask<String, Void, String>) messageSequenceDao)
-					.execute(new String[] { PropertyProvider.getProperty("url")
+			asyncTask = ((AsyncTask<String, Void, String>) messageSequenceDao);
+			asyncTask.execute(new String[] { PropertyProvider.getProperty("url")
 							+ "/api/v1/conversations/" + messageID });
 
 			return rootView;
 		}
 
+		@Override
+		public void onStop() {
+			if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
+				asyncTask.cancel(true);
+			}
+			super.onStop();
+		}
+		
 		// Hide progressbar
 		public void setProgressGone() {
 			viewContainer.setVisibility(View.GONE);
