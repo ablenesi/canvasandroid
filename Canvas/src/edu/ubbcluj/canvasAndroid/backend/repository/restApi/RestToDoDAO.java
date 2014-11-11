@@ -7,21 +7,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import edu.ubbcluj.canvasAndroid.backend.repository.ToDoDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
+import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 
-public class RestToDoDAO extends AsyncTask<String, Void, String>
-implements ToDoDAO {
-	
+public class RestToDoDAO extends AsyncTask<String, Void, String> implements
+		ToDoDAO {
+
 	private List<Assignment> data;
 	private List<InformationListener> actionList;
 	private int courseId;
-	
+	private SharedPreferences sp;
+
 	public RestToDoDAO() {
 		super();
 		data = new ArrayList<Assignment>();
@@ -37,40 +41,58 @@ implements ToDoDAO {
 	public void removeInformationListener(InformationListener il) {
 		actionList.remove(il);
 	}
-	
+
 	public synchronized void notifyListeners() {
-		for (InformationListener il: actionList) {
+		for (InformationListener il : actionList) {
 			il.onComplete(new InformationEvent(this));
 		}
-	}	
+	}
 
 	@Override
-	public List<Assignment> getData() {	
+	public List<Assignment> getData() {
 		return data;
 	}
 
 	@Override
+	public void setSharedPreferences(SharedPreferences sp) {
+		this.sp = sp;
+	}
+
+	@Override
+	public void clearData() {
+		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(sp);
+		
+		persistentCookieStore.clear();		
+	}
+	
+	@Override
 	protected String doInBackground(String... urls) {
 		String response = "";
 		int currentCourseId;
-		
+
 		Assignment ass = new Assignment();
-		ass.setName("Nothing for now!");		
-		
+		ass.setName("Nothing for now!");
+
 		for (String url : urls) {
-			response = RestInformationDAO.getData(url);
+			if (CookieHandler.checkData(sp, url))
+				response = CookieHandler.getData(sp, url);
+			else
+			{
+				response = RestInformationDAO.getData(url);
+				CookieHandler.saveData(sp, url, response);
+			}
 		}
-		
+
 		if (!CheckNetwork.isNetworkOnline(null)) {
 			return "No connection";
 		}
-		
+
 		// Decode JSON data and getting an ActivityStream array
 		String jsonSource = response.replace("while(1);", "");
 
 		try {
-			JSONArray jArr = new JSONArray(jsonSource);			
-			
+			JSONArray jArr = new JSONArray(jsonSource);
+
 			if (jArr.length() == 0) {
 				data.add(ass);
 			} else {
@@ -79,14 +101,15 @@ implements ToDoDAO {
 					JSONObject jObj = jArr.getJSONObject(i);
 					data.add(convertJSONtoStr(jObj));
 				}
-				
+
 				if (data.size() == 0) {
-					data.add(ass);					
+					data.add(ass);
 				}
-			}	
+			}
 
 		} catch (JSONException e) {
-			Log.e("Error getting toDo informations!", e.getMessage(), new Error());
+			Log.e("Error getting toDo informations!", e.getMessage(),
+					new Error());
 		}
 
 		if ( isCancelled() ) {
@@ -95,7 +118,7 @@ implements ToDoDAO {
 		
 		return response;
 	}
-	
+
 	private Assignment convertJSONtoStr(JSONObject jObj) {
 
 		JSONObject assignmentObj;
@@ -105,7 +128,7 @@ implements ToDoDAO {
 
 		try {
 			assignmentObj = jObj.getJSONObject("assignment");
-			
+
 			courseId = assignmentObj.getInt("course_id");
 			assignmentId = assignmentObj.getInt("id");
 
@@ -113,33 +136,35 @@ implements ToDoDAO {
 			assignment.setId(assignmentId);
 			assignment.setName(assignmentObj.getString("name"));
 			if (!assignmentObj.isNull("points_possible")) {
-				assignment.setPointsPossible(assignmentObj.getDouble("points_possible"));
+				assignment.setPointsPossible(assignmentObj
+						.getDouble("points_possible"));
 			} else {
 				assignment.setPointsPossible(0);
 			}
 			assignment.setDescription(assignmentObj.getString("description"));
-	
+
 			if (assignmentObj.isNull("due_at")) {
 				assignment.setDueAt("No due date");
 			} else {
 				assignment.setDueAt(assignmentObj.getString("due_at"));
 			}
-			
+
 			if (assignmentObj.isNull("lock_explanation")) {
 				assignment.setLockExplanation(null);
 			} else {
-				assignment.setLockExplanation(assignmentObj.getString("lock_explanation"));
+				assignment.setLockExplanation(assignmentObj
+						.getString("lock_explanation"));
 			}
-			
+
 			assignment.setIsGraded(false);
-			
+
 		} catch (JSONException e) {
 			Log.e("JSON Courses", e.getMessage());
 		}
 
 		return assignment;
 	}
-	
+
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
@@ -148,7 +173,7 @@ implements ToDoDAO {
 
 	@Override
 	public void setCourseId(int courseId) {
-		this.courseId = courseId;		
-	}	
-	
+		this.courseId = courseId;
+	}
+
 }

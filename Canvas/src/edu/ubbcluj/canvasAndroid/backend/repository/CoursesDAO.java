@@ -1,8 +1,12 @@
 package edu.ubbcluj.canvasAndroid.backend.repository;
 
+import android.content.SharedPreferences;
 import edu.ubbcluj.canvasAndroid.NavigationDrawerFragment;
 
-
 public interface CoursesDAO {
-	public void setNdf(NavigationDrawerFragment ndf);
+	void setNdf(NavigationDrawerFragment ndf);
+
+	void setSharedPreferences(SharedPreferences sp);
+	
+	void clearData();
 }

@@ -1,18 +1,25 @@
 package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.cookie.BasicClientCookie2;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import edu.ubbcluj.canvasAndroid.backend.repository.ActivityStreamDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
+import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.ActivityStream;
 
@@ -21,7 +28,8 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 
 	private List<ActivityStream> data;
 	private List<InformationListener> actionList;
-
+	private SharedPreferences	sp;
+	
 	public RestActivityStreamDAO() {
 		super();
 		data = new ArrayList<ActivityStream>();
@@ -48,6 +56,18 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 	public List<ActivityStream> getData() {	
 		return data;
 	}
+
+	@Override
+	public void setSharedPreferences(SharedPreferences sp) {
+		this.sp = sp;
+	}
+	
+	@Override
+	public void clearData() {
+		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(sp);
+		
+		persistentCookieStore.clear();		
+	}
 	
 	@Override
 	protected String doInBackground(String... urls) {
@@ -55,7 +75,13 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 
 		// Get JSON data from url
 		for (String url : urls) {
-			response = RestInformationDAO.getData(url);
+			if (CookieHandler.checkData(sp, url))
+				response = CookieHandler.getData(sp, url);
+			else
+			{
+				response = RestInformationDAO.getData(url);
+				CookieHandler.saveData(sp, url, response);
+			}
 		}
 		
 		data = new ArrayList<ActivityStream>();

@@ -3,7 +3,6 @@ package edu.ubbcluj.canvasAndroid;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,9 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
 
 public class BaseActivity extends ActionBarActivity implements
@@ -44,12 +41,6 @@ public class BaseActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 
 		Log.d("LifeCycle-base", "onCreate");
-
-		// set the shared preferences with the Base activity sharedpreferences
-		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
-				.getInstance();
-		sPreferences.init(BaseActivity.this.getSharedPreferences(
-				"CanvasAndroid", Context.MODE_PRIVATE));
 
 		setContentView(R.layout.activity_base);
 
@@ -175,14 +166,13 @@ public class BaseActivity extends ActionBarActivity implements
 			return true;
 
 		case R.id.refresh:
-			RestInformationDAO.clearData();
+//			RestInformationDAO.clearData();
 			finish();
 			startActivity(getIntent());
 			return true;
 
 		case R.id.dashboard:
 			if (this.getClass() == DashBoardActivity.class) {
-				RestInformationDAO.clearData();
 				finish();
 				startActivity(getIntent());
 			} else {
@@ -192,7 +182,6 @@ public class BaseActivity extends ActionBarActivity implements
 			return true;
 		case R.id.messages:
 			if (this.getClass() == MessagesActivity.class) {
-				RestInformationDAO.clearData();
 				finish();
 				startActivity(getIntent());
 			} else {
@@ -263,6 +252,8 @@ public class BaseActivity extends ActionBarActivity implements
 				((BaseActivity) activity).onSectionAttached(getArguments()
 						.getInt(ARG_SECTION_NUMBER));
 			}
+			else
+				Log.e("Courses", "Number of courses = 0");
 		}
 	}
 

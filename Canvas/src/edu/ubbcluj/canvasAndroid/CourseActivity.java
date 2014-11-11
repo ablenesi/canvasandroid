@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
@@ -32,7 +33,6 @@ import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterAssignm
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterToDo;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 
@@ -61,12 +61,6 @@ public class CourseActivity extends BaseActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// set the shared prefferences with the Course activity sharedpreferences
-		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
-				.getInstance();
-		sPreferences.init(CourseActivity.this.getSharedPreferences(
-				"CanvasAndroid", Context.MODE_PRIVATE));
 
 		// Set up the action bar.
 		actionBar = getSupportActionBar();
@@ -199,7 +193,7 @@ public class CourseActivity extends BaseActivity implements
 		private DAOFactory df;
 		private List<Assignment> assignments;
 		private List<Announcement> announcements;
-		
+
 		private CustomArrayAdapterAssignments assignmentsAdapter;
 		private CustomArrayAdapterToDo toDoAdapter;
 		private CustomArrayAdapterAnnouncements announcementAdapter;
@@ -231,38 +225,45 @@ public class CourseActivity extends BaseActivity implements
 
 			View rootView;
 
+			SharedPreferences sp = this.getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE);
+			
 			switch (sectionNumber) {
 			case 1:
+				ToDoDAO todoDao;
+
 				rootView = inflater.inflate(R.layout.fragment_assignment, null);
-				
+
 				// Set the progressbar visibility
 				list = (ListView) rootView.findViewById(R.id.list);
 				viewContainer = rootView.findViewById(R.id.linProg);
 				viewContainer.setVisibility(View.VISIBLE);
-				
-				ToDoDAO todoDao;
-				todoDao = df.getToDoDAO();
-				
+
 				list.setOnItemClickListener(new OnItemClickListener() {
 
 					@Override
-					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
 						Assignment assignment = assignments.get(position);
-						
-						Intent assignmentIntent = new Intent(getActivity(), InformationActivity.class);
-						
+
+						Intent assignmentIntent = new Intent(getActivity(),
+								InformationActivity.class);
+
 						Bundle bundle = new Bundle();
-						bundle.putSerializable("activity_type", InformationActivity.AssignmentInformation);
+						bundle.putSerializable("activity_type",
+								InformationActivity.AssignmentInformation);
 						bundle.putInt("course_id", assignment.getCourseId());
 						bundle.putInt("assignment_id", assignment.getId());
-						
+
 						assignmentIntent.putExtras(bundle);
-						
+
 						startActivity(assignmentIntent);
 					}
 				});
-				
+
 				assignments = new ArrayList<Assignment>();
+				todoDao = df.getToDoDAO();
+				todoDao.setCourseId(courseID);
+				todoDao.setSharedPreferences(sp);
 				
 				todoDao.addInformationListener(new InformationListener() {
 
@@ -294,7 +295,8 @@ public class CourseActivity extends BaseActivity implements
 
 				AssignmentsDAO assignmentsDao;
 				assignmentsDao = df.getAssignmentsDAO();
-
+				assignmentsDao.setSharedPreferences(sp);
+				
 				list.setOnItemClickListener(new OnItemClickListener() {
 
 					@Override
@@ -376,7 +378,8 @@ public class CourseActivity extends BaseActivity implements
 
 				AnnouncementDAO announcementDao;
 				announcementDao = df.getAnnouncementDAO();
-
+				announcementDao.setSharedPreferences(sp);
+				
 				announcementDao
 						.addInformationListener(new InformationListener() {
 

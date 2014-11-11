@@ -7,9 +7,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
+import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
@@ -21,10 +24,41 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 
 	private List<Assignment> data;
 	private List<InformationListener> actionList;
+	private SharedPreferences sp;
 
 	public RestAssignmentsDAO() {
 		super();
 		actionList = new ArrayList<InformationListener>();
+	}
+
+	public synchronized void addInformationListener(InformationListener il) {
+		actionList.add(il);
+	}
+
+	public synchronized void removeInformationListener(InformationListener il) {
+		actionList.remove(il);
+	}
+
+	public synchronized void notifyListeners() {
+		for (InformationListener il : actionList) {
+			il.onComplete(new InformationEvent(this));
+		}
+	}
+
+	public List<Assignment> getData() {
+		return data;
+	}
+
+	@Override
+	public void setSharedPreferences(SharedPreferences sp) {
+		this.sp = sp;
+	}
+
+	@Override
+	public void clearData() {
+		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(sp);
+		
+		persistentCookieStore.clear();		
 	}
 	
 	@Override
@@ -32,7 +66,13 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 		String response = "";
 
 		for (String url : urls) {
-			response = RestInformationDAO.getData(url);
+			if (CookieHandler.checkData(sp, url))
+				response = CookieHandler.getData(sp, url);
+			else
+			{
+				response = RestInformationDAO.getData(url);
+				CookieHandler.saveData(sp, url, response);
+			}
 		}
 
 		data = new ArrayList<Assignment>();
@@ -40,7 +80,7 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 		if (!CheckNetwork.isNetworkOnline(null)) {
 			return "No connection";
 		}
-		
+
 		// Decode JSON data and getting an ActivityStream array
 		String jsonSource = response.replace("while(1);", "");
 
@@ -98,17 +138,18 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 				assignment.setPointsPossible(0);
 			}
 			assignment.setDescription(jObj.getString("description"));
-	
+
 			if (jObj.isNull("due_at")) {
 				assignment.setDueAt("No due date");
 			} else {
 				assignment.setDueAt(jObj.getString("due_at"));
 			}
-			
+
 			if (jObj.isNull("lock_explanation")) {
 				assignment.setLockExplanation(null);
 			} else {
-				assignment.setLockExplanation(jObj.getString("lock_explanation"));
+				assignment.setLockExplanation(jObj
+						.getString("lock_explanation"));
 			}
 
 			String url = PropertyProvider.getProperty("url")
@@ -131,23 +172,5 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 		}
 
 		return assignment;
-	}
-
-	public synchronized void addInformationListener(InformationListener il) {
-		actionList.add(il);
-	}
-	
-	public synchronized void removeInformationListener(InformationListener il) {
-		actionList.remove(il);
-	}
-	
-	public synchronized void notifyListeners() {
-		for (InformationListener il: actionList) {
-			il.onComplete(new InformationEvent(this));
-		}
-	}
-
-	public List<Assignment> getData() {
-		return data;
 	}
 }

@@ -20,7 +20,6 @@ import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterActivityStream;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.model.ActivityStream;
 
 public class DashBoardActivity extends BaseActivity {
@@ -43,13 +42,6 @@ public class DashBoardActivity extends BaseActivity {
 
 		Log.d("LifeCycle-dash", "onCreate");
 
-		// set the shared preferences with the Dashboard activity
-		// sharedpreferences
-		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
-				.getInstance();
-		sPreferences.init(DashBoardActivity.this.getSharedPreferences(
-				"CanvasAndroid", Context.MODE_PRIVATE));
-
 		// Set the progressbar visibility
 		list = (ListView) findViewById(R.id.list);
 		viewContainer = findViewById(R.id.linProg);
@@ -57,10 +49,13 @@ public class DashBoardActivity extends BaseActivity {
 
 		// Get the activity stream
 		df = DAOFactory.getInstance();
-
+		
+		
 		ActivityStreamDAO dashboardDao;
 		dashboardDao = df.getDashboardDAO();
-
+		dashboardDao.setSharedPreferences(DashBoardActivity.this.getSharedPreferences(
+				"CanvasAndroid", Context.MODE_PRIVATE));
+		
 		activityStream = new ArrayList<ActivityStream>();
 
 		list.setOnItemClickListener(new OnItemClickListener() {

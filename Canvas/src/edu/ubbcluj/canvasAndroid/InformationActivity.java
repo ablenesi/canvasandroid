@@ -1,6 +1,7 @@
 package edu.ubbcluj.canvasAndroid;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
@@ -16,7 +17,6 @@ import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 
@@ -41,12 +41,6 @@ public class InformationActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Bundle bundle = getIntent().getExtras();
-
-		// set the shared preferences with the Information activity sharedpreferences
-		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
-				.getInstance();
-		sPreferences.init(InformationActivity.this.getSharedPreferences(
-				"CanvasAndroid", Context.MODE_PRIVATE));
 
 		activityType = (ActivityType) bundle.getSerializable("activity_type");
 
@@ -105,6 +99,9 @@ public class InformationActivity extends BaseActivity {
 				announcementID = bundle.getInt("announcement_id");
 			}
 
+			SharedPreferences sp = this.getActivity().getSharedPreferences(
+					"CanvasAndroid", Context.MODE_PRIVATE);
+
 			switch (activityType) {
 			case Assignment:
 				rootView = inflater.inflate(R.layout.fragment_anassignment,
@@ -122,6 +119,7 @@ public class InformationActivity extends BaseActivity {
 						.findViewById(R.id.anassignment_description);
 
 				AssignmentsDAO assignmentDAO = df.getAssignmentsDAO();
+				assignmentDAO.setSharedPreferences(sp);
 
 				assignmentDAO.addInformationListener(new InformationListener() {
 
@@ -160,6 +158,7 @@ public class InformationActivity extends BaseActivity {
 						.findViewById(R.id.anannouncement_message);
 
 				AnnouncementDAO announcementDAO = df.getAnnouncementDAO();
+				announcementDAO.setSharedPreferences(sp);
 
 				announcementDAO
 						.addInformationListener(new InformationListener() {

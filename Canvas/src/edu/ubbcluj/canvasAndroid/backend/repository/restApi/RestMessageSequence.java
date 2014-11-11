@@ -7,9 +7,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import edu.ubbcluj.canvasAndroid.backend.repository.MessageSequenceDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
+import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.model.MessageSequence;
@@ -19,6 +22,7 @@ public class RestMessageSequence extends AsyncTask<String, Void, String>
 		implements MessageSequenceDAO {
 	private List<MessageSequence> data;
 	private List<InformationListener> actionList;
+	private SharedPreferences sp;
 
 	public RestMessageSequence() {
 		super();
@@ -42,13 +46,32 @@ public class RestMessageSequence extends AsyncTask<String, Void, String>
 	}
 
 	@Override
+	public void setSharedPreferences(SharedPreferences sp) {
+		this.sp = sp;
+	}
+	
+	@Override
+	public void clearData() {
+		
+		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(sp);
+		
+		persistentCookieStore.clear();		
+	}
+
+	@Override
 	protected String doInBackground(String... urls) {
 
 		String response = "";
 
 		// Get JSON data from url
 		for (String url : urls) {
-			response = RestInformationDAO.getData(url);
+			if (CookieHandler.checkData(sp, url))
+				response = CookieHandler.getData(sp, url);
+			else
+			{
+				response = RestInformationDAO.getData(url);
+				CookieHandler.saveData(sp, url, response);
+			}
 		}
 
 		data = new ArrayList<MessageSequence>();

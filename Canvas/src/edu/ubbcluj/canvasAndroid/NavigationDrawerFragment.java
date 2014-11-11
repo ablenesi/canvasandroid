@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -26,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import edu.ubbcluj.canvasAndroid.backend.repository.CoursesDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
+import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterCourses;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
@@ -131,9 +133,11 @@ public class NavigationDrawerFragment extends Fragment {
 		CoursesDAO coursesDao;
 
 		coursesDao = df.getCoursesDAO();
+		coursesDao.setSharedPreferences(this.getActivity().getSharedPreferences(
+				"CanvasAndroid", Context.MODE_PRIVATE));
 
 		activeCourses = new ArrayList<ActiveCourse>();
-
+		
 		coursesDao.setNdf(this);
 		asyncTask = ((AsyncTask<String, Void, String>) coursesDao);
 		asyncTask.execute(new String[] { PropertyProvider.getProperty("url")
@@ -184,17 +188,16 @@ public class NavigationDrawerFragment extends Fragment {
 
 		// ActionBarDrawerToggle ties together the the proper interactions
 		// between the navigation drawer and the action bar app icon.
-		mDrawerToggle = new ActionBarDrawerToggle(
-								getActivity(), /* host Activity */
-								mDrawerLayout, /* DrawerLayout object */
-								R.string.navigation_drawer_open, /*
-																 * "open drawer" description for
-																 * accessibility
-																 */
-								R.string.navigation_drawer_close /*
-																 * "close drawer" description for
-																 * accessibility
-																 */
+		mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
+		mDrawerLayout, /* DrawerLayout object */
+		R.string.navigation_drawer_open, /*
+										 * "open drawer" description for
+										 * accessibility
+										 */
+		R.string.navigation_drawer_close /*
+										 * "close drawer" description for
+										 * accessibility
+										 */
 		) {
 			@Override
 			public void onDrawerClosed(View drawerView) {
@@ -232,7 +235,7 @@ public class NavigationDrawerFragment extends Fragment {
 		};
 
 		mDrawerToggle.setDrawerIndicatorEnabled(true);
-		
+
 		// If the user hasn't 'learned' about the drawer, open it to introduce
 		// them to the drawer,
 		// per the navigation drawer design guidelines.
