@@ -12,7 +12,6 @@ public interface ToDoDAO {
 	void removeInformationListener(InformationListener il);
 	void setCourseId(int courseId);
 	List<Assignment> getData();	
-}
 
 	void setSharedPreferences(SharedPreferences sp);
 	
