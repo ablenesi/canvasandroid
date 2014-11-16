@@ -17,8 +17,6 @@
     <string name="login">Login</string>
     <string name="username">Username:</string>
     <string name="password">Password:</string>
-    <string name="userVal"></string>
-    <string name="passVal"></string>
     <string name="empty"></string>
     <string name="title_activity_dashboard">Dashboard</string>
     <string name="title_activity_base">Base</string>

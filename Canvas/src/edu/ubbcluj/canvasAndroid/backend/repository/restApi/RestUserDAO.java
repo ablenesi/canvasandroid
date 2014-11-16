@@ -2,6 +2,7 @@ package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,46 +17,60 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import edu.ubbcluj.canvasAndroid.LoginActivity;
 import edu.ubbcluj.canvasAndroid.backend.repository.UserDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
 import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.backend.util.network.RestHttpClient;
 
-public class RestUserDAO extends AsyncTask<String, Void, String> implements UserDAO {
+public class RestUserDAO extends AsyncTask<String, Void, String> implements
+		UserDAO {
 	private PersistentCookieStore cookieStore;
 	private HttpContext context;
 	private HttpResponse httpResponse;
 	private HttpClient httpClient;
 	private LoginActivity loginActivity;
+	private String usernameOriginal;
 	private String username;
 	private String password;
+	private SharedPreferences sp;
 
 	// Try to login
 	@Override
 	public String loginUser(String host) {
 		String response = "";
-		
-		cookieStore = new PersistentCookieStore(loginActivity.getSharedPreferences("CanvasAndroid",
-				Context.MODE_PRIVATE));
+
+		cookieStore = new PersistentCookieStore(
+				loginActivity.getSharedPreferences("CanvasAndroid",
+						Context.MODE_PRIVATE));
 		HttpPost httpPost = new HttpPost(host + "/login");
 
 		context = new BasicHttpContext();
 		httpClient = RestHttpClient.getNewHttpClient();
 		httpResponse = null;
-		
+
 		List<NameValuePair> nameValuePairList = new ArrayList<NameValuePair>();
-		nameValuePairList.add(new BasicNameValuePair("pseudonym_session[unique_id]", username));
-		nameValuePairList.add(new BasicNameValuePair("pseudonym_session[password]", password));
-		nameValuePairList.add(new BasicNameValuePair("pseudonym_session[remember_me]","1"));
-		
+		nameValuePairList.add(new BasicNameValuePair(
+				"pseudonym_session[unique_id]", username));
+		nameValuePairList.add(new BasicNameValuePair(
+				"pseudonym_session[password]", password));
+		nameValuePairList.add(new BasicNameValuePair(
+				"pseudonym_session[remember_me]", "1"));
+
 		try {
-			UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(nameValuePairList);
+			UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(
+					nameValuePairList);
 			httpPost.setEntity(urlEncodedFormEntity);
 		} catch (UnsupportedEncodingException e2) {
 			response += e2.toString();
@@ -109,6 +124,18 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements User
 			} else {
 				SingletonCookie sCookie = SingletonCookie.getInstance();
 				sCookie.setCookieStore(cookieStore);
+
+				// save username
+				ArrayList<String> users = getSavedUsersArrayList();
+
+				if (!users.contains(usernameOriginal)) {
+					users.add(usernameOriginal);
+
+					Gson gson = new Gson();
+					String userString = gson.toJson(users);
+					CookieHandler.saveData(sp, "usernames", userString);
+				}
+
 				loginActivity.redirect();
 			}
 		}
@@ -124,8 +151,10 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements User
 
 	public void setUsername(String username) {
 		this.username = username;
+		this.usernameOriginal = username;
 		if (!username.contains("@")) {
-			this.username = username.concat(PropertyProvider.getProperty("default_email"));
+			this.username = username.concat(PropertyProvider
+					.getProperty("default_email"));
 		}
 	}
 
@@ -143,5 +172,32 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements User
 
 	public void setLoginActivity(LoginActivity loginActivity) {
 		this.loginActivity = loginActivity;
+	}
+
+	public void setSharedPreferences(SharedPreferences sp) {
+		this.sp = sp;
+	}
+
+	public ArrayAdapter<String> getSavedUsersAdapter() {
+
+		return new ArrayAdapter<String>(loginActivity,
+				android.R.layout.simple_dropdown_item_1line,
+				getSavedUsersArrayList());
+
+	}
+
+	private ArrayList<String> getSavedUsersArrayList() {
+		ArrayList<String> arrayList = new ArrayList<String>();
+
+		if (CookieHandler.checkData(sp, "usernames")) {
+			String usernames = CookieHandler.getData(sp, "usernames");
+
+			Gson gson = new Gson();
+			Type type = new TypeToken<ArrayList<String>>() {
+			}.getType();
+			arrayList = gson.fromJson(usernames, type);
+		}
+
+		return arrayList;
 	}
 }

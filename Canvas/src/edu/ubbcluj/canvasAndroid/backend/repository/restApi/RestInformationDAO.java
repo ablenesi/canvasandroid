@@ -2,7 +2,6 @@ package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -14,13 +13,11 @@ import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.cookie.BasicClientCookie2;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
 import android.util.Log;
 import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.backend.util.network.RestHttpClient;
@@ -37,11 +34,6 @@ public class RestInformationDAO {
 		HttpGet httpget = new HttpGet(url);
 		ResponseHandler<String> handler = new BasicResponseHandler();
 		
-		//Log.d("@@@","Lekerdezes: " + url);
-		
-		SingletonSharedPreferences sPreferences = SingletonSharedPreferences.getInstance();
-		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(
-				sPreferences.getSharedPreferences());
 		
 		// Check if network connection is available
 		if (!CheckNetwork.isNetworkOnline(null))

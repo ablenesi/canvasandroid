@@ -1,4 +1,4 @@
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,70 +8,66 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".LoginActivity" >
 
-    
-    
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-      	android:layout_alignParentTop="true"
-      	android:layout_centerHorizontal="true"
-      	android:layout_marginTop="18dp"        
-        android:text="@string/login" 
-		android:textAppearance="?android:attr/textAppearanceLarge"        />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:text="@string/login"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-		android:layout_alignParentLeft="true"
-      	android:layout_below="@+id/textView1"
-      	android:layout_marginTop="50dp"        
-        android:text="@string/username" 
-      	android:textAppearance="?android:attr/textAppearanceMedium"/>
-    
-	<EditText
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="50dp"
+        android:text="@string/username"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <AutoCompleteTextView
         android:id="@+id/username"
-        android:inputType="textFilter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-      	android:layout_alignBottom="@+id/textView2"
-      	android:layout_marginLeft="32dp"
-      	android:layout_toRightOf="@+id/textView2"
-      	android:ems="10"
-        android:text="@string/userVal" >
-        <requestFocus />
-    </EditText>        
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_marginLeft="32dp"
+        android:layout_toRightOf="@+id/textView2"
+        android:completionThreshold="1"
+        android:ems="10"
+        android:inputType="textFilter" >
+    </AutoCompleteTextView>
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-      	android:layout_alignLeft="@+id/textView2"
-      	android:layout_below="@+id/textView2"
-      	android:layout_marginTop="38dp"        
-        android:text="@string/password" 
-		android:textAppearance="?android:attr/textAppearanceMedium"/>    
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="38dp"
+        android:text="@string/password"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-	<EditText
-        android:inputType="textPassword"
+    <EditText
         android:id="@+id/password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-      	android:layout_alignBottom="@+id/textView3"
-      	android:layout_alignLeft="@+id/username"
-      	android:ems="10"
-        android:text="@string/passVal" >
-    </EditText>    
-    
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_alignLeft="@+id/username"
+        android:ems="10"
+        android:inputType="textPassword" >
+    </EditText>
+
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-      	android:layout_below="@+id/password"
-      	android:layout_centerHorizontal="true"
-      	android:layout_marginTop="94dp"
+        android:layout_below="@+id/password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="94dp"
         android:hint="@string/login"
-        android:onClick="sendMessage" />    
+        android:onClick="sendMessage" />
 
 </RelativeLayout>
