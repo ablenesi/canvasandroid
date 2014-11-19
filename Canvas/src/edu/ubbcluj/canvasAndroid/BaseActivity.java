@@ -1,5 +1,6 @@
 package edu.ubbcluj.canvasAndroid;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -8,13 +9,18 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
@@ -41,7 +47,7 @@ public class BaseActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_base);
-
+		
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mNavigationDrawerFragment.setBaseActivity(this);
@@ -52,6 +58,17 @@ public class BaseActivity extends ActionBarActivity implements
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) findViewById(R.id.swipe);
+
+	        swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+	        	@Override
+	        	public void onRefresh() {
+	        	        	RestInformationDAO.clearData();
+		    				finish();
+		    				startActivity(getIntent());        		 
+	        	}
+	    });
+
 	}
 
 	@Override
@@ -210,5 +227,7 @@ public class BaseActivity extends ActionBarActivity implements
 			}
 		}
 	}
+
+
 
 }
