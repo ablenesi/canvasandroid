@@ -73,20 +73,20 @@ public class RestInformationDAO {
 	 * Clears all cookies from cookie store except the login cookies 
 	 * (_normandy_session, pseudonym_credentials)
 	 */
-//	public static void clearData() {
-//		SingletonSharedPreferences sPreferences = SingletonSharedPreferences.getInstance();
-//		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(sPreferences.getSharedPreferences());
-//		
-//		List<Cookie> loginCookies = getLoginCookies();
-//		
-//		// Delete all cookies
-//		persistentCookieStore.clear();
-//		
-//		// Re-add the login cookies to the cookie store
-//		for (Cookie c : loginCookies) {
-//			persistentCookieStore.addCookie(c);
-//		}
-//	}
+	public static void clearData() {
+		SingletonSharedPreferences sPreferences = SingletonSharedPreferences.getInstance();
+		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(sPreferences.getSharedPreferences());
+		
+		List<Cookie> loginCookies = getLoginCookies();
+		
+		// Delete all cookies
+		persistentCookieStore.clear();
+		
+		// Re-add the login cookies to the cookie store
+		for (Cookie c : loginCookies) {
+			persistentCookieStore.addCookie(c);
+		}
+	}
 	
 	/*
 	 * Get cookies needed to user authorization
