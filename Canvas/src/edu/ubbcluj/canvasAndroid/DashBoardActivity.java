@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +17,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import edu.ubbcluj.canvasAndroid.backend.repository.ActivityStreamDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
+import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterActivityStream;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
@@ -138,6 +140,38 @@ public class DashBoardActivity extends BaseActivity {
 
 		// Initialize the dashboard list
 		setList();
+		final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) findViewById(R.id.swipe);
+
+        swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        	@Override
+        	public void onRefresh() {
+    
+        		ActivityStreamDAO dashboardDao;
+        		dashboardDao = df.getDashboardDAO();
+        		dashboardDao.setSharedPreferences(DashBoardActivity.this.getSharedPreferences(
+        				"CanvasAndroid", Context.MODE_PRIVATE));
+        		RestInformationDAO.clearData();
+        		
+        		activityStream = new ArrayList<ActivityStream>();
+        		dashboardDao.addInformationListener(new InformationListener() {
+
+        			@Override
+        			public void onComplete(InformationEvent e) {
+        				ActivityStreamDAO asd = (ActivityStreamDAO) e.getSource();
+        				setProgressGone();
+        				setActivityStream(asd.getData());
+        				swipeView.setRefreshing(false);
+        				setList();
+        			}
+        		});
+
+        		asyncTask = ((AsyncTask<String, Void, String>) dashboardDao);
+        		asyncTask.execute(new String[] { PropertyProvider.getProperty("url")
+        						+ "/api/v1/users/self/activity_stream" });
+
+        		
+        	}
+    });
 	}
 
 	@Override

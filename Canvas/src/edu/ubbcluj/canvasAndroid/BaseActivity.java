@@ -48,16 +48,7 @@ public class BaseActivity extends ActionBarActivity implements
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) findViewById(R.id.swipe);
-
-	        swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-	        	@Override
-	        	public void onRefresh() {
-	        	        	RestInformationDAO.clearData();
-		    				finish();
-		    				startActivity(getIntent());        		 
-	        	}
-	    });
+		
 
 	}
 

@@ -15,7 +15,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
 import edu.ubbcluj.canvasAndroid.backend.repository.ToDoDAO;
+import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterAnnouncements;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterAssignments;
@@ -197,6 +200,7 @@ public class CourseActivity extends BaseActivity implements
 		private CustomArrayAdapterAssignments assignmentsAdapter;
 		private CustomArrayAdapterToDo toDoAdapter;
 		private CustomArrayAdapterAnnouncements announcementAdapter;
+
 		
 		private AsyncTask<String, Void, String> asyncTask;
 
@@ -225,11 +229,12 @@ public class CourseActivity extends BaseActivity implements
 
 			View rootView;
 
-			SharedPreferences sp = this.getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE);
+			final SharedPreferences sp = this.getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE);
 			
 			switch (sectionNumber) {
 			case 1:
 				ToDoDAO todoDao;
+				
 
 				rootView = inflater.inflate(R.layout.fragment_assignment, null);
 
@@ -237,6 +242,7 @@ public class CourseActivity extends BaseActivity implements
 				list = (ListView) rootView.findViewById(R.id.list);
 				viewContainer = rootView.findViewById(R.id.linProg);
 				viewContainer.setVisibility(View.VISIBLE);
+				
 
 				list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -283,6 +289,41 @@ public class CourseActivity extends BaseActivity implements
 				asyncTask.execute(new String[] { PropertyProvider
 								.getProperty("url") + "/api/v1/courses/"
 								+ courseID + "/todo" });
+				
+				final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe);
+
+				swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+					@Override
+					public void onRefresh() {
+						ToDoDAO todoDaoo;
+						assignments = new ArrayList<Assignment>();
+						todoDaoo = df.getToDoDAO();
+						todoDaoo.setCourseId(courseID);
+						todoDaoo.setSharedPreferences(sp);
+						RestInformationDAO.clearData();
+
+						
+						todoDaoo.addInformationListener(new InformationListener() {
+
+							@Override
+							public void onComplete(InformationEvent e) {
+								ToDoDAO ad = (ToDoDAO) e.getSource();
+
+								setProgressGone();
+								setAssignments(ad.getData());
+								toDoAdapter = new CustomArrayAdapterToDo(getActivity(),
+										assignments);
+								list.setAdapter(toDoAdapter);
+								swipeView.setRefreshing(false);
+							}
+						});
+
+						asyncTask = ((AsyncTask<String, Void, String>) todoDaoo);
+						asyncTask.execute(new String[] { PropertyProvider
+										.getProperty("url") + "/api/v1/courses/"
+										+ courseID + "/todo" });
+					}
+				});
 
 				break;
 			case 2:
@@ -343,6 +384,42 @@ public class CourseActivity extends BaseActivity implements
 								.getProperty("url")
 								+ "/api/v1/courses/"
 								+ courseID + "/assignments" });
+				final SwipeRefreshLayout swipeViewm = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe);
+
+				swipeViewm.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+					@Override
+					public void onRefresh() {
+						AssignmentsDAO assignmentsDaoo;
+						assignmentsDaoo = df.getAssignmentsDAO();
+						assignmentsDaoo.setSharedPreferences(sp);
+						assignments = new ArrayList<Assignment>();
+						RestInformationDAO.clearData();
+
+						// assignmentsDao.setPlaceholderFragment(this);
+						assignmentsDaoo
+								.addInformationListener(new InformationListener() {
+
+									@Override
+									public void onComplete(InformationEvent e) {
+										AssignmentsDAO ad = (AssignmentsDAO) e
+												.getSource();
+
+										setProgressGone();
+										setAssignments(ad.getData());
+										assignmentsAdapter = new CustomArrayAdapterAssignments(
+												getActivity(), assignments);
+										list.setAdapter(assignmentsAdapter);
+										swipeViewm.setRefreshing(false);
+									}
+								});
+
+						asyncTask = ((AsyncTask<String, Void, String>) assignmentsDaoo);
+						asyncTask.execute(new String[] { PropertyProvider
+										.getProperty("url")
+										+ "/api/v1/courses/"
+										+ courseID + "/assignments" });
+					}
+				});
 				break;
 
 			case 3:
@@ -394,13 +471,47 @@ public class CourseActivity extends BaseActivity implements
 										getActivity(), announcements);
 								list.setAdapter(announcementAdapter);
 							}
-						});
+					});
 
 				asyncTask = ((AsyncTask<String, Void, String>) announcementDao);
 				asyncTask.execute(new String[] { PropertyProvider
 								.getProperty("url")
 								+ "/api/v1/courses/"
 								+ courseID + "/activity_stream" });
+				final SwipeRefreshLayout swipeViewh = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe);
+
+				swipeViewh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+					@Override
+					public void onRefresh() {
+						AnnouncementDAO announcementDaooo;
+						announcementDaooo = df.getAnnouncementDAO();
+						announcementDaooo.setSharedPreferences(sp);
+						RestInformationDAO.clearData();
+
+						announcementDaooo
+								.addInformationListener(new InformationListener() {
+
+									@Override
+									public void onComplete(InformationEvent e) {
+										AnnouncementDAO ad = (AnnouncementDAO) e
+												.getSource();
+
+										setProgressGone();
+										setAnnouncement(ad.getData());
+										announcementAdapter = new CustomArrayAdapterAnnouncements(
+												getActivity(), announcements);
+										list.setAdapter(announcementAdapter);
+										swipeViewh.setRefreshing(false);
+									}
+							});
+
+						asyncTask = ((AsyncTask<String, Void, String>) announcementDaooo);
+						asyncTask.execute(new String[] { PropertyProvider
+										.getProperty("url")
+										+ "/api/v1/courses/"
+										+ courseID + "/activity_stream" });
+					}
+				});
 
 				break;
 
