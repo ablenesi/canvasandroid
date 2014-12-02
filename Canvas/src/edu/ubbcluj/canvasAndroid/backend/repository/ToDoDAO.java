@@ -10,7 +10,6 @@ import edu.ubbcluj.canvasAndroid.model.Assignment;
 public interface ToDoDAO {
 	void addInformationListener(InformationListener il);
 	void removeInformationListener(InformationListener il);
-	void setCourseId(int courseId);
 	List<Assignment> getData();	
 
 	void setSharedPreferences(SharedPreferences sp);

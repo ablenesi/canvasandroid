@@ -1,6 +1,8 @@
 package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,32 +11,45 @@ import org.json.JSONObject;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
-import edu.ubbcluj.canvasAndroid.NavigationDrawerFragment;
 import edu.ubbcluj.canvasAndroid.backend.repository.CoursesDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
 import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
 
 public class RestCoursesDAO extends AsyncTask<String, Void, String> implements
 		CoursesDAO {
 
-	private NavigationDrawerFragment ndf;
 	private ArrayList<ActiveCourse> data;
+	private List<InformationListener> actionList;
 	private SharedPreferences sp;
 
-	public NavigationDrawerFragment getNdf() {
-		return ndf;
+	public RestCoursesDAO() {
+		actionList = new LinkedList<InformationListener>();
 	}
-
-	public void setNdf(NavigationDrawerFragment ndf) {
-		this.ndf = ndf;
-	}
-
+	
 	@Override
 	public void setSharedPreferences(SharedPreferences sp) {
 		this.sp = sp;
 	};
+	
+	@Override
+	public void addInformationListener(InformationListener il) {
+		actionList.add(il);
+	}
+
+	@Override
+	public void removeInformationListener(InformationListener il) {
+		actionList.remove(il);
+	}
+	
+	public synchronized void notifyListeners() {
+		for (InformationListener il: actionList) {
+			il.onComplete(new InformationEvent(this));
+		}
+	}	
 	
 	@Override
 	public void clearData() {
@@ -48,13 +63,13 @@ public class RestCoursesDAO extends AsyncTask<String, Void, String> implements
 		String response = "";
 
 		for (String url : urls) {
-			if (CookieHandler.checkData(sp, url))
+			/*if (CookieHandler.checkData(sp, url))
 				response = CookieHandler.getData(sp, url);
 			else
-			{
+			{*/
 				response = RestInformationDAO.getData(url);
 				CookieHandler.saveData(sp, url, response);
-			}
+			//}
 		}
 
 		data = new ArrayList<ActiveCourse>();
@@ -89,8 +104,7 @@ public class RestCoursesDAO extends AsyncTask<String, Void, String> implements
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
-
-		ndf.setActiveCourses(data);
+		notifyListeners();
 	}
 
 	private ActiveCourse convertJSONtoStr(JSONObject jObj) {
@@ -107,5 +121,10 @@ public class RestCoursesDAO extends AsyncTask<String, Void, String> implements
 		}
 
 		return activeCourse;
+	}
+
+	@Override
+	public List<ActiveCourse> getData() {
+		return data;
 	}
 }

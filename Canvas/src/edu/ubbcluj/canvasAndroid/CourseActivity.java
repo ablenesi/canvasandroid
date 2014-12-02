@@ -268,7 +268,6 @@ public class CourseActivity extends BaseActivity implements
 
 				assignments = new ArrayList<Assignment>();
 				todoDao = df.getToDoDAO();
-				todoDao.setCourseId(courseID);
 				todoDao.setSharedPreferences(sp);
 				
 				todoDao.addInformationListener(new InformationListener() {
@@ -298,7 +297,6 @@ public class CourseActivity extends BaseActivity implements
 						ToDoDAO todoDaoo;
 						assignments = new ArrayList<Assignment>();
 						todoDaoo = df.getToDoDAO();
-						todoDaoo.setCourseId(courseID);
 						todoDaoo.setSharedPreferences(sp);
 						RestInformationDAO.clearData();
 

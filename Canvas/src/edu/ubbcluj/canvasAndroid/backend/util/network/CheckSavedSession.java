@@ -37,7 +37,7 @@ public class CheckSavedSession extends AsyncTask<LoginActivity, Void, Void> {
 		super.onPostExecute(result);
 		
 		if (cookieIsAvailable) {
-			activity.redirect();
+			activity.loginCompleted();
 		}
 	}
 
