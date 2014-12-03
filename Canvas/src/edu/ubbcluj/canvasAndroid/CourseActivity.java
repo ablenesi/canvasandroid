@@ -203,7 +203,7 @@ public class CourseActivity extends BaseActivity implements
 
 		
 		private AsyncTask<String, Void, String> asyncTask;
-
+		private AsyncTask<String, Void, String> asyncTaskForRefresh;
 		/**
 		 * Returns a new instance of this fragment for the given section number.
 		 */
@@ -318,8 +318,8 @@ public class CourseActivity extends BaseActivity implements
 							}
 						});
 
-						asyncTask = ((AsyncTask<String, Void, String>) todoDaoo);
-						asyncTask.execute(new String[] { PropertyProvider
+						asyncTaskForRefresh = ((AsyncTask<String, Void, String>) todoDaoo);
+						asyncTaskForRefresh.execute(new String[] { PropertyProvider
 										.getProperty("url") + "/api/v1/courses/"
 										+ courseID + "/todo" });
 					}
@@ -413,8 +413,8 @@ public class CourseActivity extends BaseActivity implements
 									}
 								});
 
-						asyncTask = ((AsyncTask<String, Void, String>) assignmentsDaoo);
-						asyncTask.execute(new String[] { PropertyProvider
+						asyncTaskForRefresh = ((AsyncTask<String, Void, String>) assignmentsDaoo);
+						asyncTaskForRefresh.execute(new String[] { PropertyProvider
 										.getProperty("url")
 										+ "/api/v1/courses/"
 										+ courseID + "/assignments" });
@@ -505,8 +505,8 @@ public class CourseActivity extends BaseActivity implements
 									}
 							});
 
-						asyncTask = ((AsyncTask<String, Void, String>) announcementDaooo);
-						asyncTask.execute(new String[] { PropertyProvider
+						asyncTaskForRefresh = ((AsyncTask<String, Void, String>) announcementDaooo);
+						asyncTaskForRefresh.execute(new String[] { PropertyProvider
 										.getProperty("url")
 										+ "/api/v1/courses/"
 										+ courseID + "/activity_stream" });
@@ -526,6 +526,10 @@ public class CourseActivity extends BaseActivity implements
 		public void onStop() {
 			if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
 				asyncTask.cancel(true);
+			}
+			if(asyncTaskForRefresh != null && asyncTaskForRefresh.getStatus() == Status.RUNNING)
+			{
+				asyncTaskForRefresh.cancel(true);
 			}
 			super.onStop();
 		}

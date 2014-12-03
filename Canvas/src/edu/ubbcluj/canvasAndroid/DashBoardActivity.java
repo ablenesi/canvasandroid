@@ -35,6 +35,7 @@ public class DashBoardActivity extends BaseActivity {
 	private View viewContainer;
 
 	private AsyncTask<String, Void, String> asyncTask;
+	private AsyncTask<String, Void, String> asynTaskForRefresh;
 	
 	@SuppressWarnings("unchecked")
 	@SuppressLint("NewApi")
@@ -143,6 +144,7 @@ public class DashBoardActivity extends BaseActivity {
 		final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) findViewById(R.id.swipe);
 
         swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        	
         	@Override
         	public void onRefresh() {
     
@@ -152,9 +154,11 @@ public class DashBoardActivity extends BaseActivity {
         				"CanvasAndroid", Context.MODE_PRIVATE));
         		RestInformationDAO.clearData();
         		
+        		
         		activityStream = new ArrayList<ActivityStream>();
         		dashboardDao.addInformationListener(new InformationListener() {
-
+        			
+        			
         			@Override
         			public void onComplete(InformationEvent e) {
         				ActivityStreamDAO asd = (ActivityStreamDAO) e.getSource();
@@ -163,14 +167,14 @@ public class DashBoardActivity extends BaseActivity {
         				swipeView.setRefreshing(false);
         				setList();
         			}
+        			
         		});
-
-        		asyncTask = ((AsyncTask<String, Void, String>) dashboardDao);
-        		asyncTask.execute(new String[] { PropertyProvider.getProperty("url")
-        						+ "/api/v1/users/self/activity_stream" });
-
         		
-        	}
+
+        		asynTaskForRefresh = ((AsyncTask<String, Void, String>) dashboardDao);
+        		asynTaskForRefresh.execute(new String[] { PropertyProvider.getProperty("url")
+        						+ "/api/v1/users/self/activity_stream" });
+        	} 	
     });
 	}
 
@@ -203,6 +207,10 @@ public class DashBoardActivity extends BaseActivity {
 		Log.d("LifeCycle-dash", "onStop");
 		if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
 			asyncTask.cancel(true);
+		}
+		if(asynTaskForRefresh != null && asynTaskForRefresh.getStatus() == Status.RUNNING)
+		{
+			asynTaskForRefresh.cancel(true);
 		}
 		super.onStop();
 	}
