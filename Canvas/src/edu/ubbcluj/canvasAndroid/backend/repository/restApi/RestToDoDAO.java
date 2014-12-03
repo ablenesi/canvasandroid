@@ -23,7 +23,6 @@ public class RestToDoDAO extends AsyncTask<String, Void, String> implements
 
 	private List<Assignment> data;
 	private List<InformationListener> actionList;
-	private int courseId;
 	private SharedPreferences sp;
 
 	public RestToDoDAO() {
@@ -68,7 +67,6 @@ public class RestToDoDAO extends AsyncTask<String, Void, String> implements
 	@Override
 	protected String doInBackground(String... urls) {
 		String response = "";
-		int currentCourseId;
 
 		Assignment ass = new Assignment();
 		ass.setName("Nothing for now!");
@@ -169,11 +167,6 @@ public class RestToDoDAO extends AsyncTask<String, Void, String> implements
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 		notifyListeners();
-	}
-
-	@Override
-	public void setCourseId(int courseId) {
-		this.courseId = courseId;
 	}
 
 }

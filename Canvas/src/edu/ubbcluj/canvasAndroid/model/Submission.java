@@ -4,7 +4,7 @@ public class Submission {
 
 	private int assignmentId;
 	private Assignment assignment;
-	private Course course;
+	private ActiveCourse course;
 	private int attempt;
 	private String body;
 	private String grade;
@@ -37,11 +37,11 @@ public class Submission {
 		this.assignment = assignment;
 	}
 
-	public Course getCourse() {
+	public ActiveCourse getCourse() {
 		return course;
 	}
 
-	public void setCourse(Course course) {
+	public void setCourse(ActiveCourse course) {
 		this.course = course;
 	}
 

@@ -111,7 +111,6 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 	// Else show the errorMessage
 	@Override
 	protected void onPostExecute(String result) {
-		loginActivity.closeDialog();
 
 		if (!CheckNetwork.isNetworkOnline(loginActivity))
 			Toast.makeText(loginActivity, "No network connection!",
@@ -134,9 +133,10 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 					Gson gson = new Gson();
 					String userString = gson.toJson(users);
 					CookieHandler.saveData(sp, "usernames", userString);
+					CookieHandler.saveData(sp, "lastusername", username);
 				}
 
-				loginActivity.redirect();
+				loginActivity.loginCompleted();
 			}
 		}
 	}
@@ -149,6 +149,10 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 		return username;
 	}
 
+	public String getLastUsername() {
+			return CookieHandler.getData(sp, "lastusername");
+	}
+	
 	public void setUsername(String username) {
 		this.username = username;
 		this.usernameOriginal = username;

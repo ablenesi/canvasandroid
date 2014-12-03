@@ -10,6 +10,8 @@ public interface UserDAO {
 	public void setUsername(String username);
 
 	public String getUsername();
+	
+	public String getLastUsername();
 
 	public void setPassword(String password);
 

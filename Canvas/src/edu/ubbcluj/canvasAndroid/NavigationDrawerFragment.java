@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
-import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -25,9 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import edu.ubbcluj.canvasAndroid.backend.repository.CoursesDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterCourses;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
 
@@ -49,12 +44,9 @@ public class NavigationDrawerFragment extends Fragment {
 	private boolean mFromSavedInstanceState;
 	private boolean mUserLearnedDrawer;
 
-	private DAOFactory df;
 	private CustomArrayAdapterCourses adapterActiveCourses;
 	private List<ActiveCourse> activeCourses;
 	private BaseActivity baseActivity;
-
-	private AsyncTask<String, Void, String> asyncTask;
 
 	public BaseActivity getBaseActivity() {
 		return baseActivity;
@@ -88,7 +80,6 @@ public class NavigationDrawerFragment extends Fragment {
 		setHasOptionsMenu(true);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -103,21 +94,8 @@ public class NavigationDrawerFragment extends Fragment {
 					}
 				});
 
-		df = DAOFactory.getInstance();
-		CoursesDAO coursesDao;
-
-		coursesDao = df.getCoursesDAO();
-		coursesDao.setSharedPreferences(this.getActivity()
-				.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE));
-
-		activeCourses = new ArrayList<ActiveCourse>();
-
-		coursesDao.setNdf(this);
-		asyncTask = ((AsyncTask<String, Void, String>) coursesDao);
-		asyncTask.execute(new String[] { PropertyProvider.getProperty("url")
-				+ "/api/v1/courses" });
-
 		mDrawerList.setItemChecked(mCurrentSelectedPosition, true);
+		activeCourses = CourseProvider.getInstance().getSelectedCourses();
 		setMenu();
 
 		return mDrawerList;
@@ -125,9 +103,6 @@ public class NavigationDrawerFragment extends Fragment {
 
 	@Override
 	public void onStop() {
-		if (asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
-			asyncTask.cancel(true);
-		}
 		super.onStop();
 	}
 
