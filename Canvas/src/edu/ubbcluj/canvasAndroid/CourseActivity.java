@@ -17,7 +17,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -214,6 +213,7 @@ public class CourseActivity extends BaseActivity implements
 
 		private AsyncTask<String, Void, String> asyncTask;
 		private AsyncTask<String, Void, String> asyncTaskForRefresh;
+
 		/**
 		 * Returns a new instance of this fragment for the given section number.
 		 */
@@ -329,12 +329,14 @@ public class CourseActivity extends BaseActivity implements
 									}
 								});
 
-						asyncTaskForRefresh = ((AsyncTask<String, Void, String>) todoDaoo);
-						asyncTaskForRefresh.execute(new String[] { PropertyProvider
-										.getProperty("url") + "/api/v1/courses/"
-										+ courseID + "/todo" });
-					}
-				});
+								asyncTaskForRefresh = ((AsyncTask<String, Void, String>) todoDaoo);
+								asyncTaskForRefresh.execute(new String[] { PropertyProvider
+										.getProperty("url")
+										+ "/api/v1/courses/"
+										+ courseID
+										+ "/todo" });
+							}
+						});
 
 				break;
 			}
@@ -430,8 +432,8 @@ public class CourseActivity extends BaseActivity implements
 											}
 										});
 
-						asyncTaskForRefresh = ((AsyncTask<String, Void, String>) assignmentsDaoo);
-						asyncTaskForRefresh.execute(new String[] { PropertyProvider
+								asyncTaskForRefresh = ((AsyncTask<String, Void, String>) assignmentsDaoo);
+								asyncTaskForRefresh.execute(new String[] { PropertyProvider
 										.getProperty("url")
 										+ "/api/v1/courses/"
 										+ courseID
@@ -528,8 +530,8 @@ public class CourseActivity extends BaseActivity implements
 											}
 										});
 
-						asyncTaskForRefresh = ((AsyncTask<String, Void, String>) announcementDaooo);
-						asyncTaskForRefresh.execute(new String[] { PropertyProvider
+								asyncTaskForRefresh = ((AsyncTask<String, Void, String>) announcementDaooo);
+								asyncTaskForRefresh.execute(new String[] { PropertyProvider
 										.getProperty("url")
 										+ "/api/v1/courses/"
 										+ courseID
@@ -556,8 +558,6 @@ public class CourseActivity extends BaseActivity implements
 					public void onComplete(InformationEvent e) {
 						FolderDAO fd = (FolderDAO) e.getSource();
 
-						Log.d("speed_test", "folder content downloaded");
-
 						setProgressGone();
 						setFileTreeElements(fd.getData());
 						fileTreeElementsAdapter = new CustomArrayAdapterFileTreeElements(
@@ -575,8 +575,6 @@ public class CourseActivity extends BaseActivity implements
 								folderDao = df.getFolderDAO();
 								folderDao.setSharedPreferences(sp);
 								RestInformationDAO.clearData();
-
-								Log.d("speed_test", "refreshing is started");
 
 								folderDao
 										.addInformationListener(folderInformationListener);
@@ -598,9 +596,6 @@ public class CourseActivity extends BaseActivity implements
 						FileTreeElement fileTreeElement = fileTreeElements
 								.get(position);
 
-						Log.d("speed_test",
-								"selected item downloading is started");
-
 						// if we are in the root folder
 						if (fileTreeElement != null) {
 							if (fileTreeElement instanceof File) {
@@ -611,7 +606,7 @@ public class CourseActivity extends BaseActivity implements
 
 								if (folder != null) {
 									swipeView.setRefreshing(true);
-									Log.d("bemegy", "bemegy");
+
 									if (position == 0) {
 										folderStack.removeHead();
 									} else
@@ -644,8 +639,6 @@ public class CourseActivity extends BaseActivity implements
 					public void onComplete(InformationEvent e) {
 						FolderDAO fd = (FolderDAO) e.getSource();
 
-						Log.d("speed_test", "root folder done");
-
 						List<FileTreeElement> fte = fd.getData();
 						Folder rootfolder = (Folder) fte.get(1);
 
@@ -656,8 +649,6 @@ public class CourseActivity extends BaseActivity implements
 						folderDAOforRootElements
 								.addInformationListener(folderInformationListener);
 
-						Log.d("speed_test",
-								"downloading root folder content started");
 						asyncTask = ((AsyncTask<String, Void, String>) folderDAOforRootElements);
 						asyncTask.execute(new String[] {
 								rootfolder.getFoldersUrl(),
@@ -665,7 +656,6 @@ public class CourseActivity extends BaseActivity implements
 					}
 				});
 
-				Log.d("speed_test", "downloading root folder started");
 				asyncTask = ((AsyncTask<String, Void, String>) folderDao);
 				asyncTask.execute(new String[] { PropertyProvider
 						.getProperty("url")
@@ -687,8 +677,8 @@ public class CourseActivity extends BaseActivity implements
 			if (asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
 				asyncTask.cancel(true);
 			}
-			if(asyncTaskForRefresh != null && asyncTaskForRefresh.getStatus() == Status.RUNNING)
-			{
+			if (asyncTaskForRefresh != null
+					&& asyncTaskForRefresh.getStatus() == Status.RUNNING) {
 				asyncTaskForRefresh.cancel(true);
 			}
 			super.onStop();

@@ -71,17 +71,13 @@ public class RestFolderDAO extends AsyncTask<String, Void, String> implements
 		int k = 0;
 		for (String url : urls) {
 			if (CookieHandler.checkData(sp, url)) {
-				Log.d("speed_test", "from cookie");
 				response[k] = CookieHandler.getData(sp, url);
 			} else {
-				Log.d("speed_test", "from the server");
 				response[k] = RestInformationDAO.getData(url);
 				CookieHandler.saveData(sp, url, response[k]);
 			}
 			k++;
 		}
-
-		Log.d("speed_test", "downloading json is done");
 
 		// Convert Folders Json
 		String jsonSource = response[0].replace("while(1);", "");
@@ -133,8 +129,6 @@ public class RestFolderDAO extends AsyncTask<String, Void, String> implements
 		if (isCancelled()) {
 			Log.d("AsyncTask", "Folder asynctask cancelled");
 		}
-
-		Log.d("speed_test", "json parsing done");
 
 		// this should be a JSON string, but I don't know why
 		return null;
