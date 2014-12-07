@@ -311,7 +311,6 @@ public class CourseActivity extends BaseActivity implements
 								ToDoDAO todoDaoo;
 								assignments = new ArrayList<Assignment>();
 								todoDaoo = df.getToDoDAO();
-								todoDaoo.setCourseId(courseID);
 								todoDaoo.setSharedPreferences(sp);
 								RestInformationDAO.clearData();
 
@@ -498,10 +497,10 @@ public class CourseActivity extends BaseActivity implements
 						+ "/api/v1/courses/"
 						+ courseID
 						+ "/activity_stream" });
-				final SwipeRefreshLayout swipeViewh = (SwipeRefreshLayout) rootView
+				final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView
 						.findViewById(R.id.swipe);
 
-				swipeViewh
+				swipeView
 						.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 							@Override
 							public void onRefresh() {
@@ -525,7 +524,7 @@ public class CourseActivity extends BaseActivity implements
 														getActivity(),
 														announcements);
 												list.setAdapter(announcementAdapter);
-												swipeViewh.setRefreshing(false);
+												swipeView.setRefreshing(false);
 											}
 										});
 
