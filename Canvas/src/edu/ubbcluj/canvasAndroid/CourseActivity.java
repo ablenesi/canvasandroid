@@ -28,16 +28,22 @@ import android.widget.TextView;
 import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
+import edu.ubbcluj.canvasAndroid.backend.repository.FolderDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.ToDoDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.FolderStack;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterAnnouncements;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterAssignments;
+import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterFileTreeElements;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterToDo;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
+import edu.ubbcluj.canvasAndroid.model.File;
+import edu.ubbcluj.canvasAndroid.model.FileTreeElement;
+import edu.ubbcluj.canvasAndroid.model.Folder;
 
 @SuppressWarnings("deprecation")
 public class CourseActivity extends BaseActivity implements
@@ -156,7 +162,7 @@ public class CourseActivity extends BaseActivity implements
 		@Override
 		public int getCount() {
 			// Show 3 total pages.
-			return 3;
+			return 4;
 		}
 
 		@Override
@@ -169,9 +175,10 @@ public class CourseActivity extends BaseActivity implements
 				return getString(R.string.tab_assignments).toUpperCase(l);
 			case 2:
 				return getString(R.string.tab_announcements).toUpperCase(l);
+			case 3:
+				return getString(R.string.tab_files).toUpperCase(l);
 				/*
-				 * case 3: return getString(R.string.tab_grades).toUpperCase(l);
-				 * case 4: return getString(R.string.tab_files).toUpperCase(l);
+				 * case 4: return getString(R.string.tab_grades).toUpperCase(l);
 				 * case 5: return
 				 * getString(R.string.tab_syllabus).toUpperCase(l);
 				 */
@@ -196,12 +203,15 @@ public class CourseActivity extends BaseActivity implements
 		private DAOFactory df;
 		private List<Assignment> assignments;
 		private List<Announcement> announcements;
+		private List<FileTreeElement> fileTreeElements;
 
 		private CustomArrayAdapterAssignments assignmentsAdapter;
 		private CustomArrayAdapterToDo toDoAdapter;
 		private CustomArrayAdapterAnnouncements announcementAdapter;
+		private CustomArrayAdapterFileTreeElements fileTreeElementsAdapter;
 
-		
+		final FolderStack folderStack = new FolderStack();
+
 		private AsyncTask<String, Void, String> asyncTask;
 		private AsyncTask<String, Void, String> asyncTaskForRefresh;
 		/**
@@ -229,12 +239,13 @@ public class CourseActivity extends BaseActivity implements
 
 			View rootView;
 
-			final SharedPreferences sp = this.getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE);
-			
+			final SharedPreferences sp = this
+					.getActivity()
+					.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE);
+
 			switch (sectionNumber) {
-			case 1:
+			case 1: {
 				ToDoDAO todoDao;
-				
 
 				rootView = inflater.inflate(R.layout.fragment_assignment, null);
 
@@ -242,7 +253,6 @@ public class CourseActivity extends BaseActivity implements
 				list = (ListView) rootView.findViewById(R.id.list);
 				viewContainer = rootView.findViewById(R.id.linProg);
 				viewContainer.setVisibility(View.VISIBLE);
-				
 
 				list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -269,7 +279,7 @@ public class CourseActivity extends BaseActivity implements
 				assignments = new ArrayList<Assignment>();
 				todoDao = df.getToDoDAO();
 				todoDao.setSharedPreferences(sp);
-				
+
 				todoDao.addInformationListener(new InformationListener() {
 
 					@Override
@@ -286,35 +296,39 @@ public class CourseActivity extends BaseActivity implements
 
 				asyncTask = ((AsyncTask<String, Void, String>) todoDao);
 				asyncTask.execute(new String[] { PropertyProvider
-								.getProperty("url") + "/api/v1/courses/"
-								+ courseID + "/todo" });
-				
-				final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe);
+						.getProperty("url")
+						+ "/api/v1/courses/"
+						+ courseID
+						+ "/todo" });
 
-				swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-					@Override
-					public void onRefresh() {
-						ToDoDAO todoDaoo;
-						assignments = new ArrayList<Assignment>();
-						todoDaoo = df.getToDoDAO();
-						todoDaoo.setSharedPreferences(sp);
-						RestInformationDAO.clearData();
+				final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView
+						.findViewById(R.id.swipe);
 
-						
-						todoDaoo.addInformationListener(new InformationListener() {
-
+				swipeView
+						.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 							@Override
-							public void onComplete(InformationEvent e) {
-								ToDoDAO ad = (ToDoDAO) e.getSource();
+							public void onRefresh() {
+								ToDoDAO todoDaoo;
+								assignments = new ArrayList<Assignment>();
+								todoDaoo = df.getToDoDAO();
+								todoDaoo.setCourseId(courseID);
+								todoDaoo.setSharedPreferences(sp);
+								RestInformationDAO.clearData();
 
-								setProgressGone();
-								setAssignments(ad.getData());
-								toDoAdapter = new CustomArrayAdapterToDo(getActivity(),
-										assignments);
-								list.setAdapter(toDoAdapter);
-								swipeView.setRefreshing(false);
-							}
-						});
+								todoDaoo.addInformationListener(new InformationListener() {
+
+									@Override
+									public void onComplete(InformationEvent e) {
+										ToDoDAO ad = (ToDoDAO) e.getSource();
+
+										setProgressGone();
+										setAssignments(ad.getData());
+										toDoAdapter = new CustomArrayAdapterToDo(
+												getActivity(), assignments);
+										list.setAdapter(toDoAdapter);
+										swipeView.setRefreshing(false);
+									}
+								});
 
 						asyncTaskForRefresh = ((AsyncTask<String, Void, String>) todoDaoo);
 						asyncTaskForRefresh.execute(new String[] { PropertyProvider
@@ -324,7 +338,8 @@ public class CourseActivity extends BaseActivity implements
 				});
 
 				break;
-			case 2:
+			}
+			case 2: {
 				rootView = inflater.inflate(R.layout.fragment_assignment, null);
 
 				// Set the progressbar visibility
@@ -335,7 +350,7 @@ public class CourseActivity extends BaseActivity implements
 				AssignmentsDAO assignmentsDao;
 				assignmentsDao = df.getAssignmentsDAO();
 				assignmentsDao.setSharedPreferences(sp);
-				
+
 				list.setOnItemClickListener(new OnItemClickListener() {
 
 					@Override
@@ -379,48 +394,54 @@ public class CourseActivity extends BaseActivity implements
 
 				asyncTask = ((AsyncTask<String, Void, String>) assignmentsDao);
 				asyncTask.execute(new String[] { PropertyProvider
-								.getProperty("url")
-								+ "/api/v1/courses/"
-								+ courseID + "/assignments" });
-				final SwipeRefreshLayout swipeViewm = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe);
+						.getProperty("url")
+						+ "/api/v1/courses/"
+						+ courseID
+						+ "/assignments" });
+				final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView
+						.findViewById(R.id.swipe);
 
-				swipeViewm.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-					@Override
-					public void onRefresh() {
-						AssignmentsDAO assignmentsDaoo;
-						assignmentsDaoo = df.getAssignmentsDAO();
-						assignmentsDaoo.setSharedPreferences(sp);
-						assignments = new ArrayList<Assignment>();
-						RestInformationDAO.clearData();
+				swipeView
+						.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+							@Override
+							public void onRefresh() {
+								AssignmentsDAO assignmentsDaoo;
+								assignmentsDaoo = df.getAssignmentsDAO();
+								assignmentsDaoo.setSharedPreferences(sp);
+								assignments = new ArrayList<Assignment>();
+								RestInformationDAO.clearData();
 
-						// assignmentsDao.setPlaceholderFragment(this);
-						assignmentsDaoo
-								.addInformationListener(new InformationListener() {
+								// assignmentsDao.setPlaceholderFragment(this);
+								assignmentsDaoo
+										.addInformationListener(new InformationListener() {
 
-									@Override
-									public void onComplete(InformationEvent e) {
-										AssignmentsDAO ad = (AssignmentsDAO) e
-												.getSource();
+											@Override
+											public void onComplete(
+													InformationEvent e) {
+												AssignmentsDAO ad = (AssignmentsDAO) e
+														.getSource();
 
-										setProgressGone();
-										setAssignments(ad.getData());
-										assignmentsAdapter = new CustomArrayAdapterAssignments(
-												getActivity(), assignments);
-										list.setAdapter(assignmentsAdapter);
-										swipeViewm.setRefreshing(false);
-									}
-								});
+												setProgressGone();
+												setAssignments(ad.getData());
+												assignmentsAdapter = new CustomArrayAdapterAssignments(
+														getActivity(),
+														assignments);
+												list.setAdapter(assignmentsAdapter);
+												swipeView.setRefreshing(false);
+											}
+										});
 
 						asyncTaskForRefresh = ((AsyncTask<String, Void, String>) assignmentsDaoo);
 						asyncTaskForRefresh.execute(new String[] { PropertyProvider
 										.getProperty("url")
 										+ "/api/v1/courses/"
-										+ courseID + "/assignments" });
-					}
-				});
+										+ courseID
+										+ "/assignments" });
+							}
+						});
 				break;
-
-			case 3:
+			}
+			case 3: {
 				rootView = inflater.inflate(R.layout.fragment_assignment, null);
 
 				// Set the progressbar visibility
@@ -454,7 +475,7 @@ public class CourseActivity extends BaseActivity implements
 				AnnouncementDAO announcementDao;
 				announcementDao = df.getAnnouncementDAO();
 				announcementDao.setSharedPreferences(sp);
-				
+
 				announcementDao
 						.addInformationListener(new InformationListener() {
 
@@ -469,50 +490,192 @@ public class CourseActivity extends BaseActivity implements
 										getActivity(), announcements);
 								list.setAdapter(announcementAdapter);
 							}
-					});
+						});
 
 				asyncTask = ((AsyncTask<String, Void, String>) announcementDao);
 				asyncTask.execute(new String[] { PropertyProvider
-								.getProperty("url")
-								+ "/api/v1/courses/"
-								+ courseID + "/activity_stream" });
-				final SwipeRefreshLayout swipeViewh = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe);
+						.getProperty("url")
+						+ "/api/v1/courses/"
+						+ courseID
+						+ "/activity_stream" });
+				final SwipeRefreshLayout swipeViewh = (SwipeRefreshLayout) rootView
+						.findViewById(R.id.swipe);
 
-				swipeViewh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-					@Override
-					public void onRefresh() {
-						AnnouncementDAO announcementDaooo;
-						announcementDaooo = df.getAnnouncementDAO();
-						announcementDaooo.setSharedPreferences(sp);
-						RestInformationDAO.clearData();
+				swipeViewh
+						.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+							@Override
+							public void onRefresh() {
+								AnnouncementDAO announcementDaooo;
+								announcementDaooo = df.getAnnouncementDAO();
+								announcementDaooo.setSharedPreferences(sp);
+								RestInformationDAO.clearData();
 
-						announcementDaooo
-								.addInformationListener(new InformationListener() {
+								announcementDaooo
+										.addInformationListener(new InformationListener() {
 
-									@Override
-									public void onComplete(InformationEvent e) {
-										AnnouncementDAO ad = (AnnouncementDAO) e
-												.getSource();
+											@Override
+											public void onComplete(
+													InformationEvent e) {
+												AnnouncementDAO ad = (AnnouncementDAO) e
+														.getSource();
 
-										setProgressGone();
-										setAnnouncement(ad.getData());
-										announcementAdapter = new CustomArrayAdapterAnnouncements(
-												getActivity(), announcements);
-										list.setAdapter(announcementAdapter);
-										swipeViewh.setRefreshing(false);
-									}
-							});
+												setProgressGone();
+												setAnnouncement(ad.getData());
+												announcementAdapter = new CustomArrayAdapterAnnouncements(
+														getActivity(),
+														announcements);
+												list.setAdapter(announcementAdapter);
+												swipeViewh.setRefreshing(false);
+											}
+										});
 
 						asyncTaskForRefresh = ((AsyncTask<String, Void, String>) announcementDaooo);
 						asyncTaskForRefresh.execute(new String[] { PropertyProvider
 										.getProperty("url")
 										+ "/api/v1/courses/"
-										+ courseID + "/activity_stream" });
+										+ courseID
+										+ "/activity_stream" });
+							}
+						});
+
+				break;
+			}
+			case 4: {
+				rootView = inflater.inflate(R.layout.fragment_assignment, null);
+
+				final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView
+						.findViewById(R.id.swipe);
+
+				// Set the progressbar visibility
+				list = (ListView) rootView.findViewById(R.id.list);
+				viewContainer = rootView.findViewById(R.id.linProg);
+				viewContainer.setVisibility(View.VISIBLE);
+
+				final InformationListener folderInformationListener = new InformationListener() {
+
+					@Override
+					public void onComplete(InformationEvent e) {
+						FolderDAO fd = (FolderDAO) e.getSource();
+
+						Log.d("speed_test", "folder content downloaded");
+
+						setProgressGone();
+						setFileTreeElements(fd.getData());
+						fileTreeElementsAdapter = new CustomArrayAdapterFileTreeElements(
+								getActivity(), fileTreeElements);
+						list.setAdapter(fileTreeElementsAdapter);
+						swipeView.setRefreshing(false);
+					}
+				};
+
+				swipeView
+						.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+							@Override
+							public void onRefresh() {
+								FolderDAO folderDao;
+								folderDao = df.getFolderDAO();
+								folderDao.setSharedPreferences(sp);
+								RestInformationDAO.clearData();
+
+								Log.d("speed_test", "refreshing is started");
+
+								folderDao
+										.addInformationListener(folderInformationListener);
+
+								Folder currentFolder = folderStack.getHead();
+
+								asyncTask = ((AsyncTask<String, Void, String>) folderDao);
+								asyncTask.execute(new String[] {
+										currentFolder.getFoldersUrl(),
+										currentFolder.getFilesUrl() });
+							}
+						});
+
+				list.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						FileTreeElement fileTreeElement = fileTreeElements
+								.get(position);
+
+						Log.d("speed_test",
+								"selected item downloading is started");
+
+						// if we are in the root folder
+						if (fileTreeElement != null) {
+							if (fileTreeElement instanceof File) {
+								// File file = (File) fileTreeElement;
+								// toDO file download
+							} else {
+								Folder folder = (Folder) fileTreeElement;
+
+								if (folder != null) {
+									swipeView.setRefreshing(true);
+									Log.d("bemegy", "bemegy");
+									if (position == 0) {
+										folderStack.removeHead();
+									} else
+										folderStack.push(folder);
+
+									FolderDAO folderDao;
+									folderDao = df.getFolderDAO();
+									folderDao.setSharedPreferences(sp);
+
+									folderDao
+											.addInformationListener(folderInformationListener);
+
+									asyncTask = ((AsyncTask<String, Void, String>) folderDao);
+									asyncTask.execute(new String[] {
+											folder.getFoldersUrl(),
+											folder.getFilesUrl() });
+								}
+							}
+						}
 					}
 				});
 
-				break;
+				FolderDAO folderDao;
+				folderDao = df.getFolderDAO();
+				folderDao.setSharedPreferences(sp);
 
+				folderDao.addInformationListener(new InformationListener() {
+
+					@Override
+					public void onComplete(InformationEvent e) {
+						FolderDAO fd = (FolderDAO) e.getSource();
+
+						Log.d("speed_test", "root folder done");
+
+						List<FileTreeElement> fte = fd.getData();
+						Folder rootfolder = (Folder) fte.get(1);
+
+						folderStack.push(rootfolder);
+
+						FolderDAO folderDAOforRootElements = df.getFolderDAO();
+						folderDAOforRootElements.setSharedPreferences(sp);
+						folderDAOforRootElements
+								.addInformationListener(folderInformationListener);
+
+						Log.d("speed_test",
+								"downloading root folder content started");
+						asyncTask = ((AsyncTask<String, Void, String>) folderDAOforRootElements);
+						asyncTask.execute(new String[] {
+								rootfolder.getFoldersUrl(),
+								rootfolder.getFilesUrl() });
+					}
+				});
+
+				Log.d("speed_test", "downloading root folder started");
+				asyncTask = ((AsyncTask<String, Void, String>) folderDao);
+				asyncTask.execute(new String[] { PropertyProvider
+						.getProperty("url")
+						+ "/api/v1/courses/"
+						+ courseID
+						+ "/folders/by_path" });
+
+				break;
+			}
 			default:
 				rootView = inflater.inflate(R.layout.fragment_course, null);
 			}
@@ -522,7 +685,7 @@ public class CourseActivity extends BaseActivity implements
 
 		@Override
 		public void onStop() {
-			if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
+			if (asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
 				asyncTask.cancel(true);
 			}
 			if(asyncTaskForRefresh != null && asyncTaskForRefresh.getStatus() == Status.RUNNING)
@@ -531,13 +694,18 @@ public class CourseActivity extends BaseActivity implements
 			}
 			super.onStop();
 		}
-		
+
 		public void setAssignments(List<Assignment> assignment) {
 			this.assignments = assignment;
 		}
 
 		public void setAnnouncement(List<Announcement> announcement) {
 			this.announcements = announcement;
+		}
+
+		public void setFileTreeElements(List<FileTreeElement> fileTreeElements) {
+			this.fileTreeElements = fileTreeElements;
+			fileTreeElements.set(0, folderStack.getHeadParent());
 		}
 
 		// Hide progressbar

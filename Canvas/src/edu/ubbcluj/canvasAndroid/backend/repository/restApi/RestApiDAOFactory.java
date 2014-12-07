@@ -5,6 +5,7 @@ import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.ConversationDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.CoursesDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
+import edu.ubbcluj.canvasAndroid.backend.repository.FolderDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.MessageSequenceDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.ToDoDAO;
 
@@ -48,6 +49,11 @@ public class RestApiDAOFactory extends DAOFactory {
 	@Override
 	public MessageSequenceDAO getMessageSequenceDAO() {
 		return new RestMessageSequence();
+	}
+
+	@Override
+	public FolderDAO getFolderDAO() {
+		return new RestFolderDAO();
 	}
 
 }
