@@ -141,7 +141,8 @@ public class BaseActivity extends ActionBarActivity implements
 			return true;
 
 		int id = item.getItemId();
-
+		Intent intent = null;
+		
 		switch (id) {
 		case android.R.id.home:
 			NavUtils.navigateUpFromSameTask(this);
@@ -158,7 +159,7 @@ public class BaseActivity extends ActionBarActivity implements
 				finish();
 				startActivity(getIntent());
 			} else {
-				Intent intent = new Intent(this, DashBoardActivity.class);
+				intent = new Intent(this, DashBoardActivity.class);
 				startActivity(intent);
 			}
 			return true;
@@ -167,14 +168,18 @@ public class BaseActivity extends ActionBarActivity implements
 				finish();
 				startActivity(getIntent());
 			} else {
-				Intent intent = new Intent(this, MessagesActivity.class);
+				intent = new Intent(this, MessagesActivity.class);
 				startActivity(intent);
 			}
+			return true;
+		case R.id.settings:
+			intent = new Intent(this, CourseSelectionActivity.class);
+			startActivity(intent);
 			return true;
 		case R.id.logout:
 			SingletonCookie.getInstance().deleteCookieStore();
 
-			Intent intent = new Intent(this, LoginActivity.class);
+			intent = new Intent(this, LoginActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 
