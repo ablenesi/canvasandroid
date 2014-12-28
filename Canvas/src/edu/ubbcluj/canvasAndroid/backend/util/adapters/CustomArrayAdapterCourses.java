@@ -15,18 +15,19 @@ public class CustomArrayAdapterCourses extends ArrayAdapter<ActiveCourse> {
 	private final List<ActiveCourse> values;
 
 	public CustomArrayAdapterCourses(Context context, List<ActiveCourse> values) {
-		super(context, android.R.layout.simple_list_item_1, android.R.id.text1, values);
+		super(context, android.R.layout.simple_list_item_1, android.R.id.text1,
+				values);
 		this.context = context;
 		this.values = values;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		
+
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(android.R.layout.simple_list_item_1, parent,
-				false);
+		View rowView = inflater.inflate(android.R.layout.simple_list_item_1,
+				parent, false);
 		TextView textView = (TextView) rowView.findViewById(android.R.id.text1);
 
 		textView.setText(values.get(position).getName());
