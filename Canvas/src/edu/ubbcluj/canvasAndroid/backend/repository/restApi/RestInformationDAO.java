@@ -1,11 +1,6 @@
 package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +18,6 @@ import org.apache.http.protocol.HttpContext;
 
 import android.app.Activity;
 import android.util.Log;
-import edu.ubbcluj.canvasAndroid.R;
 import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
@@ -50,15 +44,8 @@ public class RestInformationDAO {
 		String response = "";
 
 		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-			InputStream caInput = new BufferedInputStream(activity
-					.getResources().openRawResource(R.raw.ca));
-
-			Certificate ca = null;
-			ca = cf.generateCertificate(caInput);
-	
 			// Get infromation from the server
-			httpClient = RestHttpClient.getNewHttpClient(ca);
+			httpClient = RestHttpClient.getNewHttpClient();
 			context = new BasicHttpContext();
 			httpResponse = null;
 
@@ -82,9 +69,7 @@ public class RestInformationDAO {
 		} catch (IOException e) {
 			Log.e("IO error", e.getLocalizedMessage());
 			e.printStackTrace();
-		} catch (CertificateException e) {
-			e.printStackTrace();
-		}
+		} 
 
 		return response;
 	}

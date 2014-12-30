@@ -95,7 +95,10 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 			for (int i = 0; i < jArr.length(); i++) {
 				if ( isCancelled() ) break;
 				JSONObject obj = jArr.getJSONObject(i);
-				data.add(convertJSONtoAS(obj));
+				ActivityStream as = convertJSONtoAS(obj);
+				if (as != null) {
+					data.add(as);
+				}
 			}
 
 		} catch (JSONException e) {
@@ -146,6 +149,10 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 				
 				while (!parts[i].startsWith("courses"))
 					i++;
+								
+				if (parts.length <= i + 3) {
+					return null;
+				}
 				
 				as.setCourseId(Integer.parseInt(parts[i + 1]));
 				as.setSecondaryId(Integer.parseInt(parts[i + 3]));

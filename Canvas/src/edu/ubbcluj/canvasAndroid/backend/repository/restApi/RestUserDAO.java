@@ -1,13 +1,8 @@
 package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
+import java.security.cert.CertPathValidatorException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +27,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import edu.ubbcluj.canvasAndroid.LoginActivity;
-import edu.ubbcluj.canvasAndroid.R;
 import edu.ubbcluj.canvasAndroid.backend.repository.UserDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
 import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
@@ -66,30 +60,7 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 
 		context = new BasicHttpContext();
 
-		InputStream caInput = null;
-		Certificate ca = null;
-		try {
-			CertificateFactory cf = CertificateFactory.getInstance("X.509");
-
-			caInput = new BufferedInputStream(loginActivity.getResources()
-					.openRawResource(R.raw.ca));
-
-			ca = cf.generateCertificate(caInput);
-			Log.d("Rest", "ca=" + ((X509Certificate) ca).getSubjectDN());
-
-		} catch (Exception e) {
-			Log.d("Rest", "Certificate exc! " + e);
-			e.printStackTrace();
-		} finally {
-			try {
-				caInput.close();
-			} catch (IOException e) {
-				Log.d("Rest", "InputStrean close exception! " + e);
-				e.printStackTrace();
-			}
-		}
-
-		httpClient = RestHttpClient.getNewHttpClient(ca);
+		httpClient = RestHttpClient.getNewHttpClient();
 		httpResponse = null;
 
 		List<NameValuePair> nameValuePairList = new ArrayList<NameValuePair>();
@@ -116,7 +87,7 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 			response += httpResponse.getStatusLine();
 		} catch (Exception e1) {
 			response += e1.toString();
-			Log.d("Rest", "exc.! " + e1);
+			Log.d("Rest", "Exception: " + e1);
 		}
 
 		return response;
