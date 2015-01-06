@@ -15,7 +15,7 @@ public class CheckSavedSession extends AsyncTask<LoginActivity, Void, Void> {
 	@Override
 	protected Void doInBackground(LoginActivity... activities) {
 		
-		for (LoginActivity activity :  activities) {
+		for (LoginActivity activity : activities) {
 			this.activity = activity;
 			cookieStore = new PersistentCookieStore(activity.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE));
 			

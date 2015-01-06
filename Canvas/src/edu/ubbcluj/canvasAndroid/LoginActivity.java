@@ -54,11 +54,6 @@ public class LoginActivity extends Activity {
 		((AsyncTask<LoginActivity, Void, Void>) savedSession)
 				.execute(new LoginActivity[] { this });
 
-		if (!CheckNetwork.isNetworkOnline(this)) {
-			Toast.makeText(this, "Warning! No network connection",
-					Toast.LENGTH_LONG).show();
-		}
-
 		AutoCompleteTextView userNameTextView = (AutoCompleteTextView) findViewById(R.id.username);
 		userNameTextView.setAdapter(userDAO.getSavedUsersAdapter());
 	}
@@ -73,23 +68,28 @@ public class LoginActivity extends Activity {
 	// Login after button is pressed
 	@SuppressWarnings("unchecked")
 	public void sendMessage(View vire) {
-		userDAO = df.getUserDAO();
-
-		// Get user info
-		EditText userField = (EditText) findViewById(R.id.username);
-		EditText passField = (EditText) findViewById(R.id.password);
-
-		// Set user data to login asyncTasc
-		userDAO.setLoginActivity(this);
-		userDAO.setSharedPreferences(this.getSharedPreferences(
-				"CanvasAndroid-users", Context.MODE_PRIVATE));
-		userDAO.setUsername(userField.getText().toString());
-		username = userDAO.getUsername();
-		userDAO.setPassword(passField.getText().toString());
-
-		// Execute asyncTasc
-		((AsyncTask<String, Void, String>) userDAO)
-				.execute(new String[] { PropertyProvider.getProperty("url") });
+		if (!CheckNetwork.isNetworkOnline(this)) {
+			Toast.makeText(this, "No network connection!",
+					Toast.LENGTH_LONG).show();
+		} else {
+			userDAO = df.getUserDAO();
+	
+			// Get user info
+			EditText userField = (EditText) findViewById(R.id.username);
+			EditText passField = (EditText) findViewById(R.id.password);
+	
+			// Set user data to login asyncTasc
+			userDAO.setLoginActivity(this);
+			userDAO.setSharedPreferences(this.getSharedPreferences(
+					"CanvasAndroid-users", Context.MODE_PRIVATE));
+			userDAO.setUsername(userField.getText().toString());
+			username = userDAO.getUsername();
+			userDAO.setPassword(passField.getText().toString());
+	
+			// Execute asyncTasc
+			((AsyncTask<String, Void, String>) userDAO)
+					.execute(new String[] { PropertyProvider.getProperty("url") });
+		}
 	}
 
 	public void loginCompleted() {
