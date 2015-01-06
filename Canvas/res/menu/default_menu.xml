@@ -11,6 +11,9 @@
         android:id="@+id/messages"
         android:title="@string/menu_messages"/>
     <item
+        android:id="@+id/settings"
+        android:title="@string/menu_settings"/>
+    <item
         android:id="@+id/logout"
         android:title="@string/menu_logout"/>
 

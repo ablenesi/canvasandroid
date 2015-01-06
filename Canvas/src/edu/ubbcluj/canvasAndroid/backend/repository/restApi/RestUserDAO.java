@@ -1,8 +1,8 @@
 package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.security.cert.CertPathValidatorException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +19,7 @@ import org.apache.http.protocol.HttpContext;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 	// Try to login
 	@Override
 	public String loginUser(String host) {
+		
 		String response = "";
 
 		cookieStore = new PersistentCookieStore(
@@ -57,6 +59,7 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 		HttpPost httpPost = new HttpPost(host + "/login");
 
 		context = new BasicHttpContext();
+
 		httpClient = RestHttpClient.getNewHttpClient();
 		httpResponse = null;
 
@@ -74,6 +77,7 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 			httpPost.setEntity(urlEncodedFormEntity);
 		} catch (UnsupportedEncodingException e2) {
 			response += e2.toString();
+			Log.d("Rest", "Unsupported encode exc.! " + e2);
 		}
 
 		context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -81,8 +85,9 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 		try {
 			httpResponse = httpClient.execute(httpPost, context);
 			response += httpResponse.getStatusLine();
-		} catch (IOException e1) {
+		} catch (Exception e1) {
 			response += e1.toString();
+			Log.d("Rest", "Exception: " + e1);
 		}
 
 		return response;
@@ -117,6 +122,7 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 					Toast.LENGTH_SHORT).show();
 		else {
 			if (!(result.compareTo("HTTP/1.1 200 OK") == 0)) {
+				Log.d("Rest", "Login failed: " + result);
 				Toast.makeText(loginActivity, "Invalid username or password!",
 						Toast.LENGTH_SHORT).show();
 				cookieStore.clear();
@@ -150,9 +156,9 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 	}
 
 	public String getLastUsername() {
-			return CookieHandler.getData(sp, "lastusername");
+		return CookieHandler.getData(sp, "lastusername");
 	}
-	
+
 	public void setUsername(String username) {
 		this.username = username;
 		this.usernameOriginal = username;
