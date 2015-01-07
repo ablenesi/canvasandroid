@@ -18,6 +18,9 @@ import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
+import edu.ubbcluj.canvasAndroid.model.Submission;
+import edu.ubbcluj.canvasAndroid.model.SubmissionAttachment;
+import edu.ubbcluj.canvasAndroid.model.SubmissionComment;
 
 public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 		implements AssignmentsDAO {
@@ -91,7 +94,7 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 				for (int i = 0; i < jArr.length(); i++) {
 					if ( isCancelled() ) break;
 					JSONObject jObj = jArr.getJSONObject(i);
-					data.add(convertJSONtoStr(jObj));
+					data.add(convertJSONtoAssignment(jObj));
 				}
 
 			} catch (JSONException e) {
@@ -100,7 +103,7 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 		} else {
 			try {
 				JSONObject jObj = new JSONObject(jsonSource);
-				data.add(convertJSONtoStr(jObj));
+				data.add(convertJSONtoAssignment(jObj));
 			} catch (JSONException e) {
 				Log.e("Json Assignment", e.getMessage(), new Error());
 			}
@@ -119,7 +122,7 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 		notifyListeners();
 	}
 
-	private Assignment convertJSONtoStr(JSONObject jObj) {
+	private Assignment convertJSONtoAssignment(JSONObject jObj) {
 
 		Assignment assignment = new Assignment();
 		int courseId;
@@ -154,23 +157,134 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 
 			String url = PropertyProvider.getProperty("url")
 					+ "/api/v1/courses/" + courseId + "/assignments/"
-					+ assignmentId + "/submissions/self";
+					+ assignmentId + "/submissions/self?include=submission_comments";
 			String response = RestInformationDAO.getData(url).replace(
 					"while(1);", "");
 
-			JSONObject subbmissionObj = new JSONObject(response);
+			JSONObject submissionObj = new JSONObject(response);
 
-			if (subbmissionObj.getString("score").equals("null"))
+			if (submissionObj.getString("score").equals("null"))
 				assignment.setIsGraded(false);
 			else {
 				assignment.setIsGraded(true);
-				assignment.setScore(subbmissionObj.getDouble("score"));
+				assignment.setScore(submissionObj.getDouble("score"));
 			}
+			
+			assignment.setSubmission(convertJSONtoSubmission(submissionObj));
 
 		} catch (JSONException e) {
 			Log.e("JSON Courses", e.getMessage());
 		}
 
 		return assignment;
+	}
+	
+	private Submission convertJSONtoSubmission(JSONObject jObj) {
+		Submission submission = new Submission();
+		
+		try {
+			submission.setAssignmentId(jObj.getInt("assignment_id"));
+			if (!jObj.isNull("attempt")) {
+				submission.setAttempt(jObj.getInt("attempt"));
+			}
+			submission.setBody(jObj.getString("body"));
+			submission.setGrade(jObj.getString("grade"));
+			if (!jObj.isNull("grade_matches_current_submission")) {
+				submission.setGradeMatchesCurrentSubmission(jObj.getBoolean("grade_matches_current_submission"));
+			}
+			if (!jObj.isNull("grader_id")) {
+				submission.setGraderId(jObj.getInt("grader_id"));
+			}
+			if (!jObj.isNull("score")) {
+				submission.setScore(jObj.getDouble("score"));
+			}
+			submission.setSubmissionType(jObj.getString("submission_type"));
+			if (!jObj.isNull("submitted_at")) {
+				submission.setSubmittedAt(jObj.getString("submitted_at"));
+			}
+			submission.setUrl(jObj.getString("url"));
+			if (!jObj.isNull("user_id")) {
+				submission.setUserId(jObj.getInt("user_id"));
+			}
+			submission.setWorkflowState(jObj.getString("workflow_state"));
+			if (!jObj.isNull("late")) {
+				submission.setLate(jObj.getBoolean("late"));
+			}
+			submission.setPreviewUrl("preview_url");
+			
+			if (!jObj.isNull("attachments")) {
+				JSONArray attachmentsJSON = jObj.getJSONArray("attachments");
+				SubmissionAttachment[] attachments = new SubmissionAttachment[attachmentsJSON.length()];
+				
+				for (int i = 0; i < attachmentsJSON.length(); i++) {
+					JSONObject obj = attachmentsJSON.getJSONObject(i);
+					attachments[i] = convertJSONtoAttachment(obj);
+				}
+				
+				submission.setAttachments(attachments);
+			}
+			
+			if (!jObj.isNull("submission_comments")) {
+				JSONArray commentsJSON = jObj.getJSONArray("submission_comments");
+				SubmissionComment[] comments = new SubmissionComment[commentsJSON.length()];
+				
+				for (int i = 0; i < commentsJSON.length(); i++) {
+					JSONObject obj = commentsJSON.getJSONObject(i);
+					comments[i] = convertJSONtoComment(obj);
+				}
+				
+				submission.setSubmissionComments(comments);
+			}
+			
+		} catch (JSONException e) {
+			Log.e("Json Submission", e.getMessage(), new Error());
+		}
+		
+		
+		return submission;
+	}
+	
+	private SubmissionAttachment convertJSONtoAttachment(JSONObject jObj) {
+		SubmissionAttachment attachment = new SubmissionAttachment();
+		
+		try {
+			attachment.setId(jObj.getInt("id"));
+			attachment.setContentType("content_type");
+			attachment.setDispalyName(jObj.getString("display_name"));
+			attachment.setFileName(jObj.getString("filename"));
+			attachment.setUrl(jObj.getString("url"));
+			if (!jObj.isNull("size")) {
+				attachment.setSize(jObj.getInt("size"));
+			}
+			attachment.setCreatedAt(jObj.getString("created_at"));
+			attachment.setUpdatedAt(jObj.getString("updated_at"));
+			attachment.setUnlockAt(jObj.getString("unlock_at"));
+			attachment.setLocked(jObj.getBoolean("locked"));
+			attachment.setHidden(jObj.getBoolean("hidden"));
+			attachment.setHiddenForUser(jObj.getBoolean("hidden_for_user"));
+			attachment.setThumbnailUrl(jObj.getString("thumbnail_url"));
+			attachment.setLockedForUser(jObj.getBoolean("locked_for_user"));
+			attachment.setPreviewUrl(jObj.getString("preview_url"));
+		} catch (JSONException e) {
+			Log.e("Json Attachment", e.getMessage(), new Error());
+		}
+		
+		return attachment;
+	}
+	
+	private SubmissionComment convertJSONtoComment(JSONObject jObj) {
+		SubmissionComment comment = new SubmissionComment();
+		
+		try {
+			comment.setAuthorId(jObj.getInt("author_id"));
+			comment.setAuthorName(jObj.getString("author_name"));
+			comment.setComment(jObj.getString("comment"));
+			comment.setCreatedAt(jObj.getString("created_at"));
+			comment.setId(jObj.getInt("id"));
+		} catch (JSONException e) {
+			Log.e("Json SubmissionComment", e.getMessage(), new Error());
+		}
+		
+		return comment;
 	}
 }

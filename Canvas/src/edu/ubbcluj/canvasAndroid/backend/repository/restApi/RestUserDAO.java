@@ -2,7 +2,6 @@ package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.security.cert.CertPathValidatorException;
 import java.util.ArrayList;
 import java.util.List;
 

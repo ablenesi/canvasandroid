@@ -16,7 +16,6 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
-import android.app.Activity;
 import android.util.Log;
 import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
@@ -24,8 +23,6 @@ import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.backend.util.network.RestHttpClient;
 
 public class RestInformationDAO {
-
-	private static Activity activity;
 
 	// Get informations from the given url
 	public static String getData(String url) {

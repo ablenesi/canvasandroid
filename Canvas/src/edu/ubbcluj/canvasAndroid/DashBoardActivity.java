@@ -84,12 +84,9 @@ public class DashBoardActivity extends BaseActivity {
 
 				if (as.getType().equals("Submission")) {
 					Intent informationIntent = new Intent(
-							DashBoardActivity.this, InformationActivity.class);
+							DashBoardActivity.this, AssignmentActivity.class);
 
 					Bundle bundle = new Bundle();
-
-					bundle.putSerializable("activity_type",
-							InformationActivity.AssignmentInformation);
 					bundle.putInt("course_id", as.getCourseId());
 					bundle.putInt("assignment_id", as.getSecondaryId());
 					informationIntent.putExtras(bundle);
@@ -98,12 +95,9 @@ public class DashBoardActivity extends BaseActivity {
 
 				if (as.getType().equals("Message")) {
 					Intent informationIntent = new Intent(
-							DashBoardActivity.this, InformationActivity.class);
+							DashBoardActivity.this, AssignmentActivity.class);
 
 					Bundle bundle = new Bundle();
-
-					bundle.putSerializable("activity_type",
-							InformationActivity.AssignmentInformation);
 					bundle.putInt("course_id", as.getCourseId());
 					bundle.putInt("assignment_id", as.getSecondaryId());
 					informationIntent.putExtras(bundle);

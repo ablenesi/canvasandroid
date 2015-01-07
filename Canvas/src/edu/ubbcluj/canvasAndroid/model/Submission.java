@@ -8,18 +8,20 @@ public class Submission {
 	private int attempt;
 	private String body;
 	private String grade;
-	private Boolean gradeMatchesCurrentSubmission;
+	private boolean gradeMatchesCurrentSubmission;
 	private String html_url;
 	private String previewUrl;
-	private float score;
+	private double score;
+	private SubmissionAttachment[] attachments;
 	private SubmissionComment[] submissionComments;
 	private String submissionType;
 	private String submittedAt;
+	private String workflowState;
 	private String url;
 	private int userId;
 	private int graderId;
 	private User user;
-	private Boolean late;
+	private boolean late;
 
 	public int getAssignmentId() {
 		return assignmentId;
@@ -69,12 +71,12 @@ public class Submission {
 		this.grade = grade;
 	}
 
-	public Boolean getGradeMatchesCurrentSubmission() {
+	public boolean getGradeMatchesCurrentSubmission() {
 		return gradeMatchesCurrentSubmission;
 	}
 
 	public void setGradeMatchesCurrentSubmission(
-			Boolean gradeMatchesCurrentSubmission) {
+			boolean gradeMatchesCurrentSubmission) {
 		this.gradeMatchesCurrentSubmission = gradeMatchesCurrentSubmission;
 	}
 
@@ -94,12 +96,20 @@ public class Submission {
 		this.previewUrl = previewUrl;
 	}
 
-	public float getScore() {
+	public double getScore() {
 		return score;
 	}
 
-	public void setScore(float score) {
+	public void setScore(double score) {
 		this.score = score;
+	}
+
+	public SubmissionAttachment[] getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(SubmissionAttachment[] attachments) {
+		this.attachments = attachments;
 	}
 
 	public SubmissionComment[] getSubmissionComments() {
@@ -124,6 +134,14 @@ public class Submission {
 
 	public void setSubmittedAt(String submittedAt) {
 		this.submittedAt = submittedAt;
+	}
+
+	public String getWorkflowState() {
+		return workflowState;
+	}
+
+	public void setWorkflowState(String workflowState) {
+		this.workflowState = workflowState;
 	}
 
 	public String getUrl() {
@@ -158,11 +176,11 @@ public class Submission {
 		this.user = user;
 	}
 
-	public Boolean getLate() {
+	public boolean getLate() {
 		return late;
 	}
 
-	public void setLate(Boolean late) {
+	public void setLate(boolean late) {
 		this.late = late;
 	}
 }

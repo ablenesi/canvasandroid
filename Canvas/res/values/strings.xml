@@ -33,5 +33,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_message_item">Message</string>
     <string name="title_activity_course_selection">Course Selection</string>
+    <string name="title_activity_assignment">AssignmentActivity</string>
+    <string name="submissiontitle">Submission</string>
+    <string name="commentstitle">Comments:</string>
 
 </resources>
