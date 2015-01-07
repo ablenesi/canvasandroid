@@ -62,6 +62,16 @@ public class LoginActivity extends Activity {
 		AutoCompleteTextView userNameTextView = (AutoCompleteTextView) findViewById(R.id.username);
 		userNameTextView.setAdapter(userDAO.getSavedUsersAdapter());
 	}
+	
+	// Method to start the service
+    public void startService() {
+        startService(new Intent(getBaseContext(), MyService.class));
+    }
+
+    // Method to stop the service
+    public void stopService() {
+        stopService(new Intent(getBaseContext(), MyService.class));
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

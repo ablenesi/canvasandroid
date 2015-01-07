@@ -3,6 +3,7 @@ package edu.ubbcluj.canvasAndroid.backend.util.adapters;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,8 @@ public class CustomArrayAdapterAnnouncements extends ArrayAdapter<Announcement> 
 		TextView textView = (TextView) rowView.findViewById(R.id.label);
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
 		textView.setText(values.get(position).getTitle());
+		if (!values.get(position).getRead_state())
+			textView.setTypeface(null, Typeface.BOLD);
 		imageView.setImageResource(R.drawable.announcement);
 
 		return rowView;
