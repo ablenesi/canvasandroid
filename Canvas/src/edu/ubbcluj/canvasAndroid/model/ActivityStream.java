@@ -7,6 +7,7 @@ public class ActivityStream {
 	private String title;
 	private String message;
 	private String type;
+	private Boolean read_state;
 	
 	public ActivityStream(int id, String title, String message, String type) {
 		this.id = id;
@@ -58,5 +59,13 @@ public class ActivityStream {
 
 	public void setSecondaryId(int secondaryId) {
 		this.secondaryId = secondaryId;
+	}
+
+	public Boolean getRead_state() {
+		return read_state;
+	}
+
+	public void setRead_state(Boolean read_state) {
+		this.read_state = read_state;
 	}
 }

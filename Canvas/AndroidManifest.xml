@@ -89,6 +89,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
         </activity>
+        <service android:name=".MyService" />
     </application>
 
 </manifest>

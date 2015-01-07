@@ -8,6 +8,7 @@ public class Announcement {
 	private String postedAt;
 	private int courseId;
 	private int announcementId;
+	private boolean read_state;
 
 	public String getTitle() {
 		return title;
@@ -44,5 +45,11 @@ public class Announcement {
 	}
 	public void setAnnouncementId(int announcementId) {
 		this.announcementId = announcementId;
+	}
+	public boolean getRead_state() {
+		return read_state;
+	}
+	public void setRead_state(boolean read_state) {
+		this.read_state = read_state;
 	}
 }

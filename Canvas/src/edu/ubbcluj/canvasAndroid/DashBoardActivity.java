@@ -6,6 +6,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 import edu.ubbcluj.canvasAndroid.backend.repository.ActivityStreamDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
 import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
@@ -44,9 +46,11 @@ public class DashBoardActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 
 		Log.d("LifeCycle-dash", "onCreate");
-
-		// Set the progressbar visibility
+		
+		// Set the progressbar visibility 
 		list = (ListView) findViewById(R.id.list);
+		/*TextView tv = (TextView) findViewById(R.id.label); 
+        tv.setTypeface(null, Typeface.BOLD); */
 		viewContainer = findViewById(R.id.linProg);
 		viewContainer.setVisibility(View.VISIBLE);
 

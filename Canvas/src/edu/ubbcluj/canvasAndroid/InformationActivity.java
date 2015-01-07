@@ -2,18 +2,22 @@ package edu.ubbcluj.canvasAndroid;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
+import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
@@ -50,6 +54,7 @@ public class InformationActivity extends BaseActivity {
 			activityTitle = "Assignment";
 		} else {
 			activityTitle = "Announcement";
+			
 		}
 
 		if (savedInstanceState == null) {
@@ -170,8 +175,10 @@ public class InformationActivity extends BaseActivity {
 
 								if (!ad.getData().isEmpty()) {
 									setAnnouncement(ad.getData().get(0));
+									InformationActivity im = new InformationActivity();
 									setProgressGone();
 								}
+								
 							}
 						});
 
@@ -230,6 +237,25 @@ public class InformationActivity extends BaseActivity {
 			this.announcement = announcement;
 
 			if (textViews != null) {
+				Log.d("Rest","222");
+				if (!announcement.getRead_state()){
+					Log.d("Rest","Olvasatlan"+ PropertyProvider
+							.getProperty("url")
+							+ "/api/v1/courses/"
+							+ courseID
+							+ "/discussion_topics/"
+							+ announcementID 
+							+ "/read");
+					MyService.announcementUnreadCount--;
+					
+					new RestInformationDAO().execute(new String[] { PropertyProvider
+									.getProperty("url")
+									+ "/api/v1/courses/"
+									+ courseID
+									+ "/discussion_topics/"
+									+ announcementID 
+									+ "/read"});
+				}
 				textViews[0].setText(announcement.getTitle());
 				textViews[1].setText(formatDate(announcement.getPostedAt()));
 				textViews[2].setText(announcement.getAuthorName());
