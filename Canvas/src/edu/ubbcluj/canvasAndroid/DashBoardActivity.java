@@ -160,6 +160,29 @@ public class DashBoardActivity extends BaseActivity {
 					}
 				}
 
+				if (as.getType().equals("DiscussionTopic")) {
+					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+							PropertyProvider.getProperty("url")
+								+ "/api/v1/courses/"
+								+ as.getCourseId()
+								+ "/discussion_topics/"
+								+ as.getSecondaryId()) && !CheckNetwork.isNetworkOnline(DashBoardActivity.this)) {
+						Toast.makeText(DashBoardActivity.this, "No network connection!",
+								Toast.LENGTH_LONG).show();
+					} else {
+						Intent informationIntent = new Intent(
+								DashBoardActivity.this, InformationActivity.class);
+	
+						Bundle bundle = new Bundle();
+	
+						bundle.putSerializable("activity_type",
+								InformationActivity.AnnouncementInformation);
+						bundle.putInt("course_id", as.getCourseId());
+						bundle.putInt("announcement_id", as.getSecondaryId());
+						informationIntent.putExtras(bundle);
+						startActivity(informationIntent);
+					}
+				}
 			}
 		});
 
