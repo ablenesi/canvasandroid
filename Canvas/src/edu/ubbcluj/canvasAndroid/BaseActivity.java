@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
+import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
 
 public class BaseActivity extends ActionBarActivity implements
@@ -100,19 +101,24 @@ public class BaseActivity extends ActionBarActivity implements
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
-		Intent courseIntent = new Intent(this, CourseActivity.class);
-
-		Bundle bundle = new Bundle();
-		// courseID
-		bundle.putInt("id",
-				mNavigationDrawerFragment.getActiveCourses().get(position)
-						.getId());
-		// course name
-		bundle.putString("name", mNavigationDrawerFragment.getActiveCourses()
-				.get(position).getName());
-
-		courseIntent.putExtras(bundle); // Put the id to the Course Intent
-		startActivity(courseIntent);
+		if(!CheckNetwork.isNetworkOnline(this)) {
+			Toast.makeText(this, "No network connection!",
+					Toast.LENGTH_SHORT).show();
+		} else {
+			Intent courseIntent = new Intent(this, CourseActivity.class);
+	
+			Bundle bundle = new Bundle();
+			// courseID
+			bundle.putInt("id",
+					mNavigationDrawerFragment.getActiveCourses().get(position)
+							.getId());
+			// course name
+			bundle.putString("name", mNavigationDrawerFragment.getActiveCourses()
+					.get(position).getName());
+	
+			courseIntent.putExtras(bundle); // Put the id to the Course Intent
+			startActivity(courseIntent);
+		}
 	}
 
 	public void onSectionAttached(int number) {

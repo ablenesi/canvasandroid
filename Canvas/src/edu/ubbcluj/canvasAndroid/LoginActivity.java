@@ -93,7 +93,7 @@ public class LoginActivity extends Activity {
 	}
 
 	public void loginCompleted() {
-		showDialog("Connecting... Please wait!");
+		//showDialog("Connecting... Please wait!");
 		final CoursesDAO coursesDao = df.getCoursesDAO();
 		coursesDao.setSharedPreferences(LoginActivity.this
 				.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE));
@@ -128,6 +128,8 @@ public class LoginActivity extends Activity {
 		if (dialog == null) {
 			dialog = new ProgressDialog(LoginActivity.this);
 			dialog.setMessage(message);
+			dialog.show();
+		} else {
 			dialog.show();
 		}
 	}

@@ -63,13 +63,13 @@ public class RestCoursesDAO extends AsyncTask<String, Void, String> implements
 		String response = "";
 
 		for (String url : urls) {
-			/*if (CookieHandler.checkData(sp, url))
+			if (CookieHandler.checkData(sp, url))
 				response = CookieHandler.getData(sp, url);
 			else
-			{*/
+			{
 				response = RestInformationDAO.getData(url);
 				CookieHandler.saveData(sp, url, response);
-			//}
+			}
 		}
 
 		data = new ArrayList<ActiveCourse>();
