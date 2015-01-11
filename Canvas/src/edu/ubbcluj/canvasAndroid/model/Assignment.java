@@ -19,7 +19,7 @@ public class Assignment {
 	private String gradingType;
 	private String lockInfo;
 	private String lockExplanation;
-	private Submission[] submissions;
+	private Submission submission;
 	
 	
 	public int getId() {
@@ -118,11 +118,11 @@ public class Assignment {
 	public void setLockExplanation(String lockExplanation) {
 		this.lockExplanation = lockExplanation;
 	}
-	public Submission[] getSubmissions() {
-		return submissions;
+	public Submission getSubmission() {
+		return submission;
 	}
-	public void setSubmissions(Submission[] submissions) {
-		this.submissions = submissions;
+	public void setSubmission(Submission submission) {
+		this.submission = submission;
 	}
 	public double getScore() {
 		return score;

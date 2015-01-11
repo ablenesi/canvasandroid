@@ -3,6 +3,7 @@ package edu.ubbcluj.canvasAndroid;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -131,6 +132,17 @@ public class BaseActivity extends ActionBarActivity implements
 	}
 
 	@Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.removeItem(Menu.FIRST+6);
+		menu.removeItem(Menu.FIRST+7);
+        if (MyService.service_started)
+        	menu.add(Menu.NONE,Menu.FIRST+6,Menu.NONE,R.string.stop_service);
+		else
+			menu.add(Menu.NONE,Menu.FIRST+7,Menu.NONE,R.string.start_service);
+        return super.onPrepareOptionsMenu(menu);
+    }
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (!mNavigationDrawerFragment.isDrawerOpen()) {
 			getMenuInflater().inflate(R.menu.default_menu, menu);
@@ -190,7 +202,19 @@ public class BaseActivity extends ActionBarActivity implements
 			startActivity(intent);
 
 			return true;
-
+		case Menu.FIRST+6:
+			Intent intent2 = new Intent(this,MyService.class);
+			MyService.service_started = false;
+			Toast.makeText(this, "Service Stopped", Toast.LENGTH_LONG).show();
+			MyService.alarm.cancel(PendingIntent.getService(this, 0, new Intent(this, MyService.class), 0));
+			stopService(intent2);
+			return true;
+		case Menu.FIRST+7:
+			Intent intent3 = new Intent(this,MyService.class);
+			MyService.service_started = true;
+			Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
+			startService(intent3);
+			return true;
 		}
 
 		return super.onOptionsItemSelected(item);

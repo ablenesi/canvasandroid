@@ -127,6 +127,7 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 			as.setMessage(obj.getString("message"));
 			as.setTitle(obj.getString("title"));
 			as.setType(obj.getString("type"));
+			as.setRead_state(obj.getBoolean("read_state"));
 			
 			if (!obj.isNull("course_id")) {
 				as.setCourseId(obj.getInt("course_id"));

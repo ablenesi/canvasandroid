@@ -47,9 +47,11 @@ public class DashBoardActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 
 		Log.d("LifeCycle-dash", "onCreate");
-
-		// Set the progressbar visibility
+		
+		// Set the progressbar visibility 
 		list = (ListView) findViewById(R.id.list);
+		/*TextView tv = (TextView) findViewById(R.id.label); 
+        tv.setTypeface(null, Typeface.BOLD); */
 		viewContainer = findViewById(R.id.linProg);
 		viewContainer.setVisibility(View.VISIBLE);
 

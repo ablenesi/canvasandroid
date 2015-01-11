@@ -40,4 +40,15 @@ public class CookieHandler {
 
 		persistentCookieStore.addCookie(dataStoreCookie);
 	}
+	
+	public static void saveData(SharedPreferences sp, String url, String data, Date expiryDate) {
+		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(
+				sp);
+
+		BasicClientCookie2 dataStoreCookie = new BasicClientCookie2(url, data);
+		dataStoreCookie.setDomain(PropertyProvider.getProperty("domain"));
+		dataStoreCookie.setExpiryDate(expiryDate);
+
+		persistentCookieStore.addCookie(dataStoreCookie);
+	}
 }

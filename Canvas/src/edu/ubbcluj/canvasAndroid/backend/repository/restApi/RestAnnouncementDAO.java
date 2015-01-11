@@ -151,6 +151,10 @@ public class RestAnnouncementDAO extends AsyncTask<String, Void, String>
 			if (!obj.isNull("posted_at")) {
 				announcement.setPostedAt(obj.getString("posted_at"));
 			}
+			
+			if (!obj.isNull("read_state")) {
+				announcement.setRead_state(obj.getString("read_state").equals("read")||obj.getString("read_state").equals("true")?true:false);
+			}
 
 		} catch (JSONException e) {
 			Log.e("JSON", e.getMessage());

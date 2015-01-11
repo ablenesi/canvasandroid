@@ -1,5 +1,7 @@
 package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
 
+import edu.ubbcluj.canvasAndroid.backend.repository.ActivityStreamSummaryDAO;
+import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementCommentDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.ConversationDAO;
@@ -54,6 +56,17 @@ public class RestApiDAOFactory extends DAOFactory {
 	@Override
 	public FolderDAO getFolderDAO() {
 		return new RestFolderDAO();
+	}
+
+	@Override
+	public ActivityStreamSummaryDAO getActivityStreamSummaryDAO(){
+		return new RestActivityStreamSummaryDAO();
+	}
+
+	@Override
+	public AnnouncementCommentDAO getAnnouncementCommentDAO() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
