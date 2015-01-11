@@ -137,8 +137,8 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 
 					Gson gson = new Gson();
 					String userString = gson.toJson(users);
-					CookieHandler.saveData(sp, "usernames", userString);
-					CookieHandler.saveData(sp, "lastusername", username);
+					CookieHandler.saveData(sp, "usernames", userString, null);
+					CookieHandler.saveData(sp, "lastusername", username, null);
 				}
 
 				loginActivity.loginCompleted();
