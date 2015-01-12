@@ -244,15 +244,14 @@ public class InformationActivity extends BaseActivity {
 							+ "/discussion_topics/"
 							+ announcementID 
 							+ "/read");
-					MyService.announcementUnreadCount--;
+					MyService.announcementUnreadCount--; 
 					
 					new RestInformationDAO().execute(new String[] { PropertyProvider
 									.getProperty("url")
-									+ "/api/v1/courses/"
+									+ "/courses/"
 									+ courseID
-									+ "/discussion_topics/"
-									+ announcementID 
-									+ "/read"});
+									+ "/announcements/"
+									+ announcementID});
 				}
 				textViews[0].setText(announcement.getTitle());
 				textViews[1].setText(formatDate(announcement.getPostedAt()));
