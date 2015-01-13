@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
+import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
@@ -102,10 +105,10 @@ public class BaseActivity extends ActionBarActivity implements
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
-		if(!CheckNetwork.isNetworkOnline(this)) {
-			Toast.makeText(this, "No network connection!",
-					Toast.LENGTH_SHORT).show();
-		} else {
+//		if(!CheckNetwork.isNetworkOnline(this)) {
+//			Toast.makeText(this, "No network connection!",
+//					Toast.LENGTH_SHORT).show();
+//		} else {
 			Intent courseIntent = new Intent(this, CourseActivity.class);
 	
 			Bundle bundle = new Bundle();
@@ -119,7 +122,7 @@ public class BaseActivity extends ActionBarActivity implements
 	
 			courseIntent.putExtras(bundle); // Put the id to the Course Intent
 			startActivity(courseIntent);
-		}
+//		}
 	}
 
 	public void onSectionAttached(int number) {
@@ -182,12 +185,19 @@ public class BaseActivity extends ActionBarActivity implements
 			}
 			return true;
 		case R.id.messages:
-			if (this.getClass() == MessagesActivity.class) {
-				finish();
-				startActivity(getIntent());
+			if(!CookieHandler.checkData(this.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+					PropertyProvider.getProperty("url")
+					+ "/api/v1/conversations") && !CheckNetwork.isNetworkOnline(this)) {
+				Toast.makeText(this, "No network connection!",
+						Toast.LENGTH_LONG).show();
 			} else {
-				intent = new Intent(this, MessagesActivity.class);
-				startActivity(intent);
+				if (this.getClass() == MessagesActivity.class) {
+					finish();
+					startActivity(getIntent());
+				} else {
+					intent = new Intent(this, MessagesActivity.class);
+					startActivity(intent);
+				}
 			}
 			return true;
 		case R.id.settings:

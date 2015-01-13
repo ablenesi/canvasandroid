@@ -80,10 +80,6 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 
 		data = new ArrayList<Assignment>();
 
-		if (!CheckNetwork.isNetworkOnline(null)) {
-			return "No connection";
-		}
-
 		// Decode JSON data and getting an ActivityStream array
 		String jsonSource = response.replace("while(1);", "");
 

@@ -73,11 +73,7 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 		// ide kerult az url
 		HttpGet httpget = new HttpGet(url);
 		ResponseHandler<String> handler = new BasicResponseHandler();
-
-		// Check if network connection is available
-		if (!CheckNetwork.isNetworkOnline(null))
-			return "No connection";
-
+		
 		String response = "";
 
 		try {

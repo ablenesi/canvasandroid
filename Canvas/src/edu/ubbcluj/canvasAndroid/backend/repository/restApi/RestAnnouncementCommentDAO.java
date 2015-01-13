@@ -74,10 +74,6 @@ public class RestAnnouncementCommentDAO extends AsyncTask<String, Void, String> 
 		}
 		
 		data = new ArrayList<AnnouncementComment>();
-
-		if (!CheckNetwork.isNetworkOnline(null)) {
-			return "No connection";
-		}
 		
 		// Decode JSON data and getting an ActivityStream array
 		String jsonSource = response.replace("while(1);", "");

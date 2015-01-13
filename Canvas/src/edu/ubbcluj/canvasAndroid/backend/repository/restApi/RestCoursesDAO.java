@@ -74,10 +74,6 @@ public class RestCoursesDAO extends AsyncTask<String, Void, String> implements
 
 		data = new ArrayList<ActiveCourse>();
 
-		if (!CheckNetwork.isNetworkOnline(null)) {
-			return "No connection";
-		}
-
 		// Decode JSON data and getting an ActivityStream array
 		String jsonSource = response.replace("while(1);", "");
 
