@@ -9,6 +9,7 @@ import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,7 +81,6 @@ public class AssignmentActivity extends BaseActivity {
 		private TextView aSubmission;
 		private EditText sComment;
 		private Button bSendComment;
-		private LinearLayout linearLayoutScroll;
 		private LinearLayout linearLayoutComments;
 
 		private ProgressDialog dialog;
@@ -119,8 +119,6 @@ public class AssignmentActivity extends BaseActivity {
 					.findViewById(R.id.comment);
 			bSendComment = (Button) rootView
 					.findViewById(R.id.buttonSend);
-			linearLayoutScroll = (LinearLayout) rootView
-					.findViewById(R.id.linear_layout_assignment);
 			linearLayoutComments = (LinearLayout) rootView
 					.findViewById(R.id.linear_layout_comments);
 
@@ -253,7 +251,7 @@ public class AssignmentActivity extends BaseActivity {
 				tw.setText("No comments");
 				bSendComment.setVisibility(View.GONE);
 				sComment.setVisibility(View.GONE);
-				linearLayoutScroll.addView(tw);
+				linearLayoutComments.addView(tw);
 				
 			} else {
 				String txt = new String("Turned in!\n");
