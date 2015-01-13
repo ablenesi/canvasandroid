@@ -440,7 +440,6 @@ public class CourseActivity extends BaseActivity implements
 							int position, long id) {
 						Assignment assignment = assignments.get(position);
 
-<<<<<<< HEAD
 						if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 								PropertyProvider.getProperty("url")
 									+ "/api/v1/courses/"
@@ -461,7 +460,6 @@ public class CourseActivity extends BaseActivity implements
 
 						startActivity(assignmentIntent);
 						}
->>>>>>> origin/master
 					}
 				});
 
