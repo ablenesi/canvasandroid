@@ -107,12 +107,10 @@ public class DashBoardActivity extends BaseActivity {
 								Toast.LENGTH_LONG).show();
 					} else {
 						Intent informationIntent = new Intent(
-								DashBoardActivity.this, InformationActivity.class);
+								DashBoardActivity.this, AssignmentActivity.class);
 	
 						Bundle bundle = new Bundle();
 	
-						bundle.putSerializable("activity_type",
-								InformationActivity.AssignmentInformation);
 						bundle.putInt("course_id", as.getCourseId());
 						bundle.putInt("assignment_id", as.getSecondaryId());
 						informationIntent.putExtras(bundle);
@@ -130,12 +128,10 @@ public class DashBoardActivity extends BaseActivity {
 								Toast.LENGTH_LONG).show();
 					} else {
 						Intent informationIntent = new Intent(
-								DashBoardActivity.this, InformationActivity.class);
+								DashBoardActivity.this, AssignmentActivity.class);
 	
 						Bundle bundle = new Bundle();
 	
-						bundle.putSerializable("activity_type",
-								InformationActivity.AssignmentInformation);
 						bundle.putInt("course_id", as.getCourseId());
 						bundle.putInt("assignment_id", as.getSecondaryId());
 						informationIntent.putExtras(bundle);

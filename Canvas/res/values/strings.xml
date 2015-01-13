@@ -38,5 +38,6 @@
     <string name="title_activity_assignment">AssignmentActivity</string>
     <string name="submissiontitle">Submission</string>
     <string name="commentstitle">Comments:</string>
+    <string name="send_comment">Send comment</string>
 
 </resources>

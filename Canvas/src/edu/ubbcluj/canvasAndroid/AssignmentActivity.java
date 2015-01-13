@@ -1,5 +1,6 @@
 package edu.ubbcluj.canvasAndroid;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -8,14 +9,19 @@ import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
+import edu.ubbcluj.canvasAndroid.backend.repository.SubmissionCommentDAO;
+import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
@@ -32,6 +38,7 @@ public class AssignmentActivity extends BaseActivity {
 	private static String activityTitle = "Assignment";
 
 	private static View progressContainer;
+	private PlaceholderFragment fragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,19 +46,23 @@ public class AssignmentActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 
 		if (savedInstanceState == null) {
-			PlaceholderFragment fragment = new PlaceholderFragment();
+			fragment = new PlaceholderFragment();
 			fragment.setArguments(bundle);
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.content_frame, fragment).commit();
 		}
 	}
-
+ 
 	@Override
 	public void restoreActionBar() {
 		super.restoreActionBar();
 		getSupportActionBar().setTitle(activityTitle);
 	}
 
+	public void sendComment(View view) {
+		fragment.sendComment();
+	}
+	
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -60,15 +71,20 @@ public class AssignmentActivity extends BaseActivity {
 		private DAOFactory df = DAOFactory.getInstance();
 		private Assignment assignment;
 
-		private AsyncTask<String, Void, String> asyncTask;
+		private AsyncTask<String, Void, String> queryAsyncTask;
+		private AsyncTask<String, Void, String> commentAsyncTask;
 		
 		private TextView aName;
 		private TextView aDueDate;
 		private TextView aPossibleGrade;
 		private TextView aDescription;
 		private TextView aSubmission;
-		private LinearLayout linearLayout;
+		private EditText sComment;
+		private Button bSendComment;
+		private LinearLayout linearLayoutComments;
 
+		private ProgressDialog dialog;
+		
 		public PlaceholderFragment() {
 		}
 
@@ -99,7 +115,12 @@ public class AssignmentActivity extends BaseActivity {
 					.findViewById(R.id.anassignment_description);
 			aSubmission = (TextView) rootView
 					.findViewById(R.id.anassignment_submission);
-			linearLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_assignment);
+			sComment = (EditText) rootView
+					.findViewById(R.id.comment);
+			bSendComment = (Button) rootView
+					.findViewById(R.id.buttonSend);
+			linearLayoutComments = (LinearLayout) rootView
+					.findViewById(R.id.linear_layout_comments);
 
 			AssignmentsDAO assignmentDAO = df.getAssignmentsDAO();
 			assignmentDAO.setSharedPreferences(sp);
@@ -117,8 +138,8 @@ public class AssignmentActivity extends BaseActivity {
 				}
 			});
 
-			asyncTask = ((AsyncTask<String, Void, String>) assignmentDAO);
-			asyncTask.execute(new String[] { PropertyProvider
+			queryAsyncTask = ((AsyncTask<String, Void, String>) assignmentDAO);
+			queryAsyncTask.execute(new String[] { PropertyProvider
 							.getProperty("url")
 							+ "/api/v1/courses/"
 							+ courseID + "/assignments/" + assignmentID });
@@ -130,6 +151,64 @@ public class AssignmentActivity extends BaseActivity {
 			return rootView;
 		}
 
+		@SuppressWarnings("unchecked")
+		public void sendComment() {
+			
+			String comment = sComment.getText().toString();
+			
+			if (comment.compareTo("") != 0) {
+				
+				showDialog("Sending comment");
+				
+				SubmissionCommentDAO commentDao = df.getSubmissionCommentDAO();
+				
+				commentDao.setComment(comment);
+				
+				commentDao.addInformationListener(new InformationListener() {
+					
+					@Override
+					public void onComplete(InformationEvent e) {
+						SharedPreferences sp = PlaceholderFragment.this.getActivity().getSharedPreferences(
+								"CanvasAndroid", Context.MODE_PRIVATE);
+						
+						AssignmentsDAO assignmentDAO = df.getAssignmentsDAO();
+						assignmentDAO.setSharedPreferences(sp);
+
+						assignmentDAO.addInformationListener(new InformationListener() {
+
+							@Override
+							public void onComplete(InformationEvent e) {
+								AssignmentsDAO ad = (AssignmentsDAO) e.getSource();
+
+								if (!ad.getData().isEmpty()) {
+									Assignment newAssignment = ad.getData().get(0);
+									linearLayoutComments.removeAllViews();
+									setAssignment(newAssignment);
+									sComment.setText("");
+									closeDialog();
+								}
+							}
+						});
+
+						RestInformationDAO.clearData();
+						
+						queryAsyncTask = ((AsyncTask<String, Void, String>) assignmentDAO);
+						queryAsyncTask.execute(new String[] { PropertyProvider
+										.getProperty("url")
+										+ "/api/v1/courses/"
+										+ courseID + "/assignments/" + assignmentID });
+					}
+				});
+				
+				commentAsyncTask = ((AsyncTask<String, Void, String>) commentDao);
+				commentAsyncTask.execute(new String[] {
+					PropertyProvider.getProperty("url") +
+					"/courses/" + courseID + "/assignments/" + assignmentID +
+					"/submissions/" + assignment.getSubmission().getUserId()
+				});
+			}
+		}
+		
 		public Assignment getAssignment() {
 			return assignment;
 		}
@@ -156,7 +235,7 @@ public class AssignmentActivity extends BaseActivity {
 			if (assignment.getLockExplanation() != null) {
 				aDescription.setText(assignment.getLockExplanation());
 			} else {
-				if (assignment.getDescription() != null) {
+				if (assignment.getDescription() != null && assignment.getDescription().compareTo("null") != 0) {
 					aDescription.setText(Html.fromHtml(assignment
 							.getDescription()));
 				} else {
@@ -170,7 +249,9 @@ public class AssignmentActivity extends BaseActivity {
 				TextView tw = new TextView(getActivity());
 				tw.setTextColor(Color.BLACK);
 				tw.setText("No comments");
-				linearLayout.addView(tw);
+				bSendComment.setVisibility(View.GONE);
+				sComment.setVisibility(View.GONE);
+				linearLayoutComments.addView(tw);
 				
 			} else {
 				String txt = new String("Turned in!\n");
@@ -202,7 +283,8 @@ public class AssignmentActivity extends BaseActivity {
 					TextView tw = new TextView(getActivity());
 					tw.setText("No comments");
 					tw.setTextColor(Color.BLACK);
-					linearLayout.addView(tw);
+					
+					linearLayoutComments.addView(tw);
 				} else {
 					SubmissionComment[] comments = submission.getSubmissionComments();
 					
@@ -210,13 +292,13 @@ public class AssignmentActivity extends BaseActivity {
 						TextView twComment = new TextView(getActivity());
 						twComment.setTextColor(Color.BLACK);
 						twComment.setText(comments[i].getComment());
-						linearLayout.addView(twComment);
+						linearLayoutComments.addView(twComment);
 						
 						TextView twAuthor = new TextView(getActivity());
 						twAuthor.setTextColor(Color.GRAY);
 						twAuthor.setGravity(Gravity.END);
 						twAuthor.setText(comments[i].getAuthorName() + "\n");
-						linearLayout.addView(twAuthor);
+						linearLayoutComments.addView(twAuthor);
 					}
 				}
 			}
@@ -236,14 +318,33 @@ public class AssignmentActivity extends BaseActivity {
 		
 		@Override
 		public void onStop() {
-			if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
-				asyncTask.cancel(true);
+			if (queryAsyncTask != null && queryAsyncTask.getStatus() == Status.RUNNING) {
+				queryAsyncTask.cancel(true);
+			}
+			
+			if (commentAsyncTask != null && commentAsyncTask.getStatus() == Status.RUNNING) {
+				commentAsyncTask.cancel(true);
 			}
 			super.onStop();
 		}
+		
+		// Show dialog
+		public void showDialog(String message) {
+			if (dialog == null) {
+				dialog = new ProgressDialog(getActivity());
+				dialog.setMessage(message);
+				dialog.show();
+			}
+		}
+
+		// Close dialog
+		public void closeDialog() {
+			if (dialog != null)
+				dialog.dismiss();
+		}
 
 	}
-
+	
 	public static void setProgressVisible(View rootView) {
 		progressContainer = rootView.findViewById(R.id.linProg);
 		progressContainer.setVisibility(View.VISIBLE);

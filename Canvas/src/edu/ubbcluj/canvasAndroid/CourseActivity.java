@@ -440,6 +440,7 @@ public class CourseActivity extends BaseActivity implements
 							int position, long id) {
 						Assignment assignment = assignments.get(position);
 
+<<<<<<< HEAD
 						if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 								PropertyProvider.getProperty("url")
 									+ "/api/v1/courses/"
@@ -449,19 +450,18 @@ public class CourseActivity extends BaseActivity implements
 							Toast.makeText(getActivity(), "No network connection!",
 									Toast.LENGTH_LONG).show();
 						} else {
-							Intent assignmentIntent = new Intent(getActivity(),
-									InformationActivity.class);
-	
-							Bundle bundle = new Bundle();
-							bundle.putSerializable("activity_type",
-									InformationActivity.AssignmentInformation);
-							bundle.putInt("course_id", assignment.getCourseId());
-							bundle.putInt("assignment_id", assignment.getId());
-	
-							assignmentIntent.putExtras(bundle);
-	
-							startActivity(assignmentIntent);
+						Intent assignmentIntent = new Intent(getActivity(),
+								AssignmentActivity.class);
+
+						Bundle bundle = new Bundle();
+						bundle.putInt("course_id", assignment.getCourseId());
+						bundle.putInt("assignment_id", assignment.getId());
+
+						assignmentIntent.putExtras(bundle);
+
+						startActivity(assignmentIntent);
 						}
+>>>>>>> origin/master
 					}
 				});
 
