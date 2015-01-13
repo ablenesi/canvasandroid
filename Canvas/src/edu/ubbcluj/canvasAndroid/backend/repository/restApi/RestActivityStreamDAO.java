@@ -197,6 +197,10 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 				
 				as.setTitle(newTitle);
 			}
+			
+			if (as.getType().equals("DiscussionTopic")) {
+				as.setSecondaryId(obj.getInt("discussion_topic_id"));
+			} 
 		} catch (JSONException e) {
 			Log.e("JSON", e.getMessage());
 		}

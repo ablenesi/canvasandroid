@@ -209,7 +209,7 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 		Log.d("Rest","doinbackground");
 		String response = "";
 		for (String url : urls) {
-			response = RestInformationDAO.putData(url);
+			response = RestInformationDAO.getData(url);
 		}
 		return response;
 	}

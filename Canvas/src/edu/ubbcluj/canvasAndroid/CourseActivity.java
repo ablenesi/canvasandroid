@@ -24,12 +24,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
 import edu.ubbcluj.canvasAndroid.backend.repository.FolderDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.ToDoDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
 import edu.ubbcluj.canvasAndroid.backend.util.FolderStack;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterAnnouncements;
@@ -38,6 +40,7 @@ import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterFileTre
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterToDo;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 import edu.ubbcluj.canvasAndroid.model.File;
@@ -260,19 +263,28 @@ public class CourseActivity extends BaseActivity implements
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						Assignment assignment = assignments.get(position);
-
-						Intent assignmentIntent = new Intent(getActivity(),
-								InformationActivity.class);
-
-						Bundle bundle = new Bundle();
-						bundle.putSerializable("activity_type",
-								InformationActivity.AssignmentInformation);
-						bundle.putInt("course_id", assignment.getCourseId());
-						bundle.putInt("assignment_id", assignment.getId());
-
-						assignmentIntent.putExtras(bundle);
-
-						startActivity(assignmentIntent);
+						if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+								PropertyProvider.getProperty("url")
+									+ "/api/v1/courses/"
+									+ assignment.getCourseId()
+									+ "/assignments/"
+									+ assignment.getId()) && !CheckNetwork.isNetworkOnline(getActivity())) {
+							Toast.makeText(getActivity(), "No network connection!",
+									Toast.LENGTH_LONG).show();
+						} else {
+							Intent assignmentIntent = new Intent(getActivity(),
+									InformationActivity.class);
+	
+							Bundle bundle = new Bundle();
+							bundle.putSerializable("activity_type",
+									InformationActivity.AssignmentInformation);
+							bundle.putInt("course_id", assignment.getCourseId());
+							bundle.putInt("assignment_id", assignment.getId());
+	
+							assignmentIntent.putExtras(bundle);
+	
+							startActivity(assignmentIntent);
+						}
 					}
 				});
 
@@ -308,33 +320,39 @@ public class CourseActivity extends BaseActivity implements
 						.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 							@Override
 							public void onRefresh() {
-								ToDoDAO todoDaoo;
-								assignments = new ArrayList<Assignment>();
-								todoDaoo = df.getToDoDAO();
-								todoDaoo.setSharedPreferences(sp);
-								RestInformationDAO.clearData();
-
-								todoDaoo.addInformationListener(new InformationListener() {
-
-									@Override
-									public void onComplete(InformationEvent e) {
-										ToDoDAO ad = (ToDoDAO) e.getSource();
-
-										setProgressGone();
-										setAssignments(ad.getData());
-										toDoAdapter = new CustomArrayAdapterToDo(
-												getActivity(), assignments);
-										list.setAdapter(toDoAdapter);
-										swipeView.setRefreshing(false);
-									}
-								});
-
-								asyncTaskForRefresh = ((AsyncTask<String, Void, String>) todoDaoo);
-								asyncTaskForRefresh.execute(new String[] { PropertyProvider
-										.getProperty("url")
-										+ "/api/v1/courses/"
-										+ courseID
-										+ "/todo" });
+				        		if(!CheckNetwork.isNetworkOnline(getActivity())) {
+				        			swipeView.setRefreshing(false);
+									Toast.makeText(getActivity(), "No network connection!",
+											Toast.LENGTH_LONG).show();
+				        		} else {
+									ToDoDAO todoDaoo;
+									assignments = new ArrayList<Assignment>();
+									todoDaoo = df.getToDoDAO();
+									todoDaoo.setSharedPreferences(sp);
+									RestInformationDAO.clearData();
+	
+									todoDaoo.addInformationListener(new InformationListener() {
+	
+										@Override
+										public void onComplete(InformationEvent e) {
+											ToDoDAO ad = (ToDoDAO) e.getSource();
+	
+											setProgressGone();
+											setAssignments(ad.getData());
+											toDoAdapter = new CustomArrayAdapterToDo(
+													getActivity(), assignments);
+											list.setAdapter(toDoAdapter);
+											swipeView.setRefreshing(false);
+										}
+									});
+	
+									asyncTaskForRefresh = ((AsyncTask<String, Void, String>) todoDaoo);
+									asyncTaskForRefresh.execute(new String[] { PropertyProvider
+											.getProperty("url")
+											+ "/api/v1/courses/"
+											+ courseID
+											+ "/todo" });
+				        		}
 							}
 						});
 
@@ -404,38 +422,44 @@ public class CourseActivity extends BaseActivity implements
 						.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 							@Override
 							public void onRefresh() {
-								AssignmentsDAO assignmentsDaoo;
-								assignmentsDaoo = df.getAssignmentsDAO();
-								assignmentsDaoo.setSharedPreferences(sp);
-								assignments = new ArrayList<Assignment>();
-								RestInformationDAO.clearData();
-
-								// assignmentsDao.setPlaceholderFragment(this);
-								assignmentsDaoo
-										.addInformationListener(new InformationListener() {
-
-											@Override
-											public void onComplete(
-													InformationEvent e) {
-												AssignmentsDAO ad = (AssignmentsDAO) e
-														.getSource();
-
-												setProgressGone();
-												setAssignments(ad.getData());
-												assignmentsAdapter = new CustomArrayAdapterAssignments(
-														getActivity(),
-														assignments);
-												list.setAdapter(assignmentsAdapter);
-												swipeView.setRefreshing(false);
-											}
-										});
-
-								asyncTaskForRefresh = ((AsyncTask<String, Void, String>) assignmentsDaoo);
-								asyncTaskForRefresh.execute(new String[] { PropertyProvider
-										.getProperty("url")
-										+ "/api/v1/courses/"
-										+ courseID
-										+ "/assignments" });
+				        		if(!CheckNetwork.isNetworkOnline(getActivity())) {
+				        			swipeView.setRefreshing(false);
+									Toast.makeText(getActivity(), "No network connection!",
+											Toast.LENGTH_LONG).show();
+				        		} else {
+									AssignmentsDAO assignmentsDaoo;
+									assignmentsDaoo = df.getAssignmentsDAO();
+									assignmentsDaoo.setSharedPreferences(sp);
+									assignments = new ArrayList<Assignment>();
+									RestInformationDAO.clearData();
+	
+									// assignmentsDao.setPlaceholderFragment(this);
+									assignmentsDaoo
+											.addInformationListener(new InformationListener() {
+	
+												@Override
+												public void onComplete(
+														InformationEvent e) {
+													AssignmentsDAO ad = (AssignmentsDAO) e
+															.getSource();
+	
+													setProgressGone();
+													setAssignments(ad.getData());
+													assignmentsAdapter = new CustomArrayAdapterAssignments(
+															getActivity(),
+															assignments);
+													list.setAdapter(assignmentsAdapter);
+													swipeView.setRefreshing(false);
+												}
+											});
+	
+									asyncTaskForRefresh = ((AsyncTask<String, Void, String>) assignmentsDaoo);
+									asyncTaskForRefresh.execute(new String[] { PropertyProvider
+											.getProperty("url")
+											+ "/api/v1/courses/"
+											+ courseID
+											+ "/assignments" });
+				        		}
 							}
 						});
 				break;
@@ -504,36 +528,42 @@ public class CourseActivity extends BaseActivity implements
 						.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 							@Override
 							public void onRefresh() {
-								AnnouncementDAO announcementDaooo;
-								announcementDaooo = df.getAnnouncementDAO();
-								announcementDaooo.setSharedPreferences(sp);
-								RestInformationDAO.clearData();
-
-								announcementDaooo
-										.addInformationListener(new InformationListener() {
-
-											@Override
-											public void onComplete(
-													InformationEvent e) {
-												AnnouncementDAO ad = (AnnouncementDAO) e
-														.getSource();
-
-												setProgressGone();
-												setAnnouncement(ad.getData());
-												announcementAdapter = new CustomArrayAdapterAnnouncements(
-														getActivity(),
-														announcements);
-												list.setAdapter(announcementAdapter);
-												swipeView.setRefreshing(false);
-											}
-										});
-
-								asyncTaskForRefresh = ((AsyncTask<String, Void, String>) announcementDaooo);
-								asyncTaskForRefresh.execute(new String[] { PropertyProvider
-										.getProperty("url")
-										+ "/api/v1/courses/"
-										+ courseID
-										+ "/activity_stream" });
+				        		if(!CheckNetwork.isNetworkOnline(getActivity())) {
+				        			swipeView.setRefreshing(false);
+									Toast.makeText(getActivity(), "No network connection!",
+											Toast.LENGTH_LONG).show();
+				        		} else {
+									AnnouncementDAO announcementDaooo;
+									announcementDaooo = df.getAnnouncementDAO();
+									announcementDaooo.setSharedPreferences(sp);
+									RestInformationDAO.clearData();
+	
+									announcementDaooo
+											.addInformationListener(new InformationListener() {
+	
+												@Override
+												public void onComplete(
+														InformationEvent e) {
+													AnnouncementDAO ad = (AnnouncementDAO) e
+															.getSource();
+	
+													setProgressGone();
+													setAnnouncement(ad.getData());
+													announcementAdapter = new CustomArrayAdapterAnnouncements(
+															getActivity(),
+															announcements);
+													list.setAdapter(announcementAdapter);
+													swipeView.setRefreshing(false);
+												}
+											});
+	
+									asyncTaskForRefresh = ((AsyncTask<String, Void, String>) announcementDaooo);
+									asyncTaskForRefresh.execute(new String[] { PropertyProvider
+											.getProperty("url")
+											+ "/api/v1/courses/"
+											+ courseID
+											+ "/activity_stream" });
+				        		}
 							}
 						});
 
@@ -569,20 +599,26 @@ public class CourseActivity extends BaseActivity implements
 						.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 							@Override
 							public void onRefresh() {
-								FolderDAO folderDao;
-								folderDao = df.getFolderDAO();
-								folderDao.setSharedPreferences(sp);
-								RestInformationDAO.clearData();
-
-								folderDao
-										.addInformationListener(folderInformationListener);
-
-								Folder currentFolder = folderStack.getHead();
-
-								asyncTask = ((AsyncTask<String, Void, String>) folderDao);
-								asyncTask.execute(new String[] {
-										currentFolder.getFoldersUrl(),
-										currentFolder.getFilesUrl() });
+				        		if(!CheckNetwork.isNetworkOnline(getActivity())) {
+				        			swipeView.setRefreshing(false);
+									Toast.makeText(getActivity(), "No network connection!",
+											Toast.LENGTH_LONG).show();
+				        		} else {
+									FolderDAO folderDao;
+									folderDao = df.getFolderDAO();
+									folderDao.setSharedPreferences(sp);
+									RestInformationDAO.clearData();
+	
+									folderDao
+											.addInformationListener(folderInformationListener);
+	
+									Folder currentFolder = folderStack.getHead();
+	
+									asyncTask = ((AsyncTask<String, Void, String>) folderDao);
+									asyncTask.execute(new String[] {
+											currentFolder.getFoldersUrl(),
+											currentFolder.getFilesUrl() });
+				        		}
 							}
 						});
 
