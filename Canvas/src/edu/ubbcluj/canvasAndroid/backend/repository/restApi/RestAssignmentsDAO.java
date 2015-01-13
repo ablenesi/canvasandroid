@@ -98,14 +98,14 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 				}
 
 			} catch (JSONException e) {
-				Log.e("Json Assignments", e.getMessage(), new Error());
+				Log.e("Json Assignments", e.getMessage(), new Throwable());
 			}
 		} else {
 			try {
 				JSONObject jObj = new JSONObject(jsonSource);
 				data.add(convertJSONtoAssignment(jObj));
 			} catch (JSONException e) {
-				Log.e("Json Assignment", e.getMessage(), new Error());
+				Log.e("Json Assignment", e.getMessage(), new Throwable());
 			}
 		}
 
@@ -183,6 +183,8 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 		Submission submission = new Submission();
 		
 		try {
+			submission.setId(jObj.getInt("id"));
+			
 			submission.setAssignmentId(jObj.getInt("assignment_id"));
 			if (!jObj.isNull("attempt")) {
 				submission.setAttempt(jObj.getInt("attempt"));
@@ -237,7 +239,7 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 			}
 			
 		} catch (JSONException e) {
-			Log.e("Json Submission", e.getMessage(), new Error());
+			Log.e("Json Submission", e.getMessage(), new Throwable());
 		}
 		
 		
@@ -266,7 +268,7 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 			attachment.setLockedForUser(jObj.getBoolean("locked_for_user"));
 			attachment.setPreviewUrl(jObj.getString("preview_url"));
 		} catch (JSONException e) {
-			Log.e("Json Attachment", e.getMessage(), new Error());
+			Log.e("Json Attachment", e.getMessage(), new Throwable());
 		}
 		
 		return attachment;
@@ -282,7 +284,7 @@ public class RestAssignmentsDAO extends AsyncTask<String, Void, String>
 			comment.setCreatedAt(jObj.getString("created_at"));
 			comment.setId(jObj.getInt("id"));
 		} catch (JSONException e) {
-			Log.e("Json SubmissionComment", e.getMessage(), new Error());
+			Log.e("Json SubmissionComment", e.getMessage(), new Throwable());
 		}
 		
 		return comment;

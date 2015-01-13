@@ -92,7 +92,9 @@
         <activity
             android:name=".AssignmentActivity"
             android:label="@string/title_activity_assignment"
-            android:parentActivityName=".DashBoardActivity" >
+            android:parentActivityName=".DashBoardActivity" 
+            android:noHistory="true"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />

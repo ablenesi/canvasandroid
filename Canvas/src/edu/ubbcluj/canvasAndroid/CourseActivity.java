@@ -360,11 +360,9 @@ public class CourseActivity extends BaseActivity implements
 						Assignment assignment = assignments.get(position);
 
 						Intent assignmentIntent = new Intent(getActivity(),
-								InformationActivity.class);
+								AssignmentActivity.class);
 
 						Bundle bundle = new Bundle();
-						bundle.putSerializable("activity_type",
-								InformationActivity.AssignmentInformation);
 						bundle.putInt("course_id", assignment.getCourseId());
 						bundle.putInt("assignment_id", assignment.getId());
 
