@@ -197,13 +197,8 @@ public class BaseActivity extends ActionBarActivity implements
 				Toast.makeText(this, "No network connection!",
 						Toast.LENGTH_LONG).show();
 			} else {
-				if (this.getClass() == MessagesActivity.class) {
-					finish();
-					startActivity(getIntent());
-				} else {
-					intent = new Intent(this, MessagesActivity.class);
-					startActivity(intent);
-				}
+				intent = new Intent(this, MessagesActivity.class);
+				startActivity(intent);
 			}
 			return true;
 		case R.id.settings:

@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,15 +27,17 @@ import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.Conversation;
 
-public class MessagesActivity extends BaseActivity {
+public class MessagesActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		setContentView(R.layout.activity_messages);
+		
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.content_frame, new PlaceholderFragment())
+					.add(R.id.messages_content_frame, new PlaceholderFragment())
 					.commit();
 		}
 	}
