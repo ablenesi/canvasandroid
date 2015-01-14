@@ -47,9 +47,7 @@ public class CourseProvider {
 			String value = (String) savedCourses.get(key);
 			String[] splittedValue = value.split(";");
 			
-			boolean isSelected = false;
-			if (splittedValue[1].compareTo("true") == 0)
-				isSelected = true;
+			boolean isSelected = splittedValue[1].compareTo("true") == 0;
 			ActiveCourse course = new ActiveCourse(Integer.parseInt(key), splittedValue[0], isSelected);
 			courses.add(course);
 		}
@@ -64,7 +62,7 @@ public class CourseProvider {
 	}
 	
 	public List<ActiveCourse> getSelectedCourses() {		
-		Log.d("CourseProvider", "Returning " + selectedCourses.size() + " courses");
+		Log.d("CourseProvider", "Returning " + selectedCourses.size() + " selected courses");
 		return selectedCourses;
 	}
 	
@@ -83,7 +81,6 @@ public class CourseProvider {
 		for (ActiveCourse course : courseList) {
 			ActiveCourse c = getCourseWithID(course.getId());
 			if (c != null) {
-				c.setName(course.getName());
 				newCourses.add(c);
 			} else {
 				course.setSelected(true);

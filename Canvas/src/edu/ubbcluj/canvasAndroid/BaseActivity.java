@@ -71,6 +71,7 @@ public class BaseActivity extends ActionBarActivity implements
 	@Override
 	protected void onResume() {
 		Log.d("LifeCycle-base", "onResume");
+		mNavigationDrawerFragment.setMenu();
 		super.onResume();
 	}
 
