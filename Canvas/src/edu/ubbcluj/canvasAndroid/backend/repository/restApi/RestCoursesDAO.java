@@ -63,20 +63,16 @@ public class RestCoursesDAO extends AsyncTask<String, Void, String> implements
 		String response = "";
 
 		for (String url : urls) {
-			/*if (CookieHandler.checkData(sp, url))
+			if (CookieHandler.checkData(sp, url))
 				response = CookieHandler.getData(sp, url);
 			else
-			{*/
+			{
 				response = RestInformationDAO.getData(url);
 				CookieHandler.saveData(sp, url, response);
-			//}
+			}
 		}
 
 		data = new ArrayList<ActiveCourse>();
-
-		if (!CheckNetwork.isNetworkOnline(null)) {
-			return "No connection";
-		}
 
 		// Decode JSON data and getting an ActivityStream array
 		String jsonSource = response.replace("while(1);", "");

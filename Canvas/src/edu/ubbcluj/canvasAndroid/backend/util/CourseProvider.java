@@ -83,11 +83,18 @@ public class CourseProvider {
 		for (ActiveCourse course : courseList) {
 			ActiveCourse c = getCourseWithID(course.getId());
 			if (c != null) {
-				course.setSelected(c.isSelected());
+				c.setName(course.getName());
+				newCourses.add(c);
 			} else {
 				course.setSelected(true);
+				newCourses.add(course);
 			}
-			newCourses.add(course);
+		}
+		
+		for (ActiveCourse course : courses) {
+			if (!containsCourseWithId(newCourses, course.getId())) {
+				newCourses.add(course);
+			}
 		}
 		
 		courses = newCourses;
@@ -105,6 +112,19 @@ public class CourseProvider {
 				selectedCourses.add(c);
 			}
 		}
+	}
+	
+	private boolean containsCourseWithId(List<ActiveCourse> courses, int id) {
+		Iterator<ActiveCourse> it = courses.iterator();
+		
+		while (it.hasNext()) {
+			ActiveCourse c = it.next();
+			if (c.getId() == id) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	private ActiveCourse getCourseWithID(int id) {

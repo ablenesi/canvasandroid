@@ -13,14 +13,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import edu.ubbcluj.canvasAndroid.backend.repository.ConversationDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
+import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterConversation;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.Conversation;
 
 public class MessagesActivity extends BaseActivity {
@@ -72,16 +75,23 @@ public class MessagesActivity extends BaseActivity {
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
 
-					Intent messageItemIntent = new Intent(view.getContext(),
-							MessageItemActivity.class);
-
-					Bundle bundle = new Bundle();
-					// conversationID
-
-					bundle.putInt("id", conversation.get(position).getId());
-					messageItemIntent.putExtras(bundle); // Put the id to the
-															// Course Intent
-					startActivity(messageItemIntent);
+					if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+							PropertyProvider.getProperty("url")
+							+ "/api/v1/conversations/" + conversation.get(position).getId()) && !CheckNetwork.isNetworkOnline(getActivity())) {
+						Toast.makeText(getActivity(), "No network connection!",
+								Toast.LENGTH_LONG).show();
+					} else {
+						Intent messageItemIntent = new Intent(view.getContext(),
+								MessageItemActivity.class);
+	
+						Bundle bundle = new Bundle();
+						// conversationID
+	
+						bundle.putInt("id", conversation.get(position).getId());
+						messageItemIntent.putExtras(bundle); // Put the id to the
+																// Course Intent
+						startActivity(messageItemIntent);
+					}
 				}
 			});
 

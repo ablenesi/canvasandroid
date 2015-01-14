@@ -6,7 +6,6 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
@@ -14,16 +13,18 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
 import edu.ubbcluj.canvasAndroid.backend.repository.ActivityStreamDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
 import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterActivityStream;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.ActivityStream;
 
 public class DashBoardActivity extends BaseActivity {
@@ -73,51 +74,113 @@ public class DashBoardActivity extends BaseActivity {
 				ActivityStream as = activityStream.get(position);
 
 				if (as.getType().equals("Announcement")) {
-					Intent informationIntent = new Intent(
-							DashBoardActivity.this, InformationActivity.class);
-
-					Bundle bundle = new Bundle();
-
-					bundle.putSerializable("activity_type",
-							InformationActivity.AnnouncementInformation);
-					bundle.putInt("course_id", as.getCourseId());
-					bundle.putInt("announcement_id", as.getSecondaryId());
-					informationIntent.putExtras(bundle);
-					startActivity(informationIntent);
+					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+							PropertyProvider.getProperty("url")
+								+ "/api/v1/courses/"
+								+ as.getCourseId()
+								+ "/discussion_topics/"
+								+ as.getSecondaryId()) && !CheckNetwork.isNetworkOnline(DashBoardActivity.this)) {
+						Toast.makeText(DashBoardActivity.this, "No network connection!",
+								Toast.LENGTH_LONG).show();
+					} else {
+						Intent informationIntent = new Intent(
+								DashBoardActivity.this, InformationActivity.class);
+	
+						Bundle bundle = new Bundle();
+	
+						bundle.putSerializable("activity_type",
+								InformationActivity.AnnouncementInformation);
+						bundle.putInt("course_id", as.getCourseId());
+						bundle.putInt("announcement_id", as.getSecondaryId());
+						informationIntent.putExtras(bundle);
+						startActivity(informationIntent);
+					}
 				}
 
 				if (as.getType().equals("Submission")) {
-					Intent informationIntent = new Intent(
-							DashBoardActivity.this, AssignmentActivity.class);
-
-					Bundle bundle = new Bundle();
-					bundle.putInt("course_id", as.getCourseId());
-					bundle.putInt("assignment_id", as.getSecondaryId());
-					informationIntent.putExtras(bundle);
-					startActivity(informationIntent);
+					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+							PropertyProvider
+							.getProperty("url")
+							+ "/api/v1/courses/"
+							+ as.getCourseId() + "/assignments/" + as.getSecondaryId()) && !CheckNetwork.isNetworkOnline(DashBoardActivity.this)) {
+						Toast.makeText(DashBoardActivity.this, "No network connection!",
+								Toast.LENGTH_LONG).show();
+					} else {
+						Intent informationIntent = new Intent(
+								DashBoardActivity.this, AssignmentActivity.class);
+	
+						Bundle bundle = new Bundle();
+	
+						bundle.putInt("course_id", as.getCourseId());
+						bundle.putInt("assignment_id", as.getSecondaryId());
+						informationIntent.putExtras(bundle);
+						startActivity(informationIntent);
+					}
 				}
 
 				if (as.getType().equals("Message")) {
-					Intent informationIntent = new Intent(
-							DashBoardActivity.this, AssignmentActivity.class);
-
-					Bundle bundle = new Bundle();
-					bundle.putInt("course_id", as.getCourseId());
-					bundle.putInt("assignment_id", as.getSecondaryId());
-					informationIntent.putExtras(bundle);
-					startActivity(informationIntent);
+					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+							PropertyProvider
+							.getProperty("url")
+							+ "/api/v1/courses/"
+							+ as.getCourseId() + "/assignments/" + as.getSecondaryId()) && !CheckNetwork.isNetworkOnline(DashBoardActivity.this)) {
+						Toast.makeText(DashBoardActivity.this, "No network connection!",
+								Toast.LENGTH_LONG).show();
+					} else {
+						Intent informationIntent = new Intent(
+								DashBoardActivity.this, AssignmentActivity.class);
+	
+						Bundle bundle = new Bundle();
+	
+						bundle.putInt("course_id", as.getCourseId());
+						bundle.putInt("assignment_id", as.getSecondaryId());
+						informationIntent.putExtras(bundle);
+						startActivity(informationIntent);
+					}
 				}
 
 				if (as.getType().equals("Conversation")) {
-					Intent messagesItemIntent = new Intent(
-							DashBoardActivity.this, MessageItemActivity.class);
-
-					Bundle bundle = new Bundle();
-					bundle.putInt("id", as.getSecondaryId());
-					messagesItemIntent.putExtras(bundle);
-					startActivity(messagesItemIntent);
+					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+							PropertyProvider
+							.getProperty("url")
+							+ "/api/v1/courses/"
+							+ as.getCourseId() + "/assignments/" + as.getSecondaryId()) && !CheckNetwork.isNetworkOnline(DashBoardActivity.this)) {
+						Toast.makeText(DashBoardActivity.this, "No network connection!",
+								Toast.LENGTH_LONG).show();
+					} else {
+						Intent messagesItemIntent = new Intent(
+								DashBoardActivity.this, MessageItemActivity.class);
+	
+						Bundle bundle = new Bundle();
+						bundle.putInt("id", as.getSecondaryId());
+						messagesItemIntent.putExtras(bundle);
+						startActivity(messagesItemIntent);
+					}
 				}
 
+				if (as.getType().equals("DiscussionTopic")) {
+					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+							PropertyProvider.getProperty("url")
+								+ "/api/v1/courses/"
+								+ as.getCourseId()
+								+ "/discussion_topics/"
+								+ as.getSecondaryId()) && !CheckNetwork.isNetworkOnline(DashBoardActivity.this)) {
+						Toast.makeText(DashBoardActivity.this, "No network connection!",
+								Toast.LENGTH_LONG).show();
+					} else {
+						Intent informationIntent = new Intent(
+								DashBoardActivity.this, InformationActivity.class);
+	
+						Bundle bundle = new Bundle();
+	
+						bundle.putSerializable("activity_type",
+								InformationActivity.AnnouncementInformation);
+						bundle.putInt("course_id", as.getCourseId());
+						bundle.putInt("announcement_id", as.getSecondaryId());
+						informationIntent.putExtras(bundle);
+						startActivity(informationIntent);
+					}
+				}
 			}
 		});
 
@@ -145,33 +208,38 @@ public class DashBoardActivity extends BaseActivity {
         	
         	@Override
         	public void onRefresh() {
-    
-        		ActivityStreamDAO dashboardDao;
-        		dashboardDao = df.getDashboardDAO();
-        		dashboardDao.setSharedPreferences(DashBoardActivity.this.getSharedPreferences(
-        				"CanvasAndroid", Context.MODE_PRIVATE));
-        		RestInformationDAO.clearData();
-        		
-        		
-        		activityStream = new ArrayList<ActivityStream>();
-        		dashboardDao.addInformationListener(new InformationListener() {
-        			
-        			
-        			@Override
-        			public void onComplete(InformationEvent e) {
-        				ActivityStreamDAO asd = (ActivityStreamDAO) e.getSource();
-        				setProgressGone();
-        				setActivityStream(asd.getData());
-        				swipeView.setRefreshing(false);
-        				setList();
-        			}
-        			
-        		});
-        		
-
-        		asynTaskForRefresh = ((AsyncTask<String, Void, String>) dashboardDao);
-        		asynTaskForRefresh.execute(new String[] { PropertyProvider.getProperty("url")
-        						+ "/api/v1/users/self/activity_stream" });
+        		if(!CheckNetwork.isNetworkOnline(DashBoardActivity.this)) {
+        			swipeView.setRefreshing(false);
+					Toast.makeText(DashBoardActivity.this, "No network connection!",
+							Toast.LENGTH_LONG).show();
+        		} else {
+	        		ActivityStreamDAO dashboardDao;
+	        		dashboardDao = df.getDashboardDAO();
+	        		dashboardDao.setSharedPreferences(DashBoardActivity.this.getSharedPreferences(
+	        				"CanvasAndroid", Context.MODE_PRIVATE));
+	        		RestInformationDAO.clearData();
+	        		
+	        		
+	        		activityStream = new ArrayList<ActivityStream>();
+	        		dashboardDao.addInformationListener(new InformationListener() {
+	        			
+	        			
+	        			@Override
+	        			public void onComplete(InformationEvent e) {
+	        				ActivityStreamDAO asd = (ActivityStreamDAO) e.getSource();
+	        				setProgressGone();
+	        				setActivityStream(asd.getData());
+	        				swipeView.setRefreshing(false);
+	        				setList();
+	        			}
+	        			
+	        		});
+	        		
+	
+	        		asynTaskForRefresh = ((AsyncTask<String, Void, String>) dashboardDao);
+	        		asynTaskForRefresh.execute(new String[] { PropertyProvider.getProperty("url")
+	        						+ "/api/v1/users/self/activity_stream" });
+        		}
         	} 	
     });
 	}

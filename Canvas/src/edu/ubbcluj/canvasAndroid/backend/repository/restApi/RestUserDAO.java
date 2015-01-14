@@ -116,11 +116,13 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 	@Override
 	protected void onPostExecute(String result) {
 
-		if (!CheckNetwork.isNetworkOnline(loginActivity))
+		if (!CheckNetwork.isNetworkOnline(loginActivity)) {
 			Toast.makeText(loginActivity, "No network connection!",
 					Toast.LENGTH_SHORT).show();
+		}
 		else {
 			if (!(result.compareTo("HTTP/1.1 200 OK") == 0)) {
+				loginActivity.closeDialog();
 				Log.d("Rest", "Login failed: " + result);
 				Toast.makeText(loginActivity, "Invalid username or password!",
 						Toast.LENGTH_SHORT).show();
@@ -137,8 +139,8 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 
 					Gson gson = new Gson();
 					String userString = gson.toJson(users);
-					CookieHandler.saveData(sp, "usernames", userString);
-					CookieHandler.saveData(sp, "lastusername", username);
+					CookieHandler.saveData(sp, "usernames", userString, null);
+					CookieHandler.saveData(sp, "lastusername", username, null);
 				}
 
 				loginActivity.loginCompleted();

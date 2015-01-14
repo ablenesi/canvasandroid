@@ -81,10 +81,6 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 		}
 		
 		data = new ArrayList<ActivityStream>();
-
-		if (!CheckNetwork.isNetworkOnline(null)) {
-			return "No connection";
-		}
 		
 		// Decode JSON data and getting an ActivityStream array
 		String jsonSource = response.replace("while(1);", "");
@@ -197,6 +193,10 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 				
 				as.setTitle(newTitle);
 			}
+			
+			if (as.getType().equals("DiscussionTopic")) {
+				as.setSecondaryId(obj.getInt("discussion_topic_id"));
+			} 
 		} catch (JSONException e) {
 			Log.e("JSON", e.getMessage());
 		}

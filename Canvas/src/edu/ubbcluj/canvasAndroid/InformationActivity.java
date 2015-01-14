@@ -2,7 +2,6 @@ package edu.ubbcluj.canvasAndroid;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
@@ -246,15 +244,14 @@ public class InformationActivity extends BaseActivity {
 							+ "/discussion_topics/"
 							+ announcementID 
 							+ "/read");
-					MyService.announcementUnreadCount--;
+					MyService.announcementUnreadCount--; 
 					
 					new RestInformationDAO().execute(new String[] { PropertyProvider
 									.getProperty("url")
-									+ "/api/v1/courses/"
+									+ "/courses/"
 									+ courseID
-									+ "/discussion_topics/"
-									+ announcementID 
-									+ "/read"});
+									+ "/announcements/"
+									+ announcementID});
 				}
 				textViews[0].setText(announcement.getTitle());
 				textViews[1].setText(formatDate(announcement.getPostedAt()));

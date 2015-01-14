@@ -6,10 +6,13 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.cookie.Cookie;
@@ -25,9 +28,55 @@ import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.backend.util.network.RestHttpClient;
+import edu.ubbcluj.canvasAndroid.model.MessageSequence;
 
 public class RestInformationDAO extends AsyncTask<String, Void, String> {
 
+	public static String postData(String url, List<NameValuePair> formData) {
+		String response = "";
+		
+		HttpContext context = null;
+		HttpClient httpClient = null;
+		HttpResponse httpResponse = null;
+		HttpPost httpPost = new HttpPost(url);
+		ResponseHandler<String> handler = new BasicResponseHandler();
+			
+		if (!CheckNetwork.isNetworkOnline(null))
+			return "No connection";
+		
+		try {
+			httpClient = RestHttpClient.getNewHttpClient();
+			
+			BasicCookieStore cookieStore = new BasicCookieStore();
+			List<Cookie> loginCookies = getLoginCookies();
+
+			for (Cookie c : loginCookies) {
+				cookieStore.addCookie(c);
+			}
+			
+			context = new BasicHttpContext();
+			context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+			
+			httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+			
+			UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(
+					formData, "UTF-8");
+			httpPost.setEntity(urlEncodedFormEntity);
+			
+			httpResponse = httpClient.execute(httpPost, context);
+			response = handler.handleResponse(httpResponse);
+		} catch (ClientProtocolException e) {
+			Log.e("Data transfer error", e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.e("IO error", e.getLocalizedMessage());
+			e.printStackTrace();
+		} 
+
+		
+		return response;
+	}
+	
 	public static String putData(String url){
 		HttpContext context;
 		HttpClient httpClient;
@@ -73,11 +122,7 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 		// ide kerult az url
 		HttpGet httpget = new HttpGet(url);
 		ResponseHandler<String> handler = new BasicResponseHandler();
-
-		// Check if network connection is available
-		if (!CheckNetwork.isNetworkOnline(null))
-			return "No connection";
-
+		
 		String response = "";
 
 		try {
@@ -125,7 +170,6 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 
 		// Delete all cookies
 		persistentCookieStore.clear();
-
 		
 		// Re-add the login cookies to the cookie store
 		for (Cookie c : loginCookies) {
@@ -163,7 +207,7 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 		Log.d("Rest","doinbackground");
 		String response = "";
 		for (String url : urls) {
-			response = RestInformationDAO.putData(url);
+			response = RestInformationDAO.getData(url);
 		}
 		return response;
 	}

@@ -81,10 +81,6 @@ public class RestAnnouncementDAO extends AsyncTask<String, Void, String>
 
 		data = new ArrayList<Announcement>();
 
-		if (!CheckNetwork.isNetworkOnline(null)) {
-			return "No connection";
-		}
-
 		// Decode JSON data and getting an Announcement array / object
 		String jsonSource = response.replace("while(1);", "");
 
