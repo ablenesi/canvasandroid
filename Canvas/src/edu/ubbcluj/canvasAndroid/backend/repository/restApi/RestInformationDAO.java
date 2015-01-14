@@ -28,6 +28,7 @@ import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.backend.util.network.RestHttpClient;
+import edu.ubbcluj.canvasAndroid.model.MessageSequence;
 
 public class RestInformationDAO extends AsyncTask<String, Void, String> {
 
@@ -39,7 +40,7 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 		HttpResponse httpResponse = null;
 		HttpPost httpPost = new HttpPost(url);
 		ResponseHandler<String> handler = new BasicResponseHandler();
-		
+			
 		if (!CheckNetwork.isNetworkOnline(null))
 			return "No connection";
 		
@@ -167,7 +168,6 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 
 		// Delete all cookies
 		persistentCookieStore.clear();
-
 		
 		// Re-add the login cookies to the cookie store
 		for (Cookie c : loginCookies) {

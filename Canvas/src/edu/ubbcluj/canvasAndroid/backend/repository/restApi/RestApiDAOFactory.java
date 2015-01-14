@@ -10,6 +10,7 @@ import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
 import edu.ubbcluj.canvasAndroid.backend.repository.FolderDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.MessageSequenceDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.SubmissionCommentDAO;
+import edu.ubbcluj.canvasAndroid.backend.repository.NewMessageDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.ToDoDAO;
 
 public class RestApiDAOFactory extends DAOFactory {
@@ -72,6 +73,11 @@ public class RestApiDAOFactory extends DAOFactory {
 	@Override
 	public SubmissionCommentDAO getSubmissionCommentDAO() {
 		return new RestSubmissionCommentDAO();
+	}
+
+	public NewMessageDAO getNewMessageDAO() {
+		return new RestNewMessageDAO();
+
 	}
 
 }
