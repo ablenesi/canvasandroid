@@ -23,6 +23,7 @@ import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
+import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
 
@@ -100,6 +101,10 @@ public class BaseActivity extends ActionBarActivity implements
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		Log.d("LifeCycle-base", "onRestoreInsatace");
+		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
+				.getInstance();
+		sPreferences.init(BaseActivity.this.getSharedPreferences(
+				"CanvasAndroid", Context.MODE_PRIVATE));
 		super.onRestoreInstanceState(savedInstanceState);
 	}
 
