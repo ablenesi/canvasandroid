@@ -56,8 +56,10 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 			context = new BasicHttpContext();
 			context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 			
+			httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+			
 			UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(
-					formData);
+					formData, "UTF-8");
 			httpPost.setEntity(urlEncodedFormEntity);
 			
 			httpResponse = httpClient.execute(httpPost, context);
