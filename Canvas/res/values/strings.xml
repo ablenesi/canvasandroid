@@ -39,5 +39,6 @@
     <string name="submissiontitle">Submission</string>
     <string name="commentstitle">Comments:</string>
     <string name="send_comment">Send comment</string>
-
+	<string name="write_a_message">Write a message</string>
+    <string name="send">Send</string>
 </resources>

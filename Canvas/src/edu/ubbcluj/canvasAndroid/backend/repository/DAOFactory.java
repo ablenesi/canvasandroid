@@ -19,5 +19,6 @@ public abstract class DAOFactory {
 	public abstract MessageSequenceDAO getMessageSequenceDAO();
 	public abstract FolderDAO getFolderDAO();
 	public abstract SubmissionCommentDAO getSubmissionCommentDAO();
-
+	public abstract NewMessageDAO getNewMessageDAO();
+	
 }
