@@ -18,6 +18,7 @@ import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.AnnouncementComment;
+import edu.ubbcluj.canvasAndroid.model.AnnouncementCommentReplies;
 
 public class RestAnnouncementDAO extends AsyncTask<String, Void, String>
 		implements AnnouncementDAO {
@@ -174,35 +175,39 @@ public class RestAnnouncementDAO extends AsyncTask<String, Void, String>
 		return announcement;
 	}
 
-	//!!!!!!!!!!!!
 	private AnnouncementComment[] convertJSONtoAC(JSONObject obj) {
-		Log.d("t", "convert");
 		AnnouncementComment[] ac = new AnnouncementComment[100];
 		try {
 			ac = new AnnouncementComment[obj.getJSONArray("view").length()];
-			Log.d("t","ac hossz: "+ac.length);
-			Log.d("t", "convert0");
 			JSONArray participants = obj.getJSONArray("participants");
-			Log.d("t","p hossz: "+participants.length());
-			Log.d("t", "convert00");
 			JSONArray view = obj.getJSONArray("view");
-			Log.d("t","v hossz: "+view.length());
-			Log.d("t", "convert000");
 			for(int i = 0; i<view.length();i++){
 				ac[i] = new AnnouncementComment();
 				JSONObject commentObj = view.getJSONObject(i);
-				Log.d("t", "convertw0"+i);
-				Log.d("t","obj "+ commentObj.toString());
 				String mess = commentObj.getString("message");
-				Log.d("t","mess "+mess.substring(3, mess.length()-4));
 				ac[i].setMessage(mess.substring(3, mess.length()-4));
-				Log.d("t", "convertw00"+i);
 				ac[i].setId(commentObj.getInt("id"));
-				Log.d("t", "convertw000"+i);
 				ac[i].setUserId(commentObj.getInt("user_id"));
-				Log.d("t", "convertw0000"+i);
+				if (commentObj.getJSONArray("replies")!=null){
+					JSONArray replies = commentObj.getJSONArray("replies");
+					AnnouncementCommentReplies[] acr = new AnnouncementCommentReplies[replies.length()];
+					for(int k=0;k<replies.length();k++){
+						acr[k] = new AnnouncementCommentReplies();
+						JSONObject replieObj = replies.getJSONObject(k);
+						String replieMess = replieObj.getString("message");
+						acr[k].setMessage(replieMess.substring(3, replieMess.length()-4));
+						acr[k].setId(replieObj.getInt("id"));
+						acr[k].setUserId(replieObj.getInt("user_id"));
+						for(int j = 0;j<participants.length();j++){
+							JSONObject userObj = participants.getJSONObject(j);
+							if (userObj.getInt("id") == replieObj.getInt("user_id")){
+								acr[k].setUserName(userObj.getString("display_name"));
+							}
+						}
+					}
+					ac[i].setAcr(acr);
+				}
 				for(int j = 0;j<participants.length();j++){
-					Log.d("t", "convert"+i);
 					JSONObject userObj = participants.getJSONObject(j);
 					if (userObj.getInt("id") == commentObj.getInt("user_id")){
 						ac[i].setUserName(userObj.getString("display_name"));
@@ -210,7 +215,6 @@ public class RestAnnouncementDAO extends AsyncTask<String, Void, String>
 				}
 			}
 		} catch (JSONException e) {
-			Log.d("t", "baj van!!!!");
 			Log.e("JSON", e.getMessage());
 		}
 

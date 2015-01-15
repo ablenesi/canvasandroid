@@ -8,6 +8,7 @@ import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.AnnouncementComment;
+import edu.ubbcluj.canvasAndroid.model.AnnouncementCommentReplies;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 
 public class InformationActivity extends BaseActivity {
@@ -275,6 +277,19 @@ public class InformationActivity extends BaseActivity {
 						twAuthor.setGravity(Gravity.END);
 						twAuthor.setText(comments[i].getUserName() + "\n");
 						linearLayout.addView(twAuthor);
+						AnnouncementCommentReplies[] replies = comments[i].getAcr();
+						for(int j=0;j<replies.length;j++){
+							TextView twCommentReplie = new TextView(getActivity());
+							twCommentReplie.setTextColor(Color.BLACK);
+							twCommentReplie.setText(replies[j].getMessage());
+							linearLayout.addView(twCommentReplie);
+							
+							TextView twAuthorReplie = new TextView(getActivity());
+							twAuthorReplie.setTextColor(Color.GRAY);
+							twAuthorReplie.setGravity(Gravity.END);
+							twAuthorReplie.setText(replies[j].getUserName() + "\n");
+							linearLayout.addView(twAuthorReplie);
+						}
 					}
 				}
 			}
