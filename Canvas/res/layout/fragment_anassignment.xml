@@ -20,15 +20,33 @@
                android:indeterminate="true" >
            </ProgressBar>
        </LinearLayout>
-    
-    
-    <TextView
-        android:id="@+id/anassignment_name"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="17sp"
-        android:textColor="#000"
-        android:textStyle="bold" />
+
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal" >
+
+       <TextView
+           android:id="@+id/anassignment_name"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="0.5"
+           android:gravity="start"
+           android:textColor="#000"
+           android:textSize="17sp"
+           android:textStyle="bold" />
+
+       <TextView
+           android:id="@+id/anassignment_course"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="0.5"
+           android:gravity="end"
+           android:textColor="#000"
+           android:textSize="17sp"
+           android:textStyle="normal" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/anassignment_due_date"

@@ -20,7 +20,14 @@
                android:indeterminate="true" >
            </ProgressBar>
        </LinearLayout>
-    
+
+       <TextView
+           android:id="@+id/anannouncement_course"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:textColor="#000"
+           android:textSize="17sp"
+           android:textStyle="normal" />
     
     <TextView
         android:id="@+id/anannouncement_title"

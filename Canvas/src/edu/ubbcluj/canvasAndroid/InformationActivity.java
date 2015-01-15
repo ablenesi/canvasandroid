@@ -16,6 +16,7 @@ import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
 import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
@@ -110,15 +111,17 @@ public class InformationActivity extends BaseActivity {
 				rootView = inflater.inflate(R.layout.fragment_anassignment,
 						container, false);
 
-				textViews = new TextView[4];
+				textViews = new TextView[5];
 
 				textViews[0] = (TextView) rootView
 						.findViewById(R.id.anassignment_name);
 				textViews[1] = (TextView) rootView
-						.findViewById(R.id.anassignment_due_date);
+						.findViewById(R.id.anassignment_course);
 				textViews[2] = (TextView) rootView
-						.findViewById(R.id.anassignment_possible_grade);
+						.findViewById(R.id.anassignment_due_date);
 				textViews[3] = (TextView) rootView
+						.findViewById(R.id.anassignment_possible_grade);
+				textViews[4] = (TextView) rootView
 						.findViewById(R.id.anassignment_description);
 
 				AssignmentsDAO assignmentDAO = df.getAssignmentsDAO();
@@ -149,15 +152,17 @@ public class InformationActivity extends BaseActivity {
 				rootView = inflater.inflate(R.layout.fragment_anannouncement,
 						container, false);
 
-				textViews = new TextView[4];
+				textViews = new TextView[5];
 
 				textViews[0] = (TextView) rootView
 						.findViewById(R.id.anannouncement_title);
 				textViews[1] = (TextView) rootView
-						.findViewById(R.id.anannouncement_date);
+						.findViewById(R.id.anannouncement_course);
 				textViews[2] = (TextView) rootView
-						.findViewById(R.id.anannouncement_author_name);
+						.findViewById(R.id.anannouncement_date);
 				textViews[3] = (TextView) rootView
+						.findViewById(R.id.anannouncement_author_name);
+				textViews[4] = (TextView) rootView
 						.findViewById(R.id.anannouncement_message);
 
 				AnnouncementDAO announcementDAO = df.getAnnouncementDAO();
@@ -205,23 +210,24 @@ public class InformationActivity extends BaseActivity {
 
 			if (textViews != null) {
 				textViews[0].setText(assignment.getName());
-				textViews[1].setText(formatDate(assignment.getDueAt()));
-				textViews[2].setText("Maximum grade: "
+				textViews[1].setText(CourseProvider.getInstance().getCourseWithID(assignment.getCourseId()).getName());
+				textViews[2].setText(formatDate(assignment.getDueAt()));
+				textViews[3].setText("Maximum grade: "
 						+ assignment.getPointsPossible());
 
 				if (assignment.getIsGraded()) {
-					textViews[2].append(" (Your grade: "
+					textViews[3].append(" (Your grade: "
 							+ assignment.getScore() + ")");
 				}
 
 				if (assignment.getLockExplanation() != null) {
-					textViews[3].setText(assignment.getLockExplanation());
+					textViews[4].setText(assignment.getLockExplanation());
 				} else {
 					if (assignment.getDescription() != null) {
-						textViews[3].setText(Html.fromHtml(assignment
+						textViews[4].setText(Html.fromHtml(assignment
 								.getDescription()));
 					} else {
-						textViews[3].setText("No description");
+						textViews[4].setText("No description");
 					}
 				}
 			}
@@ -254,9 +260,10 @@ public class InformationActivity extends BaseActivity {
 									+ announcementID});
 				}
 				textViews[0].setText(announcement.getTitle());
-				textViews[1].setText(formatDate(announcement.getPostedAt()));
-				textViews[2].setText(announcement.getAuthorName());
-				textViews[3].setText(Html.fromHtml(announcement.getMessage()));
+				textViews[1].setText(CourseProvider.getInstance().getCourseWithID(announcement.getCourseId()).getName());
+				textViews[2].setText(formatDate(announcement.getPostedAt()));
+				textViews[3].setText(announcement.getAuthorName());
+				textViews[4].setText(Html.fromHtml(announcement.getMessage()));
 			}
 		}
 

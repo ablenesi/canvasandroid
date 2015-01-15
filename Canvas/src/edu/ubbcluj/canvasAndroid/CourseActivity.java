@@ -326,8 +326,8 @@ public class CourseActivity extends BaseActivity implements
 							Toast.makeText(getActivity(), "No network connection!",
 									Toast.LENGTH_LONG).show();
 						} else {
-							Intent assignmentIntent = new Intent(getActivity(),
-									InformationActivity.class);
+							Intent assignmentIntent = new Intent(
+									getActivity(), AssignmentActivity.class);
 	
 							Bundle bundle = new Bundle();
 							bundle.putSerializable("activity_type",

@@ -127,7 +127,7 @@ public class CourseProvider {
 		return false;
 	}
 	
-	private ActiveCourse getCourseWithID(int id) {
+	public ActiveCourse getCourseWithID(int id) {
 		Iterator<ActiveCourse> it = courses.iterator();
 		
 		while (it.hasNext()) {
