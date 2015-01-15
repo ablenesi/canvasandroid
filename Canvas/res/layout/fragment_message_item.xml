@@ -1,25 +1,8 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_frame"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="edu.ubbcluj.canvasAndroid.CourseActivity$PlaceholderFragment" >
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".DashBoardActivity" >
-
-        <ListView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-        </ListView>
-    </RelativeLayout>
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
     <LinearLayout
         android:id="@+id/linProg"
@@ -38,4 +21,70 @@
         </ProgressBar>
     </LinearLayout>
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minHeight="25dp"
+        android:minWidth="25dp"
+        android:orientation="vertical"
+        android:weightSum="1.5" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.45"
+            android:minHeight="25dp"
+            android:minWidth="25dp"
+            android:orientation="vertical" >
+
+            <ListView
+                android:id="@+id/message_item_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:stackFromBottom="true"
+                android:transcriptMode="alwaysScroll" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.05"
+            android:background="#1E1E1E"
+            android:gravity="end"
+            android:minHeight="25dp"
+            android:minWidth="25dp"
+            android:orientation="horizontal"
+            android:weightSum="1" >
+
+            <EditText
+                android:id="@+id/message_item_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="0.9"
+                android:hint="@string/write_a_message"
+                android:inputType="textMultiLine"
+                android:padding="10dp"
+                android:maxLines="3"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/message_item_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="0.1"
+                android:background="@drawable/button_login"
+                android:height="50dp"
+                android:onClick="sendChatMessage"
+                android:radius="40dip"
+                android:shape="rectangle"
+                android:text="@string/send"
+                android:textSize="15sp"
+                android:width="100dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

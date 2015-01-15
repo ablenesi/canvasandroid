@@ -21,8 +21,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
+import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
+import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
 
@@ -70,6 +72,7 @@ public class BaseActivity extends ActionBarActivity implements
 	@Override
 	protected void onResume() {
 		Log.d("LifeCycle-base", "onResume");
+		mNavigationDrawerFragment.setMenu();
 		super.onResume();
 	}
 
@@ -100,6 +103,13 @@ public class BaseActivity extends ActionBarActivity implements
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		Log.d("LifeCycle-base", "onRestoreInsatace");
+		CourseProvider.getInstance().initialize(this);
+		
+		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
+				.getInstance();
+		sPreferences.init(BaseActivity.this.getSharedPreferences(
+				"CanvasAndroid", Context.MODE_PRIVATE));
+		
 		super.onRestoreInstanceState(savedInstanceState);
 	}
 
@@ -191,13 +201,8 @@ public class BaseActivity extends ActionBarActivity implements
 				Toast.makeText(this, "No network connection!",
 						Toast.LENGTH_LONG).show();
 			} else {
-				if (this.getClass() == MessagesActivity.class) {
-					finish();
-					startActivity(getIntent());
-				} else {
-					intent = new Intent(this, MessagesActivity.class);
-					startActivity(intent);
-				}
+				intent = new Intent(this, MessagesActivity.class);
+				startActivity(intent);
 			}
 			return true;
 		case R.id.settings:

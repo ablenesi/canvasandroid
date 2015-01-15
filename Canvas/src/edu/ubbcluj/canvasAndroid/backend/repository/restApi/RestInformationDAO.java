@@ -18,6 +18,7 @@ import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
@@ -27,7 +28,6 @@ import android.util.Log;
 import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
-import edu.ubbcluj.canvasAndroid.backend.util.network.RestHttpClient;
 
 public class RestInformationDAO extends AsyncTask<String, Void, String> {
 
@@ -39,12 +39,12 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 		HttpResponse httpResponse = null;
 		HttpPost httpPost = new HttpPost(url);
 		ResponseHandler<String> handler = new BasicResponseHandler();
-		
+			
 		if (!CheckNetwork.isNetworkOnline(null))
 			return "No connection";
 		
 		try {
-			httpClient = RestHttpClient.getNewHttpClient();
+			httpClient = new DefaultHttpClient();
 			
 			BasicCookieStore cookieStore = new BasicCookieStore();
 			List<Cookie> loginCookies = getLoginCookies();
@@ -56,8 +56,10 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 			context = new BasicHttpContext();
 			context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 			
+			httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+			
 			UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(
-					formData);
+					formData, "UTF-8");
 			httpPost.setEntity(urlEncodedFormEntity);
 			
 			httpResponse = httpClient.execute(httpPost, context);
@@ -78,7 +80,7 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 		HttpContext context;
 		HttpClient httpClient;
 		HttpPut httpput = new HttpPut(url);
-		httpClient = RestHttpClient.getNewHttpClient();
+		httpClient = new DefaultHttpClient();
 		ResponseHandler<String> handler = new BasicResponseHandler();
 		String resp = "";
 		
@@ -124,7 +126,7 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 
 		try {
 			// Get infromation from the server
-			httpClient = RestHttpClient.getNewHttpClient();
+			httpClient = new DefaultHttpClient();
 			context = new BasicHttpContext();
 			httpResponse = null;
 
@@ -167,7 +169,6 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 
 		// Delete all cookies
 		persistentCookieStore.clear();
-
 		
 		// Re-add the login cookies to the cookie store
 		for (Cookie c : loginCookies) {
