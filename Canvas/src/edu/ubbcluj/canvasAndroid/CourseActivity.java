@@ -17,7 +17,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +41,7 @@ import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterToDo;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.backend.util.network.RestDownloadManager;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 import edu.ubbcluj.canvasAndroid.model.File;
@@ -280,6 +280,8 @@ public class CourseActivity extends BaseActivity implements
 		private AsyncTask<String, Void, String> asyncTaskComingUp;
 		private AsyncTask<String, Void, String> asyncTaskForRefreshComingUp;
 
+		private RestDownloadManager downloadManager;
+		
 		/**
 		 * Returns a new instance of this fragment for the given section number.
 		 */
@@ -706,7 +708,7 @@ public class CourseActivity extends BaseActivity implements
 						swipeView.setRefreshing(false);
 					}
 				};
-
+				
 				swipeView
 						.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 							@Override
@@ -745,8 +747,23 @@ public class CourseActivity extends BaseActivity implements
 						// if we are in the root folder
 						if (fileTreeElement != null) {
 							if (fileTreeElement instanceof File) {
-								// File file = (File) fileTreeElement;
-								// toDO file download
+								File file = (File) fileTreeElement;
+								
+								if (!CheckNetwork.isNetworkOnline(getActivity())) {
+									
+									Toast.makeText(getActivity(), "No network connection!",
+											Toast.LENGTH_SHORT).show();
+									
+								} else {
+									downloadManager = new RestDownloadManager(getActivity());
+									downloadManager.registerActionDownloadCompleteReceiver();
+									downloadManager.registerActionNotificationClickedReceiver();
+									downloadManager.downloadFile(file);
+									
+									Toast.makeText(getActivity(), file.getName() + " downloading...",
+											Toast.LENGTH_LONG).show();
+								}
+								
 							} else {
 								Folder folder = (Folder) fileTreeElement;
 
@@ -871,6 +888,9 @@ public class CourseActivity extends BaseActivity implements
 				asyncTaskForRefreshFolder.cancel(true);
 			}
 			
+			if (downloadManager != null)
+				downloadManager.unRegisterReceiver();
+
 			super.onStop();
 		}
 
