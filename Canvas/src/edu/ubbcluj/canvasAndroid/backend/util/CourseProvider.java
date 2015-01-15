@@ -15,6 +15,7 @@ import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
 public class CourseProvider {
 
 	private static CourseProvider instance;
+	private String username;
 	private SharedPreferences sp;
 	private String spName;
 	private List<ActiveCourse> courses;
@@ -23,6 +24,7 @@ public class CourseProvider {
 	private CourseProvider() {
 		this.sp = null;
 		this.spName = null;
+		this.username = null;
 		courses = new ArrayList<ActiveCourse>();
 		selectedCourses = new ArrayList<ActiveCourse>();
 	}
@@ -54,6 +56,10 @@ public class CourseProvider {
 		
 		updateSelectedCourses();
 		Log.d("CourseProvider", "Loaded " + courses.size() + " courses from SharedPreferences");
+	}
+	
+	public void initialize(Context context) {
+		initalize(context, username);
 	}
 	
 	public List<ActiveCourse> getAllCourses() {
