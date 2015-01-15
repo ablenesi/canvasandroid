@@ -228,13 +228,15 @@ public class AssignmentActivity extends BaseActivity {
 				aDueDate.setText("No due date");
 			}
 			
-			aPossibleGrade.setText("Maximum grade: "
-					+ assignment.getPointsPossible());
-
 			if (assignment.getIsGraded()) {
-				aPossibleGrade.append(" (Your grade: "
-						+ assignment.getScore() + ")");
+				aPossibleGrade.setText("Your grade: "
+						+ assignment.getScore() + "\n");
+			} else {
+				aPossibleGrade.setText("Not graded\n");
 			}
+			
+			aPossibleGrade.append("(Maximum grade possible: "
+					+ assignment.getPointsPossible() + ")");
 
 			if (assignment.getLockExplanation() != null) {
 				aDescription.setText(assignment.getLockExplanation());

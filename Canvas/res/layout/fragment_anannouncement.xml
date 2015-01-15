@@ -21,33 +21,59 @@
            </ProgressBar>
        </LinearLayout>
 
+	<LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
+	    android:paddingBottom="5dp" >
+
+       <TextView
+           android:id="@+id/anannouncement_title"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="0.4"
+           android:ellipsize="end"
+           android:gravity="start"
+           android:maxLines="1"
+           android:textColor="#000"
+           android:textSize="17sp"
+           android:textStyle="bold" />
+
        <TextView
            android:id="@+id/anannouncement_course"
            android:layout_width="fill_parent"
            android:layout_height="wrap_content"
+           android:layout_weight="0.4"
+           android:gravity="end"
+           android:maxLines="1"
            android:textColor="#000"
            android:textSize="17sp"
-           android:textStyle="normal" />
+           android:textStyle="normal"
+           android:ellipsize="end" />
+
+    </LinearLayout>
     
-    <TextView
-        android:id="@+id/anannouncement_title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" 
-        android:textSize="17sp"
-        android:textColor="#000"
-        android:textStyle="bold"/>
-    
-    <TextView
-        android:id="@+id/anannouncement_date"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#000" />
+   	<LinearLayout
+   	    android:layout_width="fill_parent"
+   	    android:layout_height="wrap_content"
+   	    android:orientation="horizontal" >
 
     <TextView
         android:id="@+id/anannouncement_author_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
-        android:textColor="#000"/>
+        android:textColor="#000"
+        android:layout_weight="0.4"
+        android:ellipsize="end"
+        android:gravity="start" />
+    <TextView
+        android:id="@+id/anannouncement_date"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        android:layout_weight="0.4"
+        android:gravity="end" />
+    </LinearLayout>
     
 	<TextView 
 	    android:id="@+id/separator"
