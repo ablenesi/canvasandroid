@@ -59,6 +59,10 @@ public class CourseProvider {
 	}
 	
 	public void initialize(Context context) {
+		SharedPreferences userSp = context.getSharedPreferences(
+				"CanvasAndroid-users", Context.MODE_PRIVATE);
+		username = CookieHandler.getData(userSp, "lastusername").replace('@', '.');
+		
 		initalize(context, username);
 	}
 	
