@@ -81,7 +81,7 @@
                 android:onClick="sendChatMessage"
                 android:radius="40dip"
                 android:shape="rectangle"
-                android:text="@string/send"
+                android:text="@string/message_item_send"
                 android:textSize="15sp"
                 android:width="100dp" />
         </LinearLayout>
