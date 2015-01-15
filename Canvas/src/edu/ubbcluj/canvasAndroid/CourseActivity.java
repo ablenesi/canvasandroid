@@ -267,9 +267,18 @@ public class CourseActivity extends BaseActivity implements
 		private CustomArrayAdapterFileTreeElements fileTreeElementsAdapter;
 
 		final FolderStack folderStack = new FolderStack();
-
-		private AsyncTask<String, Void, String> asyncTask;
-		private AsyncTask<String, Void, String> asyncTaskForRefresh;
+		
+		private AsyncTask<String, Void, String> asyncTaskAssignment;
+		private AsyncTask<String, Void, String> asyncTaskForRefreshAssignment;
+		
+		private AsyncTask<String, Void, String> asyncTaskAnnouncement;
+		private AsyncTask<String, Void, String> asyncTaskForRefreshAnnouncement;
+		
+		private AsyncTask<String, Void, String> asyncTaskFolder;
+		private AsyncTask<String, Void, String> asyncTaskForRefreshFolder;
+		
+		private AsyncTask<String, Void, String> asyncTaskComingUp;
+		private AsyncTask<String, Void, String> asyncTaskForRefreshComingUp;
 
 		/**
 		 * Returns a new instance of this fragment for the given section number.
@@ -368,8 +377,8 @@ public class CourseActivity extends BaseActivity implements
 						+ "/todo") && !CheckNetwork.isNetworkOnline(getActivity())) {
 					setProgressGone();
 				} else {
-					asyncTask = ((AsyncTask<String, Void, String>) todoDao);
-					asyncTask.execute(new String[] { PropertyProvider
+					asyncTaskComingUp = ((AsyncTask<String, Void, String>) todoDao);
+					asyncTaskComingUp.execute(new String[] { PropertyProvider
 							.getProperty("url")
 							+ "/api/v1/courses/"
 							+ courseID
@@ -409,8 +418,8 @@ public class CourseActivity extends BaseActivity implements
 										}
 									});
 	
-									asyncTaskForRefresh = ((AsyncTask<String, Void, String>) todoDaoo);
-									asyncTaskForRefresh.execute(new String[] { PropertyProvider
+									asyncTaskForRefreshComingUp = ((AsyncTask<String, Void, String>) todoDaoo);
+									asyncTaskForRefreshComingUp.execute(new String[] { PropertyProvider
 											.getProperty("url")
 											+ "/api/v1/courses/"
 											+ courseID
@@ -490,8 +499,8 @@ public class CourseActivity extends BaseActivity implements
 						+ "/assignments") && !CheckNetwork.isNetworkOnline(getActivity())) {
 						setProgressGone();
 				} else {
-					asyncTask = ((AsyncTask<String, Void, String>) assignmentsDao);
-					asyncTask.execute(new String[] { PropertyProvider
+					asyncTaskAssignment = ((AsyncTask<String, Void, String>) assignmentsDao);
+					asyncTaskAssignment.execute(new String[] { PropertyProvider
 							.getProperty("url")
 							+ "/api/v1/courses/"
 							+ courseID
@@ -536,8 +545,8 @@ public class CourseActivity extends BaseActivity implements
 												}
 											});
 	
-									asyncTaskForRefresh = ((AsyncTask<String, Void, String>) assignmentsDaoo);
-									asyncTaskForRefresh.execute(new String[] { PropertyProvider
+									asyncTaskForRefreshAssignment = ((AsyncTask<String, Void, String>) assignmentsDaoo);
+									asyncTaskForRefreshAssignment.execute(new String[] { PropertyProvider
 											.getProperty("url")
 											+ "/api/v1/courses/"
 											+ courseID
@@ -616,8 +625,8 @@ public class CourseActivity extends BaseActivity implements
 						+ "/activity_stream") && !CheckNetwork.isNetworkOnline(getActivity())) {
 					setProgressGone();
 				} else {
-					asyncTask = ((AsyncTask<String, Void, String>) announcementDao);
-					asyncTask.execute(new String[] { PropertyProvider
+					asyncTaskAnnouncement = ((AsyncTask<String, Void, String>) announcementDao);
+					asyncTaskAnnouncement.execute(new String[] { PropertyProvider
 							.getProperty("url")
 							+ "/api/v1/courses/"
 							+ courseID
@@ -660,8 +669,8 @@ public class CourseActivity extends BaseActivity implements
 												}
 											});
 	
-									asyncTaskForRefresh = ((AsyncTask<String, Void, String>) announcementDaooo);
-									asyncTaskForRefresh.execute(new String[] { PropertyProvider
+									asyncTaskForRefreshAnnouncement = ((AsyncTask<String, Void, String>) announcementDaooo);
+									asyncTaskForRefreshAnnouncement.execute(new String[] { PropertyProvider
 											.getProperty("url")
 											+ "/api/v1/courses/"
 											+ courseID
@@ -717,8 +726,8 @@ public class CourseActivity extends BaseActivity implements
 	
 									Folder currentFolder = folderStack.getHead();
 	
-									asyncTask = ((AsyncTask<String, Void, String>) folderDao);
-									asyncTask.execute(new String[] {
+									asyncTaskForRefreshFolder = ((AsyncTask<String, Void, String>) folderDao);
+									asyncTaskForRefreshFolder.execute(new String[] {
 											currentFolder.getFoldersUrl(),
 											currentFolder.getFilesUrl() });
 				        		}
@@ -764,8 +773,8 @@ public class CourseActivity extends BaseActivity implements
 										folderDao
 												.addInformationListener(folderInformationListener);
 	
-										asyncTask = ((AsyncTask<String, Void, String>) folderDao);
-										asyncTask.execute(new String[] {
+										asyncTaskFolder = ((AsyncTask<String, Void, String>) folderDao);
+										asyncTaskFolder.execute(new String[] {
 												folder.getFoldersUrl(),
 												folder.getFilesUrl() });
 									}
@@ -795,8 +804,8 @@ public class CourseActivity extends BaseActivity implements
 						folderDAOforRootElements
 								.addInformationListener(folderInformationListener);
 
-						asyncTask = ((AsyncTask<String, Void, String>) folderDAOforRootElements);
-						asyncTask.execute(new String[] {
+						asyncTaskFolder = ((AsyncTask<String, Void, String>) folderDAOforRootElements);
+						asyncTaskFolder.execute(new String[] {
 								rootfolder.getFoldersUrl(),
 								rootfolder.getFilesUrl() });
 					}
@@ -811,8 +820,8 @@ public class CourseActivity extends BaseActivity implements
 						+ "/folders/by_path") && !CheckNetwork.isNetworkOnline(getActivity())) {
 					setProgressGone();
 				} else {
-					asyncTask = ((AsyncTask<String, Void, String>) folderDao);
-					asyncTask.execute(new String[] { PropertyProvider
+					asyncTaskFolder = ((AsyncTask<String, Void, String>) folderDao);
+					asyncTaskFolder.execute(new String[] { PropertyProvider
 							.getProperty("url")
 							+ "/api/v1/courses/"
 							+ courseID
@@ -830,13 +839,38 @@ public class CourseActivity extends BaseActivity implements
 
 		@Override
 		public void onStop() {
-			if (asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
-				asyncTask.cancel(true);
+			if (asyncTaskComingUp != null && asyncTaskComingUp.getStatus() == Status.RUNNING) {
+				asyncTaskComingUp.cancel(true);
 			}
-			if (asyncTaskForRefresh != null
-					&& asyncTaskForRefresh.getStatus() == Status.RUNNING) {
-				asyncTaskForRefresh.cancel(true);
+			if (asyncTaskForRefreshComingUp != null
+					&& asyncTaskForRefreshComingUp.getStatus() == Status.RUNNING) {
+				asyncTaskForRefreshComingUp.cancel(true);
 			}
+			
+			if (asyncTaskAnnouncement != null && asyncTaskAnnouncement.getStatus() == Status.RUNNING) {
+				asyncTaskAnnouncement.cancel(true);
+			}
+			if (asyncTaskForRefreshAnnouncement != null
+					&& asyncTaskForRefreshAnnouncement.getStatus() == Status.RUNNING) {
+				asyncTaskForRefreshAnnouncement.cancel(true);
+			}
+			
+			if (asyncTaskAssignment != null && asyncTaskAssignment.getStatus() == Status.RUNNING) {
+				asyncTaskAssignment.cancel(true);
+			}
+			if (asyncTaskForRefreshAssignment != null
+					&& asyncTaskForRefreshAssignment.getStatus() == Status.RUNNING) {
+				asyncTaskForRefreshAssignment.cancel(true);
+			}
+			
+			if (asyncTaskFolder != null && asyncTaskFolder.getStatus() == Status.RUNNING) {
+				asyncTaskFolder.cancel(true);
+			}
+			if (asyncTaskForRefreshFolder != null
+					&& asyncTaskForRefreshFolder.getStatus() == Status.RUNNING) {
+				asyncTaskForRefreshFolder.cancel(true);
+			}
+			
 			super.onStop();
 		}
 
