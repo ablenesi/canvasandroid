@@ -2,24 +2,28 @@ package edu.ubbcluj.canvasAndroid;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
 import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.backend.util.ServiceProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
+import edu.ubbcluj.canvasAndroid.model.AnnouncementComment;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 
 public class InformationActivity extends BaseActivity {
@@ -81,6 +85,7 @@ public class InformationActivity extends BaseActivity {
 		private AsyncTask<String, Void, String> asyncTask;
 		
 		TextView textViews[] = null;
+		private LinearLayout linearLayout;
 
 		public PlaceholderFragment() {
 		}
@@ -148,6 +153,7 @@ public class InformationActivity extends BaseActivity {
 			case Announcement:
 				rootView = inflater.inflate(R.layout.fragment_anannouncement,
 						container, false);
+				linearLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_announcement);
 
 				textViews = new TextView[4];
 
@@ -173,7 +179,6 @@ public class InformationActivity extends BaseActivity {
 
 								if (!ad.getData().isEmpty()) {
 									setAnnouncement(ad.getData().get(0));
-									InformationActivity im = new InformationActivity();
 									setProgressGone();
 								}
 								
@@ -235,17 +240,10 @@ public class InformationActivity extends BaseActivity {
 			this.announcement = announcement;
 
 			if (textViews != null) {
-				Log.d("Rest","222");
 				if (!announcement.getRead_state()){
-					Log.d("Rest","Olvasatlan"+ PropertyProvider
-							.getProperty("url")
-							+ "/api/v1/courses/"
-							+ courseID
-							+ "/discussion_topics/"
-							+ announcementID 
-							+ "/read");
-					MyService.announcementUnreadCount--; 
-					
+					ServiceProvider.getInstance().setAnnouncementUnreadCount(
+							ServiceProvider.getInstance().getAnnouncementUnreadCount()-1);
+					announcement.setRead_state(true);
 					new RestInformationDAO().execute(new String[] { PropertyProvider
 									.getProperty("url")
 									+ "/courses/"
@@ -257,7 +255,30 @@ public class InformationActivity extends BaseActivity {
 				textViews[1].setText(formatDate(announcement.getPostedAt()));
 				textViews[2].setText(announcement.getAuthorName());
 				textViews[3].setText(Html.fromHtml(announcement.getMessage()));
+				
+				if (announcement.getAc() == null || announcement.getAc().length == 0) {
+					TextView tw = new TextView(getActivity());
+					tw.setText("No comments");
+					tw.setTextColor(Color.BLACK);
+					linearLayout.addView(tw);
+				} else {
+					AnnouncementComment[] comments = announcement.getAc();
+					
+					for (int i = 0; i < comments.length; i++) {
+						TextView twComment = new TextView(getActivity());
+						twComment.setTextColor(Color.BLACK);
+						twComment.setText(comments[i].getMessage());
+						linearLayout.addView(twComment);
+						
+						TextView twAuthor = new TextView(getActivity());
+						twAuthor.setTextColor(Color.GRAY);
+						twAuthor.setGravity(Gravity.END);
+						twAuthor.setText(comments[i].getUserName() + "\n");
+						linearLayout.addView(twAuthor);
+					}
+				}
 			}
+			
 		}
 
 		private String formatDate(String date) {

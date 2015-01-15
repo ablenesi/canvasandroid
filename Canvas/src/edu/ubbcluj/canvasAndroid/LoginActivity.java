@@ -16,6 +16,7 @@ import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
 import edu.ubbcluj.canvasAndroid.backend.repository.UserDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.backend.util.ServiceProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
@@ -112,9 +113,11 @@ public class LoginActivity extends Activity {
 			
 			@Override
 			public void onComplete(InformationEvent e) {
+				ServiceProvider sp = ServiceProvider.getInstance();
 				CourseProvider cp = CourseProvider.getInstance();
 				String username = LoginActivity.this.username.replace('@', '.');
 				cp.initalize(LoginActivity.this, username);
+				sp.initalize(getApplicationContext());
 				cp.updateWith(coursesDao.getData());
 				redirect();
 			}

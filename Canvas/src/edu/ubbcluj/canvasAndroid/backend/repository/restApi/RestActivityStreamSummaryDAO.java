@@ -7,9 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.ubbcluj.canvasAndroid.MyService;
 import edu.ubbcluj.canvasAndroid.backend.repository.ActivityStreamSummaryDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.backend.util.ServiceProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.ActivityStreamSummary;
 import android.content.SharedPreferences;
@@ -64,7 +64,9 @@ public class RestActivityStreamSummaryDAO extends AsyncTask<String, Void, String
 		try {	
 			JSONArray jArr = new JSONArray(jsonSource);
 			JSONObject obj = jArr.getJSONObject(0);
-			MyService.newAnnouncementUnreadCount = convertJSONtoASS(obj).getUnread_count();
+			ServiceProvider.getInstance().setNewAnnouncementUnreadCount(
+					convertJSONtoASS(obj).getUnread_count());
+			//MyService.newAnnouncementUnreadCount = convertJSONtoASS(obj).getUnread_count();
 
 		} catch (JSONException e) {
 			Log.e("Json", e.getMessage(), new Error());

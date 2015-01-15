@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.ubbcluj.canvasAndroid.backend.util.ServiceProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
@@ -135,7 +137,7 @@ public class BaseActivity extends ActionBarActivity implements
     public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.removeItem(Menu.FIRST+6);
 		menu.removeItem(Menu.FIRST+7);
-        if (MyService.service_started)
+        if (ServiceProvider.getInstance().getService_started())
         	menu.add(Menu.NONE,Menu.FIRST+6,Menu.NONE,R.string.stop_service);
 		else
 			menu.add(Menu.NONE,Menu.FIRST+7,Menu.NONE,R.string.start_service);
@@ -195,8 +197,15 @@ public class BaseActivity extends ActionBarActivity implements
 			startActivity(intent);
 			return true;
 		case R.id.logout:
+			Intent intent4 = new Intent(this,MyService.class);
+			ServiceProvider.getInstance().setService_started(false);
+			ServiceProvider.getInstance().setNewAnnouncementUnreadCount(0);
+			ServiceProvider.getInstance().setAnnouncementUnreadCount(0);
+			Toast.makeText(this, "Service Stopped", Toast.LENGTH_LONG).show();
+			MyService.alarm.cancel(PendingIntent.getService(this, 0, new Intent(this, MyService.class), 0));
+			stopService(intent4);
 			SingletonCookie.getInstance().deleteCookieStore();
-
+			
 			intent = new Intent(this, LoginActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
@@ -204,14 +213,14 @@ public class BaseActivity extends ActionBarActivity implements
 			return true;
 		case Menu.FIRST+6:
 			Intent intent2 = new Intent(this,MyService.class);
-			MyService.service_started = false;
+			ServiceProvider.getInstance().setService_started(false);
 			Toast.makeText(this, "Service Stopped", Toast.LENGTH_LONG).show();
 			MyService.alarm.cancel(PendingIntent.getService(this, 0, new Intent(this, MyService.class), 0));
 			stopService(intent2);
 			return true;
 		case Menu.FIRST+7:
 			Intent intent3 = new Intent(this,MyService.class);
-			MyService.service_started = true;
+			ServiceProvider.getInstance().setService_started(true);
 			Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
 			startService(intent3);
 			return true;
