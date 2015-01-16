@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.util.adapters;
+package edu.ubbcluj.canvasAndroid.view.adapter;
 
 import java.util.List;
 
@@ -11,8 +11,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import edu.ubbcluj.canvasAndroid.R;
-import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
+import edu.ubbcluj.canvasAndroid.persistence.CourseProvider;
 
 public class CustomArrayAdapterCourseSelection extends ArrayAdapter<ActiveCourse> {
 	private final Context context;

@@ -6,4 +6,4 @@
     android:ellipsize="end"
     android:background="@color/actionBarColor"
     style="@style/dividedListStyle"
-    tools:context="edu.ubbcluj.canvasAndroid.NavigationDrawerFragment" />
+    tools:context="edu.ubbcluj.canvasAndroid.view.activity.NavigationDrawerFragment" />

@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid;
+package edu.ubbcluj.canvasAndroid.view.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,16 +15,17 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
-import edu.ubbcluj.canvasAndroid.backend.repository.MessageSequenceDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.NewMessageDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterMessage;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.R;
+import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
+import edu.ubbcluj.canvasAndroid.controller.MessageSequenceController;
+import edu.ubbcluj.canvasAndroid.controller.NewMessageController;
+import edu.ubbcluj.canvasAndroid.controller.rest.RestInformation;
 import edu.ubbcluj.canvasAndroid.model.MessageSequence;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.view.adapter.CustomArrayAdapterMessage;
 
 public class MessageItemActivity extends ActionBarActivity{
 
@@ -55,32 +56,32 @@ public class MessageItemActivity extends ActionBarActivity{
 
 	@SuppressWarnings("unchecked")
 	public void sendChatMessage(View view) {
-		DAOFactory df = DAOFactory.getInstance();
-		NewMessageDAO newMessageDAO = df.getNewMessageDAO();
+		ControllerFactory cf = ControllerFactory.getInstance();
+		NewMessageController newMessageController = cf.getNewMessageController();
 
 		messageField = (EditText) findViewById(R.id.message_item_text);
 		String body = messageField.getText().toString();
 
-		newMessageDAO.setMessageItemActivity(this);
-		newMessageDAO.setBody(body);
-		newMessageDAO.addInformationListener(new InformationListener() {
+		newMessageController.setMessageItemActivity(this);
+		newMessageController.setBody(body);
+		newMessageController.addInformationListener(new InformationListener() {
 			@Override
 			public void onComplete(InformationEvent e) {
-				DAOFactory df = DAOFactory.getInstance();
-				MessageSequenceDAO messageSequenceDao;
-				messageSequenceDao = df.getMessageSequenceDAO();
-				messageSequenceDao.setSharedPreferences(
+				ControllerFactory cf = ControllerFactory.getInstance();
+				MessageSequenceController messageSequenceController;
+				messageSequenceController = cf.getMessageSequenceController();
+				messageSequenceController.setSharedPreferences(
 						MessageItemActivity.this.getSharedPreferences(
 								"CanvasAndroid",
 								Context.MODE_PRIVATE)
 						);
 					
-				messageSequenceDao
+				messageSequenceController
 						.addInformationListener(new InformationListener() {
 
 							@Override
 							public void onComplete(InformationEvent e) {
-								MessageSequenceDAO messageSequence = (MessageSequenceDAO) e
+								MessageSequenceController messageSequence = (MessageSequenceController) e
 										.getSource();
 								placeholderFragment.setMessageSequence(messageSequence.getData());
 								placeholderFragment.setAdapter();
@@ -95,7 +96,7 @@ public class MessageItemActivity extends ActionBarActivity{
 					
 				} else {
 					
-					asyncTask = ((AsyncTask<String, Void, String>) messageSequenceDao).
+					asyncTask = ((AsyncTask<String, Void, String>) messageSequenceController).
 								execute(new String[] { 
 										PropertyProvider.getProperty("url")
 										+ "/api/v1/conversations/" 
@@ -113,13 +114,13 @@ public class MessageItemActivity extends ActionBarActivity{
 		} else {
 			
 			// Execute asyncTasc
-			asyncTask = ((AsyncTask<String, Void, String>) newMessageDAO)
+			asyncTask = ((AsyncTask<String, Void, String>) newMessageController)
 					.execute(new String[] { PropertyProvider.getProperty("url")
 							+ "/conversations/" + messageID + "/add_message" });
 			
 			messageField.setText("");
 			
-			RestInformationDAO.clearData();
+			RestInformation.clearData();
 		}
 	}
 
@@ -149,7 +150,7 @@ public class MessageItemActivity extends ActionBarActivity{
 		private ListView list;
 		private View viewContainer;
 
-		private DAOFactory df;
+		private ControllerFactory cf;
 		private List<MessageSequence> messageSequence;
 
 		private AsyncTask<String, Void, String> asyncTask;
@@ -157,7 +158,7 @@ public class MessageItemActivity extends ActionBarActivity{
 		private CustomArrayAdapterMessage adapter;
 
 		public PlaceholderFragment() {
-			df = DAOFactory.getInstance();
+			cf = ControllerFactory.getInstance();
 		}
 
 		@SuppressWarnings("unchecked")
@@ -172,21 +173,21 @@ public class MessageItemActivity extends ActionBarActivity{
 			viewContainer = rootView.findViewById(R.id.linProg);
 			setProgressVisible();
 
-			MessageSequenceDAO messageSequenceDao;
-			messageSequenceDao = df.getMessageSequenceDAO();
-			messageSequenceDao
+			MessageSequenceController messageSequenceController;
+			messageSequenceController = cf.getMessageSequenceController();
+			messageSequenceController
 					.setSharedPreferences(this.getActivity()
 							.getSharedPreferences("CanvasAndroid",
 									Context.MODE_PRIVATE));
 
 			messageSequence = new ArrayList<MessageSequence>();
 
-			messageSequenceDao
+			messageSequenceController
 					.addInformationListener(new InformationListener() {
 
 						@Override
 						public void onComplete(InformationEvent e) {
-							MessageSequenceDAO messageSequence = (MessageSequenceDAO) e
+							MessageSequenceController messageSequence = (MessageSequenceController) e
 									.getSource();
 							setProgressGone();
 							setMessageSequence(messageSequence.getData());
@@ -198,7 +199,7 @@ public class MessageItemActivity extends ActionBarActivity{
 						}
 					});
 
-			asyncTask = ((AsyncTask<String, Void, String>) messageSequenceDao).
+			asyncTask = ((AsyncTask<String, Void, String>) messageSequenceController).
 							execute(new String[] { 
 									PropertyProvider.getProperty("url")
 									+ "/api/v1/conversations/" 

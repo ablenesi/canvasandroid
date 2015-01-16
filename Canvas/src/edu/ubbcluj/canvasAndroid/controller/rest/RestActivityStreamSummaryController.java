@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
+package edu.ubbcluj.canvasAndroid.controller.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,22 +7,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.ubbcluj.canvasAndroid.backend.repository.ActivityStreamSummaryDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.ServiceProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.controller.ActivityStreamSummaryController;
 import edu.ubbcluj.canvasAndroid.model.ActivityStreamSummary;
+import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.persistence.ServiceProvider;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class RestActivityStreamSummaryDAO extends AsyncTask<String, Void, String> implements ActivityStreamSummaryDAO
+public class RestActivityStreamSummaryController extends AsyncTask<String, Void, String> implements ActivityStreamSummaryController
 {
 
 	private List<ActivityStreamSummary> data;
 	private SharedPreferences	sp;
 	
-	public RestActivityStreamSummaryDAO() {
+	public RestActivityStreamSummaryController() {
 		super();
 		data = new ArrayList<ActivityStreamSummary>();
 	}
@@ -49,7 +49,7 @@ public class RestActivityStreamSummaryDAO extends AsyncTask<String, Void, String
 
 		// Get JSON data from url
 		for (String url : urls) {
-			response = RestInformationDAO.getData(url);
+			response = RestInformation.getData(url);
 		}
 		
 		data = new ArrayList<ActivityStreamSummary>();

@@ -1,9 +1,10 @@
-package edu.ubbcluj.canvasAndroid.backend.util;
+package edu.ubbcluj.canvasAndroid.persistence;
 
 import java.util.Date;
 
 import org.apache.http.impl.cookie.BasicClientCookie2;
 
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
 import android.content.SharedPreferences;
 
 public class CookieHandler {

@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.util;
+package edu.ubbcluj.canvasAndroid.persistence;
 
 import java.util.Map;
 import java.util.Set;

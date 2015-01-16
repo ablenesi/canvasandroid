@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.util;
+package edu.ubbcluj.canvasAndroid.persistence;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid;
+package edu.ubbcluj.canvasAndroid.view.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -14,25 +14,26 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import edu.ubbcluj.canvasAndroid.backend.repository.CoursesDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
-import edu.ubbcluj.canvasAndroid.backend.repository.UserDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.ServiceProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckSavedSession;
+import edu.ubbcluj.canvasAndroid.R;
+import edu.ubbcluj.canvasAndroid.controller.CoursesController;
+import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
+import edu.ubbcluj.canvasAndroid.controller.UserController;
+import edu.ubbcluj.canvasAndroid.controller.rest.RestInformation;
+import edu.ubbcluj.canvasAndroid.persistence.CourseProvider;
+import edu.ubbcluj.canvasAndroid.persistence.ServiceProvider;
+import edu.ubbcluj.canvasAndroid.persistence.model.SingletonSharedPreferences;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.util.network.CheckSavedSession;
 
 public class LoginActivity extends Activity {
 
 	private ProgressDialog dialog;
-	private DAOFactory df;
+	private ControllerFactory cf;
 	private CheckSavedSession savedSession;
-	private UserDAO userDAO;
+	private UserController userController;
 	private String username;
 	
 	private TextView userTw;
@@ -61,20 +62,20 @@ public class LoginActivity extends Activity {
 		sPreferences.init(LoginActivity.this.getSharedPreferences(
 				"CanvasAndroid", Context.MODE_PRIVATE));
 
-		df = DAOFactory.getInstance();
-		UserDAO userDAO = df.getUserDAO();
-		userDAO.setLoginActivity(this);
+		cf = ControllerFactory.getInstance();
+		UserController userController = cf.getUserController();
+		userController.setLoginActivity(this);
 
-		userDAO.setSharedPreferences(this.getSharedPreferences(
+		userController.setSharedPreferences(this.getSharedPreferences(
 				"CanvasAndroid-users", Context.MODE_PRIVATE));
-		username =  userDAO.getLastUsername();
+		username =  userController.getLastUsername();
 		
 		savedSession = new CheckSavedSession();
 		((AsyncTask<LoginActivity, Void, Void>) savedSession)
 				.execute(new LoginActivity[] { this });
 
 		AutoCompleteTextView userNameTextView = (AutoCompleteTextView) findViewById(R.id.username);
-		userNameTextView.setAdapter(userDAO.getSavedUsersAdapter());
+		userNameTextView.setAdapter(userController.getSavedUsersAdapter());
 	}
 	
 	// Method to start the service
@@ -101,31 +102,31 @@ public class LoginActivity extends Activity {
 			Toast.makeText(this, "No network connection!",
 					Toast.LENGTH_LONG).show();
 		} else {
-			RestInformationDAO.clearData();
+			RestInformation.clearData();
 			
-			userDAO = df.getUserDAO();
+			userController = cf.getUserController();
 	
 			// Set user data to login asyncTasc
-			userDAO.setLoginActivity(this);
-			userDAO.setSharedPreferences(this.getSharedPreferences(
+			userController.setLoginActivity(this);
+			userController.setSharedPreferences(this.getSharedPreferences(
 					"CanvasAndroid-users", Context.MODE_PRIVATE));
-			userDAO.setUsername(userField.getText().toString());
-			username = userDAO.getUsername();
-			userDAO.setPassword(passField.getText().toString());
+			userController.setUsername(userField.getText().toString());
+			username = userController.getUsername();
+			userController.setPassword(passField.getText().toString());
 	
 			// Execute asyncTasc
-			((AsyncTask<String, Void, String>) userDAO)
+			((AsyncTask<String, Void, String>) userController)
 					.execute(new String[] { PropertyProvider.getProperty("url") });
 		}
 	}
 
 	public void loginCompleted() {
 		//showDialog("Connecting... Please wait!");
-		final CoursesDAO coursesDao = df.getCoursesDAO();
-		coursesDao.setSharedPreferences(LoginActivity.this
+		final CoursesController coursesController = cf.getCoursesController();
+		coursesController.setSharedPreferences(LoginActivity.this
 				.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE));
 
-		coursesDao.addInformationListener(new InformationListener() {
+		coursesController.addInformationListener(new InformationListener() {
 			
 			@Override
 			public void onComplete(InformationEvent e) {
@@ -134,13 +135,13 @@ public class LoginActivity extends Activity {
 				String username = LoginActivity.this.username.replace('@', '.');
 				cp.initalize(LoginActivity.this, username);
 				sp.initalize(getApplicationContext());
-				cp.updateWith(coursesDao.getData());
+				cp.updateWith(coursesController.getData());
 				redirect();
 			}
 		});
 		
 		@SuppressWarnings("unchecked")
-		AsyncTask<String, Void, String> asyncTask = ((AsyncTask<String, Void, String>) coursesDao);
+		AsyncTask<String, Void, String> asyncTask = ((AsyncTask<String, Void, String>) coursesController);
 		asyncTask.execute(new String[] { PropertyProvider.getProperty("url")
 				+ "/api/v1/courses?per_page=25" });
 	}

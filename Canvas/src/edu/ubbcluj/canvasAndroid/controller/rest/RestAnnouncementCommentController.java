@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
+package edu.ubbcluj.canvasAndroid.controller.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,24 +9,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementCommentDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.controller.AnnouncementCommentController;
 import edu.ubbcluj.canvasAndroid.model.AnnouncementComment;
+import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
+import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class RestAnnouncementCommentDAO extends AsyncTask<String, Void, String> implements
-		AnnouncementCommentDAO {
+public class RestAnnouncementCommentController extends AsyncTask<String, Void, String> implements
+		AnnouncementCommentController {
 	
 	private List<InformationListener> actionList;
 	private String comment;
 
-	public RestAnnouncementCommentDAO() {
+	public RestAnnouncementCommentController() {
 		actionList = new ArrayList<InformationListener>();
 		comment = new String();
 	}
@@ -79,7 +79,7 @@ public class RestAnnouncementCommentDAO extends AsyncTask<String, Void, String> 
 		formData.add(new BasicNameValuePair("_method", "PUT"));
 		Log.d("sendmymess",url);
 		Log.d("sendmymess",comment);
-		response = RestInformationDAO.postData(url, formData);
+		response = RestInformation.postData(url, formData);
 		
 		return response;
 	}

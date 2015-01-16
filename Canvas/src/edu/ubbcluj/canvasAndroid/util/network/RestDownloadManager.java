@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.util.network;
+package edu.ubbcluj.canvasAndroid.util.network;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.util.model;
+package edu.ubbcluj.canvasAndroid.persistence.model;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

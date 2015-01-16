@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid;
+package edu.ubbcluj.canvasAndroid.view.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +17,16 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import edu.ubbcluj.canvasAndroid.backend.repository.ConversationDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterConversation;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.R;
+import edu.ubbcluj.canvasAndroid.controller.ConversationController;
+import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
 import edu.ubbcluj.canvasAndroid.model.Conversation;
+import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.view.adapter.CustomArrayAdapterConversation;
 
 public class MessagesActivity extends ActionBarActivity {
 
@@ -50,7 +51,7 @@ public class MessagesActivity extends ActionBarActivity {
 		private ListView list;
 		private View viewContainer;
 
-		private DAOFactory df;
+		private ControllerFactory cf;
 		private List<Conversation> conversation;
 
 		private AsyncTask<String, Void, String> asyncTask;
@@ -58,7 +59,7 @@ public class MessagesActivity extends ActionBarActivity {
 		private CustomArrayAdapterConversation adapter;
 
 		public PlaceholderFragment() {
-			df = DAOFactory.getInstance();
+			cf = ControllerFactory.getInstance();
 		}
 
 		@SuppressWarnings("unchecked")
@@ -98,22 +99,22 @@ public class MessagesActivity extends ActionBarActivity {
 				}
 			});
 
-			ConversationDAO conversationDao;
-			conversationDao = df.getConversationDAO();
-			conversationDao
+			ConversationController conversationController;
+			conversationController = cf.getConversationController();
+			conversationController
 					.setSharedPreferences(this.getActivity()
 							.getSharedPreferences("CanvasAndroid",
 									Context.MODE_PRIVATE));
 
 			conversation = new ArrayList<Conversation>();
 
-			// dashboardDao.setDba(this);
+			// dashboardController.setDba(this);
 
-			conversationDao.addInformationListener(new InformationListener() {
+			conversationController.addInformationListener(new InformationListener() {
 
 				@Override
 				public void onComplete(InformationEvent e) {
-					ConversationDAO conversation = (ConversationDAO) e
+					ConversationController conversation = (ConversationController) e
 							.getSource();
 					setProgressGone();
 					setConversation(conversation.getData());
@@ -124,7 +125,7 @@ public class MessagesActivity extends ActionBarActivity {
 				}
 			});
 
-			asyncTask = ((AsyncTask<String, Void, String>) conversationDao);
+			asyncTask = ((AsyncTask<String, Void, String>) conversationController);
 			asyncTask.execute(new String[] { PropertyProvider.getProperty("url")
 							+ "/api/v1/conversations" });
 

@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
+package edu.ubbcluj.canvasAndroid.controller.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,18 +8,18 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import edu.ubbcluj.canvasAndroid.backend.repository.SubmissionCommentDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.controller.SubmissionCommentController;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
 
-public class RestSubmissionCommentDAO extends AsyncTask<String, Void, String> implements SubmissionCommentDAO {
+public class RestSubmissionCommentController extends AsyncTask<String, Void, String> implements SubmissionCommentController {
 
 	private List<InformationListener> actionList;
 
 	private String comment;
 	
 	
-	public RestSubmissionCommentDAO() {
+	public RestSubmissionCommentController() {
 		actionList = new ArrayList<InformationListener>();
 		comment = new String();
 	}
@@ -65,7 +65,7 @@ public class RestSubmissionCommentDAO extends AsyncTask<String, Void, String> im
 		formData.add(new BasicNameValuePair("_method", "POST"));
 		Log.d("sendmymess",url);
 		Log.d("sendmymess",comment);
-		response = RestInformationDAO.postData(url, formData);
+		response = RestInformation.postData(url, formData);
 		
 		return response;
 	}

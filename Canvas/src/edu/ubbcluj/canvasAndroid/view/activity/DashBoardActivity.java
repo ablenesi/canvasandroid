@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid;
+package edu.ubbcluj.canvasAndroid.view.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,20 +16,21 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import edu.ubbcluj.canvasAndroid.backend.repository.ActivityStreamDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
-import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterActivityStream;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.R;
+import edu.ubbcluj.canvasAndroid.controller.ActivityStreamController;
+import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
+import edu.ubbcluj.canvasAndroid.controller.rest.RestInformation;
 import edu.ubbcluj.canvasAndroid.model.ActivityStream;
+import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.view.adapter.CustomArrayAdapterActivityStream;
 
 public class DashBoardActivity extends BaseActivity {
 
-	private DAOFactory df;
+	private ControllerFactory cf;
 	private List<ActivityStream> activityStream;
 
 	private CustomArrayAdapterActivityStream adapter;
@@ -56,12 +57,12 @@ public class DashBoardActivity extends BaseActivity {
 		viewContainer.setVisibility(View.VISIBLE);
 
 		// Get the activity stream
-		df = DAOFactory.getInstance();
+		cf = ControllerFactory.getInstance();
 		
 		
-		ActivityStreamDAO dashboardDao;
-		dashboardDao = df.getDashboardDAO();
-		dashboardDao.setSharedPreferences(DashBoardActivity.this.getSharedPreferences(
+		ActivityStreamController dashboardController;
+		dashboardController = cf.getDashboardController();
+		dashboardController.setSharedPreferences(DashBoardActivity.this.getSharedPreferences(
 				"CanvasAndroid", Context.MODE_PRIVATE));
 		
 		activityStream = new ArrayList<ActivityStream>();
@@ -180,17 +181,17 @@ public class DashBoardActivity extends BaseActivity {
 		});
 
 
-		dashboardDao.addInformationListener(new InformationListener() {
+		dashboardController.addInformationListener(new InformationListener() {
 
 			@Override
 			public void onComplete(InformationEvent e) {
-				ActivityStreamDAO asd = (ActivityStreamDAO) e.getSource();
+				ActivityStreamController asd = (ActivityStreamController) e.getSource();
 				setProgressGone();
 				setActivityStream(asd.getData());
 			}
 		});
 
-		asyncTask = ((AsyncTask<String, Void, String>) dashboardDao);
+		asyncTask = ((AsyncTask<String, Void, String>) dashboardController);
 		asyncTask.execute(new String[] { PropertyProvider.getProperty("url")
 						+ "/api/v1/users/self/activity_stream" });
 
@@ -207,20 +208,20 @@ public class DashBoardActivity extends BaseActivity {
 					Toast.makeText(DashBoardActivity.this, "No network connection!",
 							Toast.LENGTH_LONG).show();
         		} else {
-	        		ActivityStreamDAO dashboardDao;
-	        		dashboardDao = df.getDashboardDAO();
-	        		dashboardDao.setSharedPreferences(DashBoardActivity.this.getSharedPreferences(
+	        		ActivityStreamController dashboardController;
+	        		dashboardController = cf.getDashboardController();
+	        		dashboardController.setSharedPreferences(DashBoardActivity.this.getSharedPreferences(
 	        				"CanvasAndroid", Context.MODE_PRIVATE));
-	        		RestInformationDAO.clearData();
+	        		RestInformation.clearData();
 	        		
 	        		
 	        		activityStream = new ArrayList<ActivityStream>();
-	        		dashboardDao.addInformationListener(new InformationListener() {
+	        		dashboardController.addInformationListener(new InformationListener() {
 	        			
 	        			
 	        			@Override
 	        			public void onComplete(InformationEvent e) {
-	        				ActivityStreamDAO asd = (ActivityStreamDAO) e.getSource();
+	        				ActivityStreamController asd = (ActivityStreamController) e.getSource();
 	        				setProgressGone();
 	        				setActivityStream(asd.getData());
 	        				swipeView.setRefreshing(false);
@@ -230,7 +231,7 @@ public class DashBoardActivity extends BaseActivity {
 	        		});
 	        		
 	
-	        		asynTaskForRefresh = ((AsyncTask<String, Void, String>) dashboardDao);
+	        		asynTaskForRefresh = ((AsyncTask<String, Void, String>) dashboardController);
 	        		asynTaskForRefresh.execute(new String[] { PropertyProvider.getProperty("url")
 	        						+ "/api/v1/users/self/activity_stream" });
         		}

@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
+package edu.ubbcluj.canvasAndroid.controller.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,15 +11,15 @@ import org.json.JSONObject;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import edu.ubbcluj.canvasAndroid.MessageItemActivity;
-import edu.ubbcluj.canvasAndroid.backend.repository.NewMessageDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.controller.NewMessageController;
 import edu.ubbcluj.canvasAndroid.model.MessageSequence;
 import edu.ubbcluj.canvasAndroid.model.Person;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
+import edu.ubbcluj.canvasAndroid.view.activity.MessageItemActivity;
 
-public class RestNewMessageDAO extends AsyncTask<String, Void, String>
-		implements NewMessageDAO {
+public class RestNewMessageController extends AsyncTask<String, Void, String>
+		implements NewMessageController {
 
 	private String body;
 
@@ -29,7 +29,7 @@ public class RestNewMessageDAO extends AsyncTask<String, Void, String>
 	private MessageItemActivity messageItemActivity;
 	private List<InformationListener> actionList;
 	
-	public RestNewMessageDAO(){
+	public RestNewMessageController(){
 		actionList = new ArrayList<InformationListener>();
 	}
 	
@@ -44,7 +44,7 @@ public class RestNewMessageDAO extends AsyncTask<String, Void, String>
 		List<NameValuePair> formData = new ArrayList<NameValuePair>();
 		formData.add(new BasicNameValuePair("body", body));
 		
-		response = RestInformationDAO.postData(url, formData);
+		response = RestInformation.postData(url, formData);
 		
 		return response;
 	}

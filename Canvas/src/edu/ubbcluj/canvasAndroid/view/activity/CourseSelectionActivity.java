@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid;
+package edu.ubbcluj.canvasAndroid.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,11 +12,12 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterCourseSelection;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.R;
+import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
+import edu.ubbcluj.canvasAndroid.persistence.model.SingletonCookie;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.view.adapter.CustomArrayAdapterCourseSelection;
 
 public class CourseSelectionActivity extends ActionBarActivity {
 

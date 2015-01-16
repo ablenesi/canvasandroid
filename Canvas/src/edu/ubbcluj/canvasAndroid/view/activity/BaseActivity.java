@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid;
+package edu.ubbcluj.canvasAndroid.view.activity;
 
 import java.util.ArrayList;
 
@@ -20,14 +20,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import edu.ubbcluj.canvasAndroid.backend.util.ServiceProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.R;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
+import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
+import edu.ubbcluj.canvasAndroid.persistence.CourseProvider;
+import edu.ubbcluj.canvasAndroid.persistence.ServiceProvider;
+import edu.ubbcluj.canvasAndroid.persistence.model.SingletonCookie;
+import edu.ubbcluj.canvasAndroid.persistence.model.SingletonSharedPreferences;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
 
 public class BaseActivity extends ActionBarActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {

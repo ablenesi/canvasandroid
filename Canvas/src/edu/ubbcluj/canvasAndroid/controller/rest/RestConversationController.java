@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
+package edu.ubbcluj.canvasAndroid.controller.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,21 +10,21 @@ import org.json.JSONObject;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
-import edu.ubbcluj.canvasAndroid.backend.repository.ConversationDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.controller.ConversationController;
 import edu.ubbcluj.canvasAndroid.model.Conversation;
+import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
+import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
 
-public class RestConversationDAO extends AsyncTask<String, Void, String>
-		implements ConversationDAO {
+public class RestConversationController extends AsyncTask<String, Void, String>
+		implements ConversationController {
 
 	private List<Conversation> data;
 	private List<InformationListener> actionList;
 	private SharedPreferences sp;
 
-	public RestConversationDAO() {
+	public RestConversationController() {
 		super();
 		data = new ArrayList<Conversation>();
 		actionList = new ArrayList<InformationListener>();
@@ -68,7 +68,7 @@ public class RestConversationDAO extends AsyncTask<String, Void, String>
 				response = CookieHandler.getData(sp, url);
 			else
 			{
-				response = RestInformationDAO.getData(url);
+				response = RestInformation.getData(url);
 				CookieHandler.saveData(sp, url, response);
 			}
 		}

@@ -1,10 +1,10 @@
-package edu.ubbcluj.canvasAndroid.backend.repository;
+package edu.ubbcluj.canvasAndroid.controller;
 
 import android.content.SharedPreferences;
 import android.widget.ArrayAdapter;
-import edu.ubbcluj.canvasAndroid.LoginActivity;
+import edu.ubbcluj.canvasAndroid.view.activity.LoginActivity;
 
-public interface UserDAO {
+public interface UserController {
 	public String loginUser(String host);
 
 	public void setUsername(String username);

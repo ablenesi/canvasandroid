@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid;
+package edu.ubbcluj.canvasAndroid.view.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,22 +18,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import edu.ubbcluj.canvasAndroid.AssignmentActivity.PlaceholderFragment;
-import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementCommentDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
-import edu.ubbcluj.canvasAndroid.backend.repository.SubmissionCommentDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.ServiceProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.R;
+import edu.ubbcluj.canvasAndroid.controller.AnnouncementCommentController;
+import edu.ubbcluj.canvasAndroid.controller.AnnouncementController;
+import edu.ubbcluj.canvasAndroid.controller.AssignmentsController;
+import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
+import edu.ubbcluj.canvasAndroid.controller.SubmissionCommentController;
+import edu.ubbcluj.canvasAndroid.controller.rest.RestInformation;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.AnnouncementComment;
 import edu.ubbcluj.canvasAndroid.model.AnnouncementCommentReplies;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
+import edu.ubbcluj.canvasAndroid.persistence.CourseProvider;
+import edu.ubbcluj.canvasAndroid.persistence.ServiceProvider;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
+import edu.ubbcluj.canvasAndroid.view.activity.AssignmentActivity.PlaceholderFragment;
 
 public class InformationActivity extends BaseActivity {
 
@@ -100,7 +101,7 @@ public class InformationActivity extends BaseActivity {
 		private LinearLayout linearLayoutComments;
 		private ProgressDialog dialog;
 		
-		private DAOFactory df = DAOFactory.getInstance();
+		private ControllerFactory cf = ControllerFactory.getInstance();
 		private Assignment assignment;
 		private Announcement announcement;
 
@@ -150,14 +151,14 @@ public class InformationActivity extends BaseActivity {
 				textViews[4] = (TextView) rootView
 						.findViewById(R.id.anassignment_description);
 
-				AssignmentsDAO assignmentDAO = df.getAssignmentsDAO();
-				assignmentDAO.setSharedPreferences(sp);
+				AssignmentsController assignmentController = cf.getAssignmentsController();
+				assignmentController.setSharedPreferences(sp);
 
-				assignmentDAO.addInformationListener(new InformationListener() {
+				assignmentController.addInformationListener(new InformationListener() {
 
 					@Override
 					public void onComplete(InformationEvent e) {
-						AssignmentsDAO ad = (AssignmentsDAO) e.getSource();
+						AssignmentsController ad = (AssignmentsController) e.getSource();
 
 						if (!ad.getData().isEmpty()) {
 							setAssignment(ad.getData().get(0));
@@ -166,7 +167,7 @@ public class InformationActivity extends BaseActivity {
 					}
 				});
 
-				asyncTask = ((AsyncTask<String, Void, String>) assignmentDAO);
+				asyncTask = ((AsyncTask<String, Void, String>) assignmentController);
 				asyncTask.execute(new String[] { PropertyProvider
 								.getProperty("url")
 								+ "/api/v1/courses/"
@@ -198,15 +199,15 @@ public class InformationActivity extends BaseActivity {
 				linearLayoutComments = (LinearLayout) rootView
 						.findViewById(R.id.linear_layout_comments);
 				
-				AnnouncementDAO announcementDAO = df.getAnnouncementDAO();
-				announcementDAO.setSharedPreferences(sp);
+				AnnouncementController announcementController = cf.getAnnouncementController();
+				announcementController.setSharedPreferences(sp);
 
-				announcementDAO
+				announcementController
 						.addInformationListener(new InformationListener() {
 
 							@Override
 							public void onComplete(InformationEvent e) {
-								AnnouncementDAO ad = (AnnouncementDAO) e
+								AnnouncementController ad = (AnnouncementController) e
 										.getSource();
 
 								if (!ad.getData().isEmpty()) {
@@ -217,7 +218,7 @@ public class InformationActivity extends BaseActivity {
 							}
 						});
 
-				asyncTask = ((AsyncTask<String, Void, String>) announcementDAO);
+				asyncTask = ((AsyncTask<String, Void, String>) announcementController);
 				asyncTask.execute(new String[] { PropertyProvider
 								.getProperty("url")
 								+ "/api/v1/courses/"
@@ -243,25 +244,25 @@ public class InformationActivity extends BaseActivity {
 				
 				showDialog("Sending comment");
 				
-				AnnouncementCommentDAO commentDao = df.getAnnouncementCommentDAO();
+				AnnouncementCommentController commentController = cf.getAnnouncementCommentController();
 				
-				commentDao.setComment(comment);
+				commentController.setComment(comment);
 				
-				commentDao.addInformationListener(new InformationListener() {
+				commentController.addInformationListener(new InformationListener() {
 					
 					@Override
 					public void onComplete(InformationEvent e) {
 						SharedPreferences sp = PlaceholderFragment.this.getActivity().getSharedPreferences(
 								"CanvasAndroid", Context.MODE_PRIVATE);
 						
-						AnnouncementDAO announcementDAO = df.getAnnouncementDAO();
-						announcementDAO.setSharedPreferences(sp);
+						AnnouncementController announcementController = cf.getAnnouncementController();
+						announcementController.setSharedPreferences(sp);
 
-						announcementDAO.addInformationListener(new InformationListener() {
+						announcementController.addInformationListener(new InformationListener() {
 
 							@Override
 							public void onComplete(InformationEvent e) {
-								AnnouncementDAO ad = (AnnouncementDAO) e.getSource();
+								AnnouncementController ad = (AnnouncementController) e.getSource();
 
 								if (!ad.getData().isEmpty()) {
 									Announcement newAnnouncement = ad.getData().get(0);
@@ -273,16 +274,16 @@ public class InformationActivity extends BaseActivity {
 							}
 						});
 
-						RestInformationDAO.clearData();
+						RestInformation.clearData();
 						
-						queryAsyncTask = ((AsyncTask<String, Void, String>) announcementDAO);
+						queryAsyncTask = ((AsyncTask<String, Void, String>) announcementController);
 						queryAsyncTask.execute(new String[] { PropertyProvider
 										.getProperty("url")
 										+ "/api/v1/courses/"
 										+ courseID + "/discussion_topics/" + announcementID });
 					}
 				});
-				commentAsyncTask = ((AsyncTask<String, Void, String>) commentDao);
+				commentAsyncTask = ((AsyncTask<String, Void, String>) commentController);
 				commentAsyncTask.execute(new String[] {
 					PropertyProvider.getProperty("url") +
 					"/courses/" + courseID + "/discussion_topics/" + announcementID +"/entries"
@@ -334,7 +335,7 @@ public class InformationActivity extends BaseActivity {
 					ServiceProvider.getInstance().setAnnouncementUnreadCount(
 							ServiceProvider.getInstance().getAnnouncementUnreadCount()-1);
 					announcement.setRead_state(true);
-					new RestInformationDAO().execute(new String[] { PropertyProvider
+					new RestInformation().execute(new String[] { PropertyProvider
 									.getProperty("url")
 									+ "/courses/"
 									+ courseID

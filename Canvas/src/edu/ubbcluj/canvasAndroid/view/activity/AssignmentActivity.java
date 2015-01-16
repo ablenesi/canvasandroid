@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid;
+package edu.ubbcluj.canvasAndroid.view.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,18 +17,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
-import edu.ubbcluj.canvasAndroid.backend.repository.SubmissionCommentDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.R;
+import edu.ubbcluj.canvasAndroid.controller.AssignmentsController;
+import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
+import edu.ubbcluj.canvasAndroid.controller.SubmissionCommentController;
+import edu.ubbcluj.canvasAndroid.controller.rest.RestInformation;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 import edu.ubbcluj.canvasAndroid.model.Submission;
 import edu.ubbcluj.canvasAndroid.model.SubmissionAttachment;
 import edu.ubbcluj.canvasAndroid.model.SubmissionComment;
+import edu.ubbcluj.canvasAndroid.persistence.CourseProvider;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
 
 public class AssignmentActivity extends BaseActivity {
 
@@ -68,7 +69,7 @@ public class AssignmentActivity extends BaseActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
-		private DAOFactory df = DAOFactory.getInstance();
+		private ControllerFactory cf = ControllerFactory.getInstance();
 		private Assignment assignment;
 
 		private AsyncTask<String, Void, String> queryAsyncTask;
@@ -125,14 +126,14 @@ public class AssignmentActivity extends BaseActivity {
 			linearLayoutComments = (LinearLayout) rootView
 					.findViewById(R.id.linear_layout_comments);
 
-			AssignmentsDAO assignmentDAO = df.getAssignmentsDAO();
-			assignmentDAO.setSharedPreferences(sp);
+			AssignmentsController assignmentController = cf.getAssignmentsController();
+			assignmentController.setSharedPreferences(sp);
 
-			assignmentDAO.addInformationListener(new InformationListener() {
+			assignmentController.addInformationListener(new InformationListener() {
 
 				@Override
 				public void onComplete(InformationEvent e) {
-					AssignmentsDAO ad = (AssignmentsDAO) e.getSource();
+					AssignmentsController ad = (AssignmentsController) e.getSource();
 
 					if (!ad.getData().isEmpty()) {
 						setAssignment(ad.getData().get(0));
@@ -141,7 +142,7 @@ public class AssignmentActivity extends BaseActivity {
 				}
 			});
 
-			queryAsyncTask = ((AsyncTask<String, Void, String>) assignmentDAO);
+			queryAsyncTask = ((AsyncTask<String, Void, String>) assignmentController);
 			queryAsyncTask.execute(new String[] { PropertyProvider
 							.getProperty("url")
 							+ "/api/v1/courses/"
@@ -163,25 +164,25 @@ public class AssignmentActivity extends BaseActivity {
 				
 				showDialog("Sending comment");
 				
-				SubmissionCommentDAO commentDao = df.getSubmissionCommentDAO();
+				SubmissionCommentController commentController = cf.getSubmissionCommentController();
 				
-				commentDao.setComment(comment);
+				commentController.setComment(comment);
 				
-				commentDao.addInformationListener(new InformationListener() {
+				commentController.addInformationListener(new InformationListener() {
 					
 					@Override
 					public void onComplete(InformationEvent e) {
 						SharedPreferences sp = PlaceholderFragment.this.getActivity().getSharedPreferences(
 								"CanvasAndroid", Context.MODE_PRIVATE);
 						
-						AssignmentsDAO assignmentDAO = df.getAssignmentsDAO();
-						assignmentDAO.setSharedPreferences(sp);
+						AssignmentsController assignmentController = cf.getAssignmentsController();
+						assignmentController.setSharedPreferences(sp);
 
-						assignmentDAO.addInformationListener(new InformationListener() {
+						assignmentController.addInformationListener(new InformationListener() {
 
 							@Override
 							public void onComplete(InformationEvent e) {
-								AssignmentsDAO ad = (AssignmentsDAO) e.getSource();
+								AssignmentsController ad = (AssignmentsController) e.getSource();
 
 								if (!ad.getData().isEmpty()) {
 									Assignment newAssignment = ad.getData().get(0);
@@ -193,9 +194,9 @@ public class AssignmentActivity extends BaseActivity {
 							}
 						});
 
-						RestInformationDAO.clearData();
+						RestInformation.clearData();
 						
-						queryAsyncTask = ((AsyncTask<String, Void, String>) assignmentDAO);
+						queryAsyncTask = ((AsyncTask<String, Void, String>) assignmentController);
 						queryAsyncTask.execute(new String[] { PropertyProvider
 										.getProperty("url")
 										+ "/api/v1/courses/"
@@ -203,7 +204,7 @@ public class AssignmentActivity extends BaseActivity {
 					}
 				});
 				
-				commentAsyncTask = ((AsyncTask<String, Void, String>) commentDao);
+				commentAsyncTask = ((AsyncTask<String, Void, String>) commentController);
 				commentAsyncTask.execute(new String[] {
 					PropertyProvider.getProperty("url") +
 					"/courses/" + courseID + "/assignments/" + assignmentID +

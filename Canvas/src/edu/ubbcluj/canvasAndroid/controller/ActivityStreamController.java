@@ -1,12 +1,12 @@
-package edu.ubbcluj.canvasAndroid.backend.repository;
+package edu.ubbcluj.canvasAndroid.controller;
 
 import java.util.List;
 
 import android.content.SharedPreferences;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.model.ActivityStream;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
 
-public interface ActivityStreamDAO {
+public interface ActivityStreamController {
 	void addInformationListener(InformationListener il);
 
 	void removeInformationListener(InformationListener il);

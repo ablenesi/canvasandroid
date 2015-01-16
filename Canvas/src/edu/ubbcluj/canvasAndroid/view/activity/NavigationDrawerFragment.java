@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid;
+package edu.ubbcluj.canvasAndroid.view.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterCourses;
+import edu.ubbcluj.canvasAndroid.R;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
+import edu.ubbcluj.canvasAndroid.persistence.CourseProvider;
+import edu.ubbcluj.canvasAndroid.view.adapter.CustomArrayAdapterCourses;
 
 public class NavigationDrawerFragment extends Fragment {
 

@@ -1,6 +1,6 @@
-package edu.ubbcluj.canvasAndroid.backend.util.model;
+package edu.ubbcluj.canvasAndroid.persistence.model;
 
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
 
 public class SingletonCookie {
 

@@ -1,11 +1,11 @@
-package edu.ubbcluj.canvasAndroid.backend.repository;
+package edu.ubbcluj.canvasAndroid.controller;
 
 import java.util.List;
 
 import android.content.SharedPreferences;
 import edu.ubbcluj.canvasAndroid.model.ActivityStreamSummary;
 
-public interface ActivityStreamSummaryDAO {
+public interface ActivityStreamSummaryController {
 
 	List<ActivityStreamSummary> getData();
 

@@ -1,12 +1,12 @@
-package edu.ubbcluj.canvasAndroid.backend.repository;
+package edu.ubbcluj.canvasAndroid.controller;
 
 import java.util.List;
 
 import android.content.SharedPreferences;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.model.MessageSequence;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
 
-public interface MessageSequenceDAO {
+public interface MessageSequenceController {
 	void addInformationListener(InformationListener il);
 
 	void removeInformationListener(InformationListener il);

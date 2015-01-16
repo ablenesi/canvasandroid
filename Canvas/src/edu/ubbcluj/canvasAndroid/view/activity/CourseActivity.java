@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid;
+package edu.ubbcluj.canvasAndroid.view.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,28 +25,29 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
-import edu.ubbcluj.canvasAndroid.backend.repository.FolderDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.ToDoDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.FolderStack;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterAnnouncements;
-import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterAssignments;
-import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterFileTreeElements;
-import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterToDo;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
-import edu.ubbcluj.canvasAndroid.backend.util.network.RestDownloadManager;
+import edu.ubbcluj.canvasAndroid.R;
+import edu.ubbcluj.canvasAndroid.controller.AnnouncementController;
+import edu.ubbcluj.canvasAndroid.controller.AssignmentsController;
+import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
+import edu.ubbcluj.canvasAndroid.controller.FolderController;
+import edu.ubbcluj.canvasAndroid.controller.ToDoController;
+import edu.ubbcluj.canvasAndroid.controller.rest.RestInformation;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 import edu.ubbcluj.canvasAndroid.model.File;
 import edu.ubbcluj.canvasAndroid.model.FileTreeElement;
 import edu.ubbcluj.canvasAndroid.model.Folder;
+import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
+import edu.ubbcluj.canvasAndroid.persistence.FolderStack;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.util.network.RestDownloadManager;
+import edu.ubbcluj.canvasAndroid.view.adapter.CustomArrayAdapterAnnouncements;
+import edu.ubbcluj.canvasAndroid.view.adapter.CustomArrayAdapterAssignments;
+import edu.ubbcluj.canvasAndroid.view.adapter.CustomArrayAdapterFileTreeElements;
+import edu.ubbcluj.canvasAndroid.view.adapter.CustomArrayAdapterToDo;
 
 @SuppressWarnings("deprecation")
 public class CourseActivity extends BaseActivity implements
@@ -256,7 +257,7 @@ public class CourseActivity extends BaseActivity implements
 		private ListView list;
 		private View viewContainer;
 
-		private DAOFactory df;
+		private ControllerFactory cf;
 		private List<Assignment> assignments;
 		private List<Announcement> announcements;
 		private List<FileTreeElement> fileTreeElements;
@@ -295,7 +296,7 @@ public class CourseActivity extends BaseActivity implements
 
 		public PlaceholderFragment() {
 			// Get the activity stream
-			df = DAOFactory.getInstance();
+			cf = ControllerFactory.getInstance();
 		}
 
 		@SuppressWarnings("unchecked")
@@ -313,7 +314,7 @@ public class CourseActivity extends BaseActivity implements
 
 			switch (sectionNumber) {
 			case 1: {
-				ToDoDAO todoDao;
+				ToDoController todoDao;
 
 				rootView = inflater.inflate(R.layout.fragment_assignment, null);
 
@@ -352,14 +353,14 @@ public class CourseActivity extends BaseActivity implements
 				});
 
 				assignments = new ArrayList<Assignment>();
-				todoDao = df.getToDoDAO();
+				todoDao = cf.getToDoController();
 				todoDao.setSharedPreferences(sp);
 
 				todoDao.addInformationListener(new InformationListener() {
 
 					@Override
 					public void onComplete(InformationEvent e) {
-						ToDoDAO ad = (ToDoDAO) e.getSource();
+						ToDoController ad = (ToDoController) e.getSource();
 
 						setProgressGone();
 						setAssignments(ad.getData());
@@ -397,17 +398,17 @@ public class CourseActivity extends BaseActivity implements
 									Toast.makeText(getActivity(), "No network connection!",
 											Toast.LENGTH_LONG).show();
 				        		} else {
-									ToDoDAO todoDaoo;
+									ToDoController todoDaoo;
 									assignments = new ArrayList<Assignment>();
-									todoDaoo = df.getToDoDAO();
+									todoDaoo = cf.getToDoController();
 									todoDaoo.setSharedPreferences(sp);
-									RestInformationDAO.clearData();
+									RestInformation.clearData();
 	
 									todoDaoo.addInformationListener(new InformationListener() {
 	
 										@Override
 										public void onComplete(InformationEvent e) {
-											ToDoDAO ad = (ToDoDAO) e.getSource();
+											ToDoController ad = (ToDoController) e.getSource();
 	
 											setProgressGone();
 											setAssignments(ad.getData());
@@ -438,8 +439,8 @@ public class CourseActivity extends BaseActivity implements
 				viewContainer = rootView.findViewById(R.id.linProg);
 				viewContainer.setVisibility(View.VISIBLE);
 
-				AssignmentsDAO assignmentsDao;
-				assignmentsDao = df.getAssignmentsDAO();
+				AssignmentsController assignmentsDao;
+				assignmentsDao = cf.getAssignmentsController();
 				assignmentsDao.setSharedPreferences(sp);
 
 				list.setOnItemClickListener(new OnItemClickListener() {
@@ -480,7 +481,7 @@ public class CourseActivity extends BaseActivity implements
 
 							@Override
 							public void onComplete(InformationEvent e) {
-								AssignmentsDAO ad = (AssignmentsDAO) e
+								AssignmentsController ad = (AssignmentsController) e
 										.getSource();
 
 								setProgressGone();
@@ -519,11 +520,11 @@ public class CourseActivity extends BaseActivity implements
 									Toast.makeText(getActivity(), "No network connection!",
 											Toast.LENGTH_LONG).show();
 				        		} else {
-									AssignmentsDAO assignmentsDaoo;
-									assignmentsDaoo = df.getAssignmentsDAO();
+									AssignmentsController assignmentsDaoo;
+									assignmentsDaoo = cf.getAssignmentsController();
 									assignmentsDaoo.setSharedPreferences(sp);
 									assignments = new ArrayList<Assignment>();
-									RestInformationDAO.clearData();
+									RestInformation.clearData();
 	
 									// assignmentsDao.setPlaceholderFragment(this);
 									assignmentsDaoo
@@ -532,7 +533,7 @@ public class CourseActivity extends BaseActivity implements
 												@Override
 												public void onComplete(
 														InformationEvent e) {
-													AssignmentsDAO ad = (AssignmentsDAO) e
+													AssignmentsController ad = (AssignmentsController) e
 															.getSource();
 	
 													setProgressGone();
@@ -595,8 +596,8 @@ public class CourseActivity extends BaseActivity implements
 					}
 				});
 
-				AnnouncementDAO announcementDao;
-				announcementDao = df.getAnnouncementDAO();
+				AnnouncementController announcementDao;
+				announcementDao = cf.getAnnouncementController();
 				announcementDao.setSharedPreferences(sp);
 
 				announcementDao
@@ -604,7 +605,7 @@ public class CourseActivity extends BaseActivity implements
 
 							@Override
 							public void onComplete(InformationEvent e) {
-								AnnouncementDAO ad = (AnnouncementDAO) e
+								AnnouncementController ad = (AnnouncementController) e
 										.getSource();
 
 								setProgressGone();
@@ -643,10 +644,10 @@ public class CourseActivity extends BaseActivity implements
 									Toast.makeText(getActivity(), "No network connection!",
 											Toast.LENGTH_LONG).show();
 				        		} else {
-									AnnouncementDAO announcementDaooo;
-									announcementDaooo = df.getAnnouncementDAO();
+									AnnouncementController announcementDaooo;
+									announcementDaooo = cf.getAnnouncementController();
 									announcementDaooo.setSharedPreferences(sp);
-									RestInformationDAO.clearData();
+									RestInformation.clearData();
 	
 									announcementDaooo
 											.addInformationListener(new InformationListener() {
@@ -654,7 +655,7 @@ public class CourseActivity extends BaseActivity implements
 												@Override
 												public void onComplete(
 														InformationEvent e) {
-													AnnouncementDAO ad = (AnnouncementDAO) e
+													AnnouncementController ad = (AnnouncementController) e
 															.getSource();
 	
 													setProgressGone();
@@ -694,7 +695,7 @@ public class CourseActivity extends BaseActivity implements
 
 					@Override
 					public void onComplete(InformationEvent e) {
-						FolderDAO fd = (FolderDAO) e.getSource();
+						FolderController fd = (FolderController) e.getSource();
 
 						setProgressGone();
 						setFileTreeElements(fd.getData());
@@ -714,10 +715,10 @@ public class CourseActivity extends BaseActivity implements
 									Toast.makeText(getActivity(), "No network connection!",
 											Toast.LENGTH_LONG).show();
 				        		} else {
-									FolderDAO folderDao;
-									folderDao = df.getFolderDAO();
+									FolderController folderDao;
+									folderDao = cf.getFolderController();
 									folderDao.setSharedPreferences(sp);
-									RestInformationDAO.clearData();
+									RestInformation.clearData();
 	
 									folderDao
 											.addInformationListener(folderInformationListener);
@@ -779,8 +780,8 @@ public class CourseActivity extends BaseActivity implements
 										} else
 											folderStack.push(folder);
 	
-										FolderDAO folderDao;
-										folderDao = df.getFolderDAO();
+										FolderController folderDao;
+										folderDao = cf.getFolderController();
 										folderDao.setSharedPreferences(sp);
 	
 										folderDao
@@ -797,27 +798,27 @@ public class CourseActivity extends BaseActivity implements
 					}
 				});
 
-				FolderDAO folderDao;
-				folderDao = df.getFolderDAO();
+				FolderController folderDao;
+				folderDao = cf.getFolderController();
 				folderDao.setSharedPreferences(sp);
 
 				folderDao.addInformationListener(new InformationListener() {
 
 					@Override
 					public void onComplete(InformationEvent e) {
-						FolderDAO fd = (FolderDAO) e.getSource();
+						FolderController fd = (FolderController) e.getSource();
 
 						List<FileTreeElement> fte = fd.getData();
 						Folder rootfolder = (Folder) fte.get(1);
 
 						folderStack.push(rootfolder);
 
-						FolderDAO folderDAOforRootElements = df.getFolderDAO();
-						folderDAOforRootElements.setSharedPreferences(sp);
-						folderDAOforRootElements
+						FolderController folderControllerforRootElements = cf.getFolderController();
+						folderControllerforRootElements.setSharedPreferences(sp);
+						folderControllerforRootElements
 								.addInformationListener(folderInformationListener);
 
-						asyncTaskFolder = ((AsyncTask<String, Void, String>) folderDAOforRootElements);
+						asyncTaskFolder = ((AsyncTask<String, Void, String>) folderControllerforRootElements);
 						asyncTaskFolder.execute(new String[] {
 								rootfolder.getFoldersUrl(),
 								rootfolder.getFilesUrl() });

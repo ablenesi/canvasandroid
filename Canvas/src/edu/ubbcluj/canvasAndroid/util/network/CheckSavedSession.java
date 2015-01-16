@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.util.network;
+package edu.ubbcluj.canvasAndroid.util.network;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
-import edu.ubbcluj.canvasAndroid.LoginActivity;
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
+import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.persistence.model.SingletonCookie;
+import edu.ubbcluj.canvasAndroid.view.activity.LoginActivity;
 
 public class CheckSavedSession extends AsyncTask<LoginActivity, Void, Void> {
 

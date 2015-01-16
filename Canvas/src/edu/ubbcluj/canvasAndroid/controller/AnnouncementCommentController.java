@@ -1,8 +1,8 @@
-package edu.ubbcluj.canvasAndroid.backend.repository;
+package edu.ubbcluj.canvasAndroid.controller;
 
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
 
-public interface AnnouncementCommentDAO {
+public interface AnnouncementCommentController {
 	void setComment(String comment);
 	
 	void addInformationListener(InformationListener il);

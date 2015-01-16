@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
+package edu.ubbcluj.canvasAndroid.controller.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,24 +10,24 @@ import org.json.JSONObject;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
-import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.controller.AnnouncementController;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.AnnouncementComment;
 import edu.ubbcluj.canvasAndroid.model.AnnouncementCommentReplies;
+import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
+import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
 
-public class RestAnnouncementDAO extends AsyncTask<String, Void, String>
-		implements AnnouncementDAO {
+public class RestAnnouncementController extends AsyncTask<String, Void, String>
+		implements AnnouncementController {
 
 	private List<Announcement> data;
 	private List<InformationListener> actionList;
 	private SharedPreferences sp;
 
-	public RestAnnouncementDAO() {
+	public RestAnnouncementController() {
 		super();
 		data = new ArrayList<Announcement>();
 		actionList = new ArrayList<InformationListener>();
@@ -76,7 +76,7 @@ public class RestAnnouncementDAO extends AsyncTask<String, Void, String>
 				response = CookieHandler.getData(sp, url);
 			else
 			{
-				response = RestInformationDAO.getData(url);
+				response = RestInformation.getData(url);
 				CookieHandler.saveData(sp, url, response);
 			}
 		}
@@ -162,7 +162,7 @@ public class RestAnnouncementDAO extends AsyncTask<String, Void, String>
 					+ "/api/v1/courses/" + announcement.getCourseId() + "/discussion_topics/"
 					+ announcement.getAnnouncementId() + "/view";
 			Log.d("t",url);
-			String response = RestInformationDAO.getData(url).replace(
+			String response = RestInformation.getData(url).replace(
 					"while(1);", "");
 			Log.d("t",response);
 			JSONObject annCommObj = new JSONObject(response);

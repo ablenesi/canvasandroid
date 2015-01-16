@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
+package edu.ubbcluj.canvasAndroid.controller.rest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,11 +25,11 @@ import org.apache.http.util.EntityUtils;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.persistence.model.SingletonSharedPreferences;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
 
-public class RestInformationDAO extends AsyncTask<String, Void, String> {
+public class RestInformation extends AsyncTask<String, Void, String> {
 
 	public static String postData(String url, List<NameValuePair> formData) {
 		String response = "";
@@ -206,7 +206,7 @@ public class RestInformationDAO extends AsyncTask<String, Void, String> {
 		Log.d("Rest","doinbackground");
 		String response = "";
 		for (String url : urls) {
-			response = RestInformationDAO.getData(url);
+			response = RestInformation.getData(url);
 		}
 		return response;
 	}

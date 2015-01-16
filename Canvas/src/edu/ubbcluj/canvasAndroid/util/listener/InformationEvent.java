@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.util.informListener;
+package edu.ubbcluj.canvasAndroid.util.listener;
 
 import java.util.EventObject;
 

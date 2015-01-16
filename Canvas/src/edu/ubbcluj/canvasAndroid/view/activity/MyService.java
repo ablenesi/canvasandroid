@@ -1,13 +1,13 @@
-package edu.ubbcluj.canvasAndroid;
+package edu.ubbcluj.canvasAndroid.view.activity;
 
 import java.util.Random;
 
-import edu.ubbcluj.canvasAndroid.backend.repository.ActivityStreamSummaryDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.ServiceProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
-
+import edu.ubbcluj.canvasAndroid.R;
+import edu.ubbcluj.canvasAndroid.controller.ActivityStreamSummaryController;
+import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
+import edu.ubbcluj.canvasAndroid.persistence.ServiceProvider;
+import edu.ubbcluj.canvasAndroid.persistence.model.SingletonSharedPreferences;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -23,7 +23,7 @@ public class MyService extends Service{
 	public static AlarmManager alarm;
 	public NotificationManager nm;
 	private AsyncTask<String, Void, String> asyncTask;
-	private DAOFactory df;
+	private ControllerFactory cf;
 
 
 	@Override
@@ -42,10 +42,10 @@ public class MyService extends Service{
 		sPreferences.init(getApplicationContext().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE));
 		ServiceProvider sp = ServiceProvider.getInstance();
 		sp.initalize(getApplicationContext());
-		df = DAOFactory.getInstance();
-		ActivityStreamSummaryDAO assDao;
-		assDao = df.getActivityStreamSummaryDAO();
-		asyncTask = ((AsyncTask<String, Void, String>) assDao);
+		cf = ControllerFactory.getInstance();
+		ActivityStreamSummaryController assController;
+		assController = cf.getActivityStreamSummaryController();
+		asyncTask = ((AsyncTask<String, Void, String>) assController);
 		asyncTask.execute(new String[] { PropertyProvider.getProperty("url")
 						+ "/api/v1/users/self/activity_stream/summary" });
 		int newAnnouncementUnreadCount = ServiceProvider.getInstance().getNewAnnouncementUnreadCount();

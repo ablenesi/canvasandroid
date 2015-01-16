@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.util.adapters;
+package edu.ubbcluj.canvasAndroid.view.adapter;
 
 import java.util.List;
 

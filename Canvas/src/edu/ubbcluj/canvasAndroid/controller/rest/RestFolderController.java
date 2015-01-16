@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
+package edu.ubbcluj.canvasAndroid.controller.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,23 +10,23 @@ import org.json.JSONObject;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
-import edu.ubbcluj.canvasAndroid.backend.repository.FolderDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
+import edu.ubbcluj.canvasAndroid.controller.FolderController;
 import edu.ubbcluj.canvasAndroid.model.File;
 import edu.ubbcluj.canvasAndroid.model.FileTreeElement;
 import edu.ubbcluj.canvasAndroid.model.Folder;
+import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
+import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
 
-public class RestFolderDAO extends AsyncTask<String, Void, String> implements
-		FolderDAO {
+public class RestFolderController extends AsyncTask<String, Void, String> implements
+		FolderController {
 
 	private List<FileTreeElement> data;
 	private List<InformationListener> actionList;
 	private SharedPreferences sp;
 
-	public RestFolderDAO() {
+	public RestFolderController() {
 		super();
 		data = new ArrayList<FileTreeElement>();
 
@@ -73,7 +73,7 @@ public class RestFolderDAO extends AsyncTask<String, Void, String> implements
 			if (CookieHandler.checkData(sp, url)) {
 				response[k] = CookieHandler.getData(sp, url);
 			} else {
-				response[k] = RestInformationDAO.getData(url);
+				response[k] = RestInformation.getData(url);
 				CookieHandler.saveData(sp, url, response[k]);
 			}
 			k++;

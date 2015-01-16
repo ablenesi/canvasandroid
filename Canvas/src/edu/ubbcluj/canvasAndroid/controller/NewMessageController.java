@@ -1,10 +1,10 @@
-package edu.ubbcluj.canvasAndroid.backend.repository;
+package edu.ubbcluj.canvasAndroid.controller;
 
-import edu.ubbcluj.canvasAndroid.MessageItemActivity;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.model.MessageSequence;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
+import edu.ubbcluj.canvasAndroid.view.activity.MessageItemActivity;
 
-public interface NewMessageDAO {
+public interface NewMessageController {
 
 	void addInformationListener(InformationListener il);
 

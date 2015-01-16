@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
+package edu.ubbcluj.canvasAndroid.controller.rest;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -11,22 +11,22 @@ import org.json.JSONObject;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
-import edu.ubbcluj.canvasAndroid.backend.repository.CoursesDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.controller.CoursesController;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
+import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
+import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
 
-public class RestCoursesDAO extends AsyncTask<String, Void, String> implements
-		CoursesDAO {
+public class RestCoursesController extends AsyncTask<String, Void, String> implements
+		CoursesController {
 
 	private ArrayList<ActiveCourse> data;
 	private List<InformationListener> actionList;
 	private SharedPreferences sp;
 
-	public RestCoursesDAO() {
+	public RestCoursesController() {
 		actionList = new LinkedList<InformationListener>();
 	}
 	
@@ -67,7 +67,7 @@ public class RestCoursesDAO extends AsyncTask<String, Void, String> implements
 				response = CookieHandler.getData(sp, url);
 			else
 			{
-				response = RestInformationDAO.getData(url);
+				response = RestInformation.getData(url);
 				CookieHandler.saveData(sp, url, response);
 			}
 		}

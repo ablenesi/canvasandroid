@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
+package edu.ubbcluj.canvasAndroid.controller.rest;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
@@ -26,16 +26,16 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import edu.ubbcluj.canvasAndroid.LoginActivity;
-import edu.ubbcluj.canvasAndroid.backend.repository.UserDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.controller.UserController;
+import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
+import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.persistence.model.SingletonCookie;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.view.activity.LoginActivity;
 
-public class RestUserDAO extends AsyncTask<String, Void, String> implements
-		UserDAO {
+public class RestUserController extends AsyncTask<String, Void, String> implements
+		UserController {
 	private PersistentCookieStore cookieStore;
 	private HttpContext context;
 	private HttpResponse httpResponse;

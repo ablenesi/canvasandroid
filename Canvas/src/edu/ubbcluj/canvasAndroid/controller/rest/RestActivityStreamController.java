@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
+package edu.ubbcluj.canvasAndroid.controller.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,23 +10,23 @@ import org.json.JSONObject;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
-import edu.ubbcluj.canvasAndroid.backend.repository.ActivityStreamDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.controller.ActivityStreamController;
 import edu.ubbcluj.canvasAndroid.model.ActivityStream;
+import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
+import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
+import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
 
-public class RestActivityStreamDAO extends AsyncTask<String, Void, String> implements
-		ActivityStreamDAO {
+public class RestActivityStreamController extends AsyncTask<String, Void, String> implements
+		ActivityStreamController {
 
 	private List<ActivityStream> data;
 	private List<InformationListener> actionList;
 	private SharedPreferences	sp;
 	
-	public RestActivityStreamDAO() {
+	public RestActivityStreamController() {
 		super();
 		data = new ArrayList<ActivityStream>();
 		actionList = new ArrayList<InformationListener>();		
@@ -75,7 +75,7 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 				response = CookieHandler.getData(sp, url);
 			else
 			{
-				response = RestInformationDAO.getData(url);
+				response = RestInformation.getData(url);
 				CookieHandler.saveData(sp, url, response);
 			}
 		}
@@ -169,7 +169,7 @@ public class RestActivityStreamDAO extends AsyncTask<String, Void, String> imple
 					
 					String url = PropertyProvider.getProperty("url") + "/api/v1/conversations/" + convID;
 
-					String response = RestInformationDAO.getData(url).replace("while(1);", "");
+					String response = RestInformation.getData(url).replace("while(1);", "");
 					
 					JSONObject convObj = new JSONObject(response);
 					JSONArray participantsArr = convObj

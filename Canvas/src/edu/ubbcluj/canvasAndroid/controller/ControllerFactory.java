@@ -1,24 +1,24 @@
-package edu.ubbcluj.canvasAndroid.backend.repository;
+package edu.ubbcluj.canvasAndroid.controller;
 
-import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestApiDAOFactory;
+import edu.ubbcluj.canvasAndroid.controller.rest.RestApiControllerFactory;
 
-public abstract class DAOFactory {
-	public static DAOFactory getInstance() {
-		return new RestApiDAOFactory();
+public abstract class ControllerFactory {
+	public static ControllerFactory getInstance() {
+		return new RestApiControllerFactory();
 	}	
 	
-	public abstract UserDAO getUserDAO();
-	public abstract ActivityStreamDAO getDashboardDAO();
-	public abstract ActivityStreamSummaryDAO getActivityStreamSummaryDAO();
-	public abstract CoursesDAO getCoursesDAO();
-	public abstract AssignmentsDAO getAssignmentsDAO();
-	public abstract ToDoDAO getToDoDAO();
-	public abstract AnnouncementDAO getAnnouncementDAO();
-	public abstract AnnouncementCommentDAO getAnnouncementCommentDAO();
-	public abstract ConversationDAO getConversationDAO();
-	public abstract MessageSequenceDAO getMessageSequenceDAO();
-	public abstract FolderDAO getFolderDAO();
-	public abstract SubmissionCommentDAO getSubmissionCommentDAO();
-	public abstract NewMessageDAO getNewMessageDAO();
+	public abstract UserController getUserController();
+	public abstract ActivityStreamController getDashboardController();
+	public abstract ActivityStreamSummaryController getActivityStreamSummaryController();
+	public abstract CoursesController getCoursesController();
+	public abstract AssignmentsController getAssignmentsController();
+	public abstract ToDoController getToDoController();
+	public abstract AnnouncementController getAnnouncementController();
+	public abstract AnnouncementCommentController getAnnouncementCommentController();
+	public abstract ConversationController getConversationController();
+	public abstract MessageSequenceController getMessageSequenceController();
+	public abstract FolderController getFolderController();
+	public abstract SubmissionCommentController getSubmissionCommentController();
+	public abstract NewMessageController getNewMessageController();
 	
 }

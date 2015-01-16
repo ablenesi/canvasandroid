@@ -1,4 +1,4 @@
-package edu.ubbcluj.canvasAndroid.backend.util;
+package edu.ubbcluj.canvasAndroid.persistence;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,7 +17,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-import edu.ubbcluj.canvasAndroid.backend.util.model.SerializableCookie;
+import edu.ubbcluj.canvasAndroid.persistence.model.SerializableCookie;
 
 public class PersistentCookieStore implements CookieStore, Serializable {
 

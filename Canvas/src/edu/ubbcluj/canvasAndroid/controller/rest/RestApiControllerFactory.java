@@ -1,82 +1,82 @@
-package edu.ubbcluj.canvasAndroid.backend.repository.restApi;
+package edu.ubbcluj.canvasAndroid.controller.rest;
 
-import edu.ubbcluj.canvasAndroid.backend.repository.ActivityStreamSummaryDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementCommentDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.ConversationDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.CoursesDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
-import edu.ubbcluj.canvasAndroid.backend.repository.FolderDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.MessageSequenceDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.SubmissionCommentDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.NewMessageDAO;
-import edu.ubbcluj.canvasAndroid.backend.repository.ToDoDAO;
+import edu.ubbcluj.canvasAndroid.controller.ActivityStreamSummaryController;
+import edu.ubbcluj.canvasAndroid.controller.AnnouncementCommentController;
+import edu.ubbcluj.canvasAndroid.controller.AnnouncementController;
+import edu.ubbcluj.canvasAndroid.controller.AssignmentsController;
+import edu.ubbcluj.canvasAndroid.controller.ConversationController;
+import edu.ubbcluj.canvasAndroid.controller.CoursesController;
+import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
+import edu.ubbcluj.canvasAndroid.controller.FolderController;
+import edu.ubbcluj.canvasAndroid.controller.MessageSequenceController;
+import edu.ubbcluj.canvasAndroid.controller.NewMessageController;
+import edu.ubbcluj.canvasAndroid.controller.SubmissionCommentController;
+import edu.ubbcluj.canvasAndroid.controller.ToDoController;
 
-public class RestApiDAOFactory extends DAOFactory {
+public class RestApiControllerFactory extends ControllerFactory {
 
 	@Override
-	public RestUserDAO getUserDAO() {
-		return new RestUserDAO();
+	public RestUserController getUserController() {
+		return new RestUserController();
 	}
 
 	@Override
-	public RestActivityStreamDAO getDashboardDAO() {
-		return new RestActivityStreamDAO();
+	public RestActivityStreamController getDashboardController() {
+		return new RestActivityStreamController();
 	}
 
 	@Override
-	public CoursesDAO getCoursesDAO() {
-		return new RestCoursesDAO();
+	public CoursesController getCoursesController() {
+		return new RestCoursesController();
 	}
 
 	@Override
-	public AssignmentsDAO getAssignmentsDAO() {
-		return new RestAssignmentsDAO();
+	public AssignmentsController getAssignmentsController() {
+		return new RestAssignmentsController();
 	}
 
 	@Override
-	public ToDoDAO getToDoDAO() {
-		return new RestToDoDAO();
+	public ToDoController getToDoController() {
+		return new RestToDoController();
 	}
 
 	@Override
-	public AnnouncementDAO getAnnouncementDAO() {
-		return new RestAnnouncementDAO();
+	public AnnouncementController getAnnouncementController() {
+		return new RestAnnouncementController();
 	}
 
 	@Override
-	public ConversationDAO getConversationDAO() {
-		return new RestConversationDAO();
+	public ConversationController getConversationController() {
+		return new RestConversationController();
 	}
 
 	@Override
-	public MessageSequenceDAO getMessageSequenceDAO() {
-		return new RestMessageSequence();
+	public MessageSequenceController getMessageSequenceController() {
+		return new RestMessageSequenceController();
 	}
 
 	@Override
-	public FolderDAO getFolderDAO() {
-		return new RestFolderDAO();
+	public FolderController getFolderController() {
+		return new RestFolderController();
 	}
 
 	@Override
-	public ActivityStreamSummaryDAO getActivityStreamSummaryDAO(){
-		return new RestActivityStreamSummaryDAO();
+	public ActivityStreamSummaryController getActivityStreamSummaryController(){
+		return new RestActivityStreamSummaryController();
 	}
 
 	@Override
-	public AnnouncementCommentDAO getAnnouncementCommentDAO() {
-		return new RestAnnouncementCommentDAO();
+	public AnnouncementCommentController getAnnouncementCommentController() {
+		return new RestAnnouncementCommentController();
 	}
 	
 	@Override
-	public SubmissionCommentDAO getSubmissionCommentDAO() {
-		return new RestSubmissionCommentDAO();
+	public SubmissionCommentController getSubmissionCommentController() {
+		return new RestSubmissionCommentController();
 	}
 
-	public NewMessageDAO getNewMessageDAO() {
-		return new RestNewMessageDAO();
+	public NewMessageController getNewMessageController() {
+		return new RestNewMessageController();
 
 	}
 
