@@ -8,6 +8,7 @@ public class Assignment {
 	private String lockAt;
 	private String unlockAt;
 	private int courseId;
+	private String courseName;
 	private String htmlUrl;
 	private int assignmentGroupId;
 	private int position;
@@ -63,6 +64,12 @@ public class Assignment {
 	}
 	public void setCourseId(int courseId) {
 		this.courseId = courseId;
+	}
+	public String getCourseName() {
+		return courseName;
+	}
+	public void setCourseName(String courseName) {
+		this.courseName = courseName;
 	}
 	public String getHtmlUrl() {
 		return htmlUrl;

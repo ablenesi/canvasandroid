@@ -13,10 +13,12 @@ import android.util.Log;
 import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
 import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
+import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
+import edu.ubbcluj.canvasAndroid.model.AnnouncementComment;
+import edu.ubbcluj.canvasAndroid.model.AnnouncementCommentReplies;
 
 public class RestAnnouncementDAO extends AsyncTask<String, Void, String>
 		implements AnnouncementDAO {
@@ -155,12 +157,70 @@ public class RestAnnouncementDAO extends AsyncTask<String, Void, String>
 			if (!obj.isNull("read_state")) {
 				announcement.setRead_state(obj.getString("read_state").equals("read")||obj.getString("read_state").equals("true")?true:false);
 			}
+			
+			String url = PropertyProvider.getProperty("url")
+					+ "/api/v1/courses/" + announcement.getCourseId() + "/discussion_topics/"
+					+ announcement.getAnnouncementId() + "/view";
+			Log.d("t",url);
+			String response = RestInformationDAO.getData(url).replace(
+					"while(1);", "");
+			Log.d("t",response);
+			JSONObject annCommObj = new JSONObject(response);
+			announcement.setAc(convertJSONtoAC(annCommObj));
 
 		} catch (JSONException e) {
 			Log.e("JSON", e.getMessage());
 		}
-
+		
 		return announcement;
 	}
 
+	private AnnouncementComment[] convertJSONtoAC(JSONObject obj) {
+		AnnouncementComment[] ac = null;
+		
+		try {
+			ac = new AnnouncementComment[obj.getJSONArray("view").length()];
+			JSONArray participants = obj.getJSONArray("participants");
+			JSONArray view = obj.getJSONArray("view");
+			for(int i = 0; i<view.length();i++){
+				ac[i] = new AnnouncementComment();
+				JSONObject commentObj = view.getJSONObject(i);
+				String mess = commentObj.getString("message");
+				ac[i].setMessage(mess.substring(3, mess.length()-4));
+				ac[i].setId(commentObj.getInt("id"));
+				ac[i].setUserId(commentObj.getInt("user_id"));
+				AnnouncementCommentReplies[] acr = new AnnouncementCommentReplies[0];
+				if (!commentObj.isNull("replies")){
+					JSONArray replies = commentObj.getJSONArray("replies");
+					acr = new AnnouncementCommentReplies[replies.length()];
+					for(int k=0;k<replies.length();k++){
+						acr[k] = new AnnouncementCommentReplies();
+						JSONObject replieObj = replies.getJSONObject(k);
+						String replieMess = replieObj.getString("message");
+						acr[k].setMessage(replieMess.substring(3, replieMess.length()-4));
+						acr[k].setId(replieObj.getInt("id"));
+						acr[k].setUserId(replieObj.getInt("user_id"));
+						for(int j = 0;j<participants.length();j++){
+							JSONObject userObj = participants.getJSONObject(j);
+							if (userObj.getInt("id") == replieObj.getInt("user_id")){
+								acr[k].setUserName(userObj.getString("display_name"));
+							}
+						}
+					}
+					ac[i].setAcr(acr);
+				}
+				for(int j = 0;j<participants.length();j++){
+					JSONObject userObj = participants.getJSONObject(j);
+					if (userObj.getInt("id") == commentObj.getInt("user_id")){
+						ac[i].setUserName(userObj.getString("display_name"));
+					}
+				}
+			}
+		} catch (JSONException e) {
+			Log.e("JSON", e.getMessage());
+		}
+
+		return ac;
+	}
+	
 }

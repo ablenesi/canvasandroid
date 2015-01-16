@@ -1,11 +1,10 @@
 package edu.ubbcluj.canvasAndroid.model;
 
-public class AnnouncementComment {
+public class AnnouncementCommentReplies {
 	private int id;
 	private int userId;
 	private String userName;
 	private String message;
-	private AnnouncementCommentReplies[] acr;
 	
 	public int getId() {
 		return id;
@@ -31,12 +30,5 @@ public class AnnouncementComment {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public AnnouncementCommentReplies[] getAcr() {
-		return acr;
-	}
-	public void setAcr(AnnouncementCommentReplies[] acr) {
-		this.acr = acr;
-	}
-	
 	
 }

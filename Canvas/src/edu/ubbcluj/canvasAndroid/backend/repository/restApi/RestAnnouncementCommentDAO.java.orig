@@ -5,20 +5,12 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementCommentDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
-import edu.ubbcluj.canvasAndroid.model.AnnouncementComment;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementCommentDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 
 public class RestAnnouncementCommentDAO extends AsyncTask<String, Void, String> implements
 		AnnouncementCommentDAO {
@@ -55,7 +47,6 @@ public class RestAnnouncementCommentDAO extends AsyncTask<String, Void, String> 
 		for (String url : urls) {
 			response = sendComment(url);
 		}
-
 		return response;
 	}
 	

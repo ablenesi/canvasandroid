@@ -62,8 +62,9 @@ public class RestSubmissionCommentDAO extends AsyncTask<String, Void, String> im
 		
 		List<NameValuePair> formData = new ArrayList<NameValuePair>();
 		formData.add(new BasicNameValuePair("submission[comment]", comment));
-		formData.add(new BasicNameValuePair("_method", "PUT"));
-		
+		formData.add(new BasicNameValuePair("_method", "POST"));
+		Log.d("sendmymess",url);
+		Log.d("sendmymess",comment);
 		response = RestInformationDAO.postData(url, formData);
 		
 		return response;

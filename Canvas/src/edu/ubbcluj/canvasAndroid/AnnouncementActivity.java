@@ -35,21 +35,12 @@ import edu.ubbcluj.canvasAndroid.model.AnnouncementComment;
 import edu.ubbcluj.canvasAndroid.model.AnnouncementCommentReplies;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 
-public class InformationActivity extends BaseActivity {
+public class AnnouncementActivity extends BaseActivity {
 
-	private enum ActivityType {
-		Assignment, Announcement
-	};
-	
-	public static final ActivityType AssignmentInformation = ActivityType.Assignment;
-	public static final ActivityType AnnouncementInformation = ActivityType.Announcement;
-
-	private static ActivityType activityType;
 	private static int courseID;
-	private static int assignmentID;
 	private static int announcementID;
-	
-	private static String activityTitle = "Information";
+
+	private static String activityTitle = "Announcement";
 
 	private PlaceholderFragment fragment;
 	private static View progressContainer;
@@ -57,30 +48,21 @@ public class InformationActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Bundle bundle = getIntent().getExtras();
-		
-		activityType = (ActivityType) bundle.getSerializable("activity_type");
 
 		super.onCreate(savedInstanceState);
-
-		if (activityType == AssignmentInformation) {
-			activityTitle = "Assignment";
-		} else {
-			activityTitle = "Announcement";
-			
-		}
 
 		if (savedInstanceState == null) {
 			fragment = new PlaceholderFragment();
 			fragment.setArguments(bundle);
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.content_frame, fragment).commit();
+			.add(R.id.content_frame, fragment).commit();
 		}
 	}
 
 	public void sendComment(View view) {
 		fragment.sendComment();
 	}
-	
+
 	@Override
 	public void restoreActionBar() {
 		super.restoreActionBar();
@@ -99,13 +81,12 @@ public class InformationActivity extends BaseActivity {
 		private Button bSendComment;
 		private LinearLayout linearLayoutComments;
 		private ProgressDialog dialog;
-		
+
 		private DAOFactory df = DAOFactory.getInstance();
-		private Assignment assignment;
 		private Announcement announcement;
 
 		private AsyncTask<String, Void, String> asyncTask;
-		
+
 		TextView textViews[] = null;
 		private LinearLayout linearLayout;
 
@@ -120,140 +101,89 @@ public class InformationActivity extends BaseActivity {
 			View rootView = null;
 
 			Bundle bundle = getArguments();
-			activityType = (ActivityType) bundle
-					.getSerializable("activity_type");
 			courseID = bundle.getInt("course_id");
-			if (activityType == AssignmentInformation) {
-				assignmentID = bundle.getInt("assignment_id");
-			} else {
-				announcementID = bundle.getInt("announcement_id");
-			}
+			announcementID = bundle.getInt("announcement_id");
+
 
 			SharedPreferences sp = this.getActivity().getSharedPreferences(
 					"CanvasAndroid", Context.MODE_PRIVATE);
 
-			switch (activityType) {
-			case Assignment:
-				rootView = inflater.inflate(R.layout.fragment_anassignment,
-						container, false);
+			rootView = inflater.inflate(R.layout.fragment_anannouncement,
+					container, false);
+			linearLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_announcement);
 
-				textViews = new TextView[5];
+			textViews = new TextView[5];
 
-				textViews[0] = (TextView) rootView
-						.findViewById(R.id.anassignment_name);
-				textViews[1] = (TextView) rootView
-						.findViewById(R.id.anassignment_course);
-				textViews[2] = (TextView) rootView
-						.findViewById(R.id.anassignment_due_date);
-				textViews[3] = (TextView) rootView
-						.findViewById(R.id.anassignment_possible_grade);
-				textViews[4] = (TextView) rootView
-						.findViewById(R.id.anassignment_description);
+			textViews[0] = (TextView) rootView
+					.findViewById(R.id.anannouncement_title);
+			textViews[1] = (TextView) rootView
+					.findViewById(R.id.anannouncement_course);
+			textViews[2] = (TextView) rootView
+					.findViewById(R.id.anannouncement_date);
+			textViews[3] = (TextView) rootView
+					.findViewById(R.id.anannouncement_author_name);
+			textViews[4] = (TextView) rootView
+					.findViewById(R.id.anannouncement_message);
+			sComment = (EditText) rootView
+					.findViewById(R.id.comment);
+			bSendComment = (Button) rootView
+					.findViewById(R.id.buttonSend);
+			linearLayoutComments = (LinearLayout) rootView
+					.findViewById(R.id.linear_layout_comments);
 
-				AssignmentsDAO assignmentDAO = df.getAssignmentsDAO();
-				assignmentDAO.setSharedPreferences(sp);
+			AnnouncementDAO announcementDAO = df.getAnnouncementDAO();
+			announcementDAO.setSharedPreferences(sp);
 
-				assignmentDAO.addInformationListener(new InformationListener() {
+			announcementDAO
+			.addInformationListener(new InformationListener() {
 
-					@Override
-					public void onComplete(InformationEvent e) {
-						AssignmentsDAO ad = (AssignmentsDAO) e.getSource();
+				@Override
+				public void onComplete(InformationEvent e) {
+					AnnouncementDAO ad = (AnnouncementDAO) e
+							.getSource();
 
-						if (!ad.getData().isEmpty()) {
-							setAssignment(ad.getData().get(0));
-							setProgressGone();
-						}
+					if (!ad.getData().isEmpty()) {
+						setAnnouncement(ad.getData().get(0));
+						setProgressGone();
 					}
-				});
 
-				asyncTask = ((AsyncTask<String, Void, String>) assignmentDAO);
-				asyncTask.execute(new String[] { PropertyProvider
-								.getProperty("url")
-								+ "/api/v1/courses/"
-								+ courseID + "/assignments/" + assignmentID });
+				}
+			});
 
-				break;
-
-			case Announcement:
-				rootView = inflater.inflate(R.layout.fragment_anannouncement,
-						container, false);
-				linearLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_announcement);
-
-				textViews = new TextView[5];
-
-				textViews[0] = (TextView) rootView
-						.findViewById(R.id.anannouncement_title);
-				textViews[1] = (TextView) rootView
-						.findViewById(R.id.anannouncement_course);
-				textViews[2] = (TextView) rootView
-						.findViewById(R.id.anannouncement_date);
-				textViews[3] = (TextView) rootView
-						.findViewById(R.id.anannouncement_author_name);
-				textViews[4] = (TextView) rootView
-						.findViewById(R.id.anannouncement_message);
-				sComment = (EditText) rootView
-						.findViewById(R.id.comment);
-				bSendComment = (Button) rootView
-						.findViewById(R.id.buttonSend);
-				linearLayoutComments = (LinearLayout) rootView
-						.findViewById(R.id.linear_layout_comments);
-				
-				AnnouncementDAO announcementDAO = df.getAnnouncementDAO();
-				announcementDAO.setSharedPreferences(sp);
-
-				announcementDAO
-						.addInformationListener(new InformationListener() {
-
-							@Override
-							public void onComplete(InformationEvent e) {
-								AnnouncementDAO ad = (AnnouncementDAO) e
-										.getSource();
-
-								if (!ad.getData().isEmpty()) {
-									setAnnouncement(ad.getData().get(0));
-									setProgressGone();
-								}
-								
-							}
-						});
-
-				asyncTask = ((AsyncTask<String, Void, String>) announcementDAO);
-				asyncTask.execute(new String[] { PropertyProvider
-								.getProperty("url")
-								+ "/api/v1/courses/"
-								+ courseID
-								+ "/discussion_topics/"
-								+ announcementID });
-
-				break;
-			}
+			asyncTask = ((AsyncTask<String, Void, String>) announcementDAO);
+			asyncTask.execute(new String[] { PropertyProvider
+					.getProperty("url")
+					+ "/api/v1/courses/"
+					+ courseID
+					+ "/discussion_topics/"
+					+ announcementID });
 
 			setProgressVisible(rootView);
 
 			return rootView;
 		}
-		
+
 
 		@SuppressWarnings("unchecked")
 		public void sendComment() {
-			
+
 			String comment = sComment.getText().toString();
-			
+
 			if (comment.compareTo("") != 0) {
-				
+
 				showDialog("Sending comment");
-				
+
 				AnnouncementCommentDAO commentDao = df.getAnnouncementCommentDAO();
-				
+
 				commentDao.setComment(comment);
-				
+
 				commentDao.addInformationListener(new InformationListener() {
-					
+
 					@Override
 					public void onComplete(InformationEvent e) {
 						SharedPreferences sp = PlaceholderFragment.this.getActivity().getSharedPreferences(
 								"CanvasAndroid", Context.MODE_PRIVATE);
-						
+
 						AnnouncementDAO announcementDAO = df.getAnnouncementDAO();
 						announcementDAO.setSharedPreferences(sp);
 
@@ -274,51 +204,19 @@ public class InformationActivity extends BaseActivity {
 						});
 
 						RestInformationDAO.clearData();
-						
+
 						queryAsyncTask = ((AsyncTask<String, Void, String>) announcementDAO);
 						queryAsyncTask.execute(new String[] { PropertyProvider
-										.getProperty("url")
-										+ "/api/v1/courses/"
-										+ courseID + "/discussion_topics/" + announcementID });
+								.getProperty("url")
+								+ "/api/v1/courses/"
+								+ courseID + "/discussion_topics/" + announcementID });
 					}
 				});
 				commentAsyncTask = ((AsyncTask<String, Void, String>) commentDao);
 				commentAsyncTask.execute(new String[] {
-					PropertyProvider.getProperty("url") +
-					"/courses/" + courseID + "/discussion_topics/" + announcementID +"/entries"
+						PropertyProvider.getProperty("url") +
+						"/courses/" + courseID + "/discussion_topics/" + announcementID +"/entries"
 				});
-			}
-		}
-
-		public Assignment getAssignment() {
-			return assignment;
-		}
-
-		public void setAssignment(Assignment assignment) {
-			this.assignment = assignment;
-
-			if (textViews != null) {
-				textViews[0].setText(assignment.getName());
-				textViews[1].setText(CourseProvider.getInstance().getCourseWithID(assignment.getCourseId()).getName());
-				textViews[2].setText(formatDate(assignment.getDueAt()));
-				textViews[3].setText("Maximum grade: "
-						+ assignment.getPointsPossible());
-
-				if (assignment.getIsGraded()) {
-					textViews[3].append(" (Your grade: "
-							+ assignment.getScore() + ")");
-				}
-
-				if (assignment.getLockExplanation() != null) {
-					textViews[4].setText(assignment.getLockExplanation());
-				} else {
-					if (assignment.getDescription() != null) {
-						textViews[4].setText(Html.fromHtml(assignment
-								.getDescription()));
-					} else {
-						textViews[4].setText("No description");
-					}
-				}
 			}
 		}
 
@@ -335,18 +233,18 @@ public class InformationActivity extends BaseActivity {
 							ServiceProvider.getInstance().getAnnouncementUnreadCount()-1);
 					announcement.setRead_state(true);
 					new RestInformationDAO().execute(new String[] { PropertyProvider
-									.getProperty("url")
-									+ "/courses/"
-									+ courseID
-									+ "/announcements/"
-									+ announcementID});
+							.getProperty("url")
+							+ "/courses/"
+							+ courseID
+							+ "/announcements/"
+							+ announcementID});
 				}
 				textViews[0].setText(announcement.getTitle());
 				textViews[1].setText(CourseProvider.getInstance().getCourseWithID(announcement.getCourseId()).getName());
 				textViews[2].setText(formatDate(announcement.getPostedAt()));
-				textViews[3].setText(announcement.getAuthorName());
-				
+				textViews[3].setText(announcement.getAuthorName());	
 				textViews[4].setText(Html.fromHtml(announcement.getMessage()));
+
 				if (announcement.getAc() == null || announcement.getAc().length == 0) {
 					TextView tw = new TextView(getActivity());
 					tw.setText("No comments");
@@ -354,35 +252,37 @@ public class InformationActivity extends BaseActivity {
 					linearLayout.addView(tw);
 				} else {
 					AnnouncementComment[] comments = announcement.getAc();
-					
+
 					for (int i = 0; i < comments.length; i++) {
 						TextView twComment = new TextView(getActivity());
 						twComment.setTextColor(Color.BLACK);
 						twComment.setText(comments[i].getMessage());
 						linearLayout.addView(twComment);
-						
+
 						TextView twAuthor = new TextView(getActivity());
 						twAuthor.setTextColor(Color.GRAY);
 						twAuthor.setGravity(Gravity.END);
 						twAuthor.setText(comments[i].getUserName() + "\n");
 						linearLayout.addView(twAuthor);
 						AnnouncementCommentReplies[] replies = comments[i].getAcr();
-						for(int j=0;j<replies.length;j++){
-							TextView twCommentReplie = new TextView(getActivity());
-							twCommentReplie.setTextColor(Color.BLACK);
-							twCommentReplie.setText(replies[j].getMessage());
-							linearLayout.addView(twCommentReplie);
-							
-							TextView twAuthorReplie = new TextView(getActivity());
-							twAuthorReplie.setTextColor(Color.GRAY);
-							twAuthorReplie.setGravity(Gravity.END);
-							twAuthorReplie.setText(replies[j].getUserName() + "\n");
-							linearLayout.addView(twAuthorReplie);
+						if (replies != null){
+							for(int j=0;j<replies.length;j++){
+								TextView twCommentReplie = new TextView(getActivity());
+								twCommentReplie.setTextColor(Color.BLACK);
+								twCommentReplie.setText(replies[j].getMessage());
+								linearLayout.addView(twCommentReplie);
+
+								TextView twAuthorReplie = new TextView(getActivity());
+								twAuthorReplie.setTextColor(Color.GRAY);
+								twAuthorReplie.setGravity(Gravity.END);
+								twAuthorReplie.setText(replies[j].getUserName() + "\n");
+								linearLayout.addView(twAuthorReplie);
+							}
 						}
 					}
 				}
 			}
-			
+
 		}
 
 		// Show dialog
@@ -399,7 +299,7 @@ public class InformationActivity extends BaseActivity {
 			if (dialog != null)
 				dialog.dismiss();
 		}
-		
+
 		private String formatDate(String date) {
 			if (!date.startsWith("No")) {
 				String newDate = date.substring(0, date.indexOf('Z'));
@@ -410,7 +310,7 @@ public class InformationActivity extends BaseActivity {
 
 			return date;
 		}
-		
+
 		@Override
 		public void onStop() {
 			if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
 import edu.ubbcluj.canvasAndroid.backend.repository.MessageSequenceDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.NewMessageDAO;
+import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterMessage;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
@@ -30,6 +31,8 @@ public class MessageItemActivity extends ActionBarActivity{
 	private static int messageID;
 
 	private static EditText messageField;
+	
+	private AsyncTask<String, Void, String> asyncTask;
 	
 	private PlaceholderFragment placeholderFragment;
 	
@@ -63,28 +66,71 @@ public class MessageItemActivity extends ActionBarActivity{
 		newMessageDAO.addInformationListener(new InformationListener() {
 			@Override
 			public void onComplete(InformationEvent e) {
-				NewMessageDAO newMessageDAO = (NewMessageDAO) e
-						.getSource();
-				placeholderFragment.addMessageSequence(newMessageDAO.getData());
+				DAOFactory df = DAOFactory.getInstance();
+				MessageSequenceDAO messageSequenceDao;
+				messageSequenceDao = df.getMessageSequenceDAO();
+				messageSequenceDao.setSharedPreferences(
+						MessageItemActivity.this.getSharedPreferences(
+								"CanvasAndroid",
+								Context.MODE_PRIVATE)
+						);
+					
+				messageSequenceDao
+						.addInformationListener(new InformationListener() {
 
-				placeholderFragment.setAdapter();
-				placeholderFragment.setList();
+							@Override
+							public void onComplete(InformationEvent e) {
+								MessageSequenceDAO messageSequence = (MessageSequenceDAO) e
+										.getSource();
+								placeholderFragment.setMessageSequence(messageSequence.getData());
+								placeholderFragment.setAdapter();
+								placeholderFragment.setList();
+							}
+						});
+
+				if (!CheckNetwork.isNetworkOnline(MessageItemActivity.this)) {
+					
+					Toast.makeText(MessageItemActivity.this, "No network connection!",
+							Toast.LENGTH_SHORT).show();
+					
+				} else {
+					
+					asyncTask = ((AsyncTask<String, Void, String>) messageSequenceDao).
+								execute(new String[] { 
+										PropertyProvider.getProperty("url")
+										+ "/api/v1/conversations/" 
+										+ messageID 
+								});
+				}
 			}
 		});
 		
 		if(!CheckNetwork.isNetworkOnline(this)) {
+			
 			Toast.makeText(this, "No network connection!",
 					Toast.LENGTH_SHORT).show();
+			
 		} else {
+			
 			// Execute asyncTasc
-			((AsyncTask<String, Void, String>) newMessageDAO)
+			asyncTask = ((AsyncTask<String, Void, String>) newMessageDAO)
 					.execute(new String[] { PropertyProvider.getProperty("url")
 							+ "/conversations/" + messageID + "/add_message" });
 			
 			messageField.setText("");
+			
+			RestInformationDAO.clearData();
 		}
 	}
 
+	@Override
+	protected void onStop() {
+		if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
+			asyncTask.cancel(true);
+		}
+		super.onStop();
+	}
+	
 	public void setToastMessageSending(){
 		Toast.makeText(this, "Sending message!",
 				Toast.LENGTH_SHORT).show();
@@ -152,9 +198,14 @@ public class MessageItemActivity extends ActionBarActivity{
 						}
 					});
 
-			asyncTask = ((AsyncTask<String, Void, String>) messageSequenceDao).execute(new String[] { PropertyProvider.getProperty("url")
-							+ "/api/v1/conversations/" + messageID });
+			asyncTask = ((AsyncTask<String, Void, String>) messageSequenceDao).
+							execute(new String[] { 
+									PropertyProvider.getProperty("url")
+									+ "/api/v1/conversations/" 
+									+ messageID 
+							});
 
+			
 			return rootView;
 		}
 
@@ -194,5 +245,7 @@ public class MessageItemActivity extends ActionBarActivity{
 		public void setList(){
 			list.setAdapter(adapter);
 		}
+		
+
 	}
 }

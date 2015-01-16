@@ -11,6 +11,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -32,7 +33,6 @@ import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
-import edu.ubbcluj.canvasAndroid.backend.util.network.RestHttpClient;
 
 public class RestUserDAO extends AsyncTask<String, Void, String> implements
 		UserDAO {
@@ -59,7 +59,7 @@ public class RestUserDAO extends AsyncTask<String, Void, String> implements
 
 		context = new BasicHttpContext();
 
-		httpClient = RestHttpClient.getNewHttpClient();
+		httpClient = new DefaultHttpClient();
 		httpResponse = null;
 
 		List<NameValuePair> nameValuePairList = new ArrayList<NameValuePair>();

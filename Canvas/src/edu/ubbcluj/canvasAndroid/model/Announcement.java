@@ -9,7 +9,14 @@ public class Announcement {
 	private int courseId;
 	private int announcementId;
 	private boolean read_state;
+	private AnnouncementComment[] ac;
 
+	public AnnouncementComment[] getAc() {
+		return ac;
+	}
+	public void setAc(AnnouncementComment[] ac) {
+		this.ac = ac;
+	}
 	public String getTitle() {
 		return title;
 	}

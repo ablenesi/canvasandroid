@@ -21,6 +21,7 @@ import edu.ubbcluj.canvasAndroid.backend.repository.AssignmentsDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
 import edu.ubbcluj.canvasAndroid.backend.repository.SubmissionCommentDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
@@ -73,6 +74,7 @@ public class AssignmentActivity extends BaseActivity {
 		private AsyncTask<String, Void, String> queryAsyncTask;
 		private AsyncTask<String, Void, String> commentAsyncTask;
 		
+		private TextView cName;
 		private TextView aName;
 		private TextView aDueDate;
 		private TextView aPossibleGrade;
@@ -106,6 +108,8 @@ public class AssignmentActivity extends BaseActivity {
 
 			aName = (TextView) rootView
 					.findViewById(R.id.anassignment_name);
+			cName = (TextView) rootView
+					.findViewById(R.id.anassignment_course);
 			aDueDate = (TextView) rootView
 					.findViewById(R.id.anassignment_due_date);
 			aPossibleGrade = (TextView) rootView
@@ -216,6 +220,7 @@ public class AssignmentActivity extends BaseActivity {
 			this.assignment = assignment;
 
 			aName.setText(assignment.getName());
+			cName.setText(CourseProvider.getInstance().getCourseWithID(assignment.getCourseId()).getName());
 			
 			if (assignment.getDueAt() != null) {
 				aDueDate.setText(formatDate(assignment.getDueAt()));
@@ -223,13 +228,15 @@ public class AssignmentActivity extends BaseActivity {
 				aDueDate.setText("No due date");
 			}
 			
-			aPossibleGrade.setText("Maximum grade: "
-					+ assignment.getPointsPossible());
-
 			if (assignment.getIsGraded()) {
-				aPossibleGrade.append(" (Your grade: "
-						+ assignment.getScore() + ")");
+				aPossibleGrade.setText("Your grade: "
+						+ assignment.getScore() + "\n");
+			} else {
+				aPossibleGrade.setText("Not graded\n");
 			}
+			
+			aPossibleGrade.append("(Max grade: "
+					+ assignment.getPointsPossible() + ")");
 
 			if (assignment.getLockExplanation() != null) {
 				aDescription.setText(assignment.getLockExplanation());

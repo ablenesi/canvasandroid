@@ -84,12 +84,10 @@ public class DashBoardActivity extends BaseActivity {
 								Toast.LENGTH_LONG).show();
 					} else {
 						Intent informationIntent = new Intent(
-								DashBoardActivity.this, InformationActivity.class);
+								DashBoardActivity.this, AnnouncementActivity.class);
 	
 						Bundle bundle = new Bundle();
-	
-						bundle.putSerializable("activity_type",
-								InformationActivity.AnnouncementInformation);
+
 						bundle.putInt("course_id", as.getCourseId());
 						bundle.putInt("announcement_id", as.getSecondaryId());
 						informationIntent.putExtras(bundle);
@@ -169,12 +167,9 @@ public class DashBoardActivity extends BaseActivity {
 								Toast.LENGTH_LONG).show();
 					} else {
 						Intent informationIntent = new Intent(
-								DashBoardActivity.this, InformationActivity.class);
+								DashBoardActivity.this, AnnouncementActivity.class);
 	
 						Bundle bundle = new Bundle();
-	
-						bundle.putSerializable("activity_type",
-								InformationActivity.AnnouncementInformation);
 						bundle.putInt("course_id", as.getCourseId());
 						bundle.putInt("announcement_id", as.getSecondaryId());
 						informationIntent.putExtras(bundle);
@@ -184,7 +179,6 @@ public class DashBoardActivity extends BaseActivity {
 			}
 		});
 
-		// dashboardDao.setDba(this);
 
 		dashboardDao.addInformationListener(new InformationListener() {
 
