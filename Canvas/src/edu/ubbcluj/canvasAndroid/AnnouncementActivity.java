@@ -270,6 +270,7 @@ public class AnnouncementActivity extends BaseActivity {
 								TextView twCommentReplie = new TextView(getActivity());
 								twCommentReplie.setTextColor(Color.BLACK);
 								twCommentReplie.setText(replies[j].getMessage());
+								twCommentReplie.setPadding(30, 0, 0, 0);
 								linearLayout.addView(twCommentReplie);
 
 								TextView twAuthorReplie = new TextView(getActivity());
