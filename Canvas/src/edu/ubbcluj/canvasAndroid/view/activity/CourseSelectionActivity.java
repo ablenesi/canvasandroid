@@ -61,14 +61,6 @@ public class CourseSelectionActivity extends ActionBarActivity {
 		case android.R.id.home:
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
-
-		case R.id.refresh:
-			return true;
-
-		case R.id.dashboard:
-			intent = new Intent(this, DashBoardActivity.class);
-			startActivity(intent);
-			return true;
 		case R.id.messages:
 			if(!CookieHandler.checkData(this.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 					PropertyProvider.getProperty("url")

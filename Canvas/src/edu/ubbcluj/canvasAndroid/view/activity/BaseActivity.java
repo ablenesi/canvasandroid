@@ -139,21 +139,6 @@ public class BaseActivity extends ActionBarActivity implements
 		case android.R.id.home:
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
-
-		case R.id.refresh:
-			finish();
-			startActivity(getIntent());
-			return true;
-
-		case R.id.dashboard:
-			if (this.getClass() == DashBoardActivity.class) {
-				finish();
-				startActivity(getIntent());
-			} else {
-				intent = new Intent(this, DashBoardActivity.class);
-				startActivity(intent);
-			}
-			return true;
 		case R.id.messages:
 			if(!CookieHandler.checkData(this.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 					PropertyProvider.getProperty("url")

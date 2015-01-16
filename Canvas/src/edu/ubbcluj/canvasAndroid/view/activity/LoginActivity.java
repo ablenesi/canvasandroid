@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -86,13 +85,6 @@ public class LoginActivity extends Activity {
     public void stopService() {
         stopService(new Intent(getBaseContext(), MyService.class));
     }
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.login, menu);
-		return true;
-	}
 
 	// Login after button is pressed
 	@SuppressWarnings("unchecked")
