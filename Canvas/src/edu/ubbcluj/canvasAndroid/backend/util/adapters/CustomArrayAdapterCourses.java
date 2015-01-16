@@ -12,7 +12,7 @@ import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
 
 public class CustomArrayAdapterCourses extends ArrayAdapter<ActiveCourse> {
 	private final Context context;
-	private final List<ActiveCourse> values;
+	private List<ActiveCourse> values;
 
 	public CustomArrayAdapterCourses(Context context, List<ActiveCourse> values) {
 		super(context, android.R.layout.simple_list_item_1, android.R.id.text1,
@@ -35,4 +35,8 @@ public class CustomArrayAdapterCourses extends ArrayAdapter<ActiveCourse> {
 		return rowView;
 	}
 
+	
+	public void setValues(List<ActiveCourse> values) {
+		this.values = values;
+	}
 }

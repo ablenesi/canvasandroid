@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -95,7 +96,6 @@ public class NavigationDrawerFragment extends Fragment {
 				});
 
 		mDrawerList.setItemChecked(mCurrentSelectedPosition, true);
-		activeCourses = CourseProvider.getInstance().getSelectedCourses();
 		setMenu();
 
 		return mDrawerList;
@@ -263,15 +263,15 @@ public class NavigationDrawerFragment extends Fragment {
 	}
 
 	public void setMenu() {
-
+		activeCourses = CourseProvider.getInstance().getSelectedCourses();
+		
 		if (adapterActiveCourses == null) {
 			adapterActiveCourses = new CustomArrayAdapterCourses(getActionBar()
 					.getThemedContext(), activeCourses);
 
 			mDrawerList.setAdapter(adapterActiveCourses);
 		} else {
-			adapterActiveCourses.clear();
-			adapterActiveCourses.addAll(activeCourses);
+			adapterActiveCourses.setValues(activeCourses);
 			adapterActiveCourses.notifyDataSetChanged();
 		}
 	}

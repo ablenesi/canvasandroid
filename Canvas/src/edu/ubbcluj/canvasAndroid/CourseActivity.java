@@ -41,6 +41,7 @@ import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterToDo;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
+import edu.ubbcluj.canvasAndroid.backend.util.network.RestDownloadManager;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.Assignment;
 import edu.ubbcluj.canvasAndroid.model.File;
@@ -130,6 +131,59 @@ public class CourseActivity extends BaseActivity implements
 			FragmentTransaction fragmentTransaction) {
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
+		int actualSection = tab.getPosition() + 1;
+		
+		switch (actualSection) {
+		case 1: {
+			if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+					PropertyProvider
+					.getProperty("url")
+					+ "/api/v1/courses/"
+					+ courseID
+					+ "/todo") && !CheckNetwork.isNetworkOnline(this)) {
+				Toast.makeText(this, "No network connection!",
+						Toast.LENGTH_LONG).show();
+			}
+			break;
+		}
+		case 2: {
+			if(!CookieHandler.checkData(this.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+					PropertyProvider
+					.getProperty("url")
+					+ "/api/v1/courses/"
+					+ courseID
+					+ "/assignments") && !CheckNetwork.isNetworkOnline(this)) {
+				Toast.makeText(this, "No network connection!",
+						Toast.LENGTH_LONG).show();
+			}
+			break;
+		}
+		case 3: {
+			if(!CookieHandler.checkData(this.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+					PropertyProvider
+					.getProperty("url")
+					+ "/api/v1/courses/"
+					+ courseID
+					+ "/activity_stream") && !CheckNetwork.isNetworkOnline(this)) {
+				Toast.makeText(this, "No network connection!",
+						Toast.LENGTH_LONG).show();
+			}
+			break;
+		}
+		case 4: {
+			if(!CookieHandler.checkData(this.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+					PropertyProvider
+					.getProperty("url")
+					+ "/api/v1/courses/"
+					+ courseID
+					+ "/folders/by_path") && !CheckNetwork.isNetworkOnline(this)) {
+				Toast.makeText(this, "No network connection!",
+						Toast.LENGTH_LONG).show();
+			}
+			break;
+		}
+		}
+		
 		mViewPager.setCurrentItem(tab.getPosition());
 	}
 
@@ -213,10 +267,21 @@ public class CourseActivity extends BaseActivity implements
 		private CustomArrayAdapterFileTreeElements fileTreeElementsAdapter;
 
 		final FolderStack folderStack = new FolderStack();
+		
+		private AsyncTask<String, Void, String> asyncTaskAssignment;
+		private AsyncTask<String, Void, String> asyncTaskForRefreshAssignment;
+		
+		private AsyncTask<String, Void, String> asyncTaskAnnouncement;
+		private AsyncTask<String, Void, String> asyncTaskForRefreshAnnouncement;
+		
+		private AsyncTask<String, Void, String> asyncTaskFolder;
+		private AsyncTask<String, Void, String> asyncTaskForRefreshFolder;
+		
+		private AsyncTask<String, Void, String> asyncTaskComingUp;
+		private AsyncTask<String, Void, String> asyncTaskForRefreshComingUp;
 
-		private AsyncTask<String, Void, String> asyncTask;
-		private AsyncTask<String, Void, String> asyncTaskForRefresh;
-
+		private RestDownloadManager downloadManager;
+		
 		/**
 		 * Returns a new instance of this fragment for the given section number.
 		 */
@@ -272,8 +337,8 @@ public class CourseActivity extends BaseActivity implements
 							Toast.makeText(getActivity(), "No network connection!",
 									Toast.LENGTH_LONG).show();
 						} else {
-							Intent assignmentIntent = new Intent(getActivity(),
-									InformationActivity.class);
+							Intent assignmentIntent = new Intent(
+									getActivity(), AssignmentActivity.class);
 	
 							Bundle bundle = new Bundle();
 							bundle.putSerializable("activity_type",
@@ -306,12 +371,21 @@ public class CourseActivity extends BaseActivity implements
 					}
 				});
 
-				asyncTask = ((AsyncTask<String, Void, String>) todoDao);
-				asyncTask.execute(new String[] { PropertyProvider
+				if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+						PropertyProvider
 						.getProperty("url")
 						+ "/api/v1/courses/"
 						+ courseID
-						+ "/todo" });
+						+ "/todo") && !CheckNetwork.isNetworkOnline(getActivity())) {
+					setProgressGone();
+				} else {
+					asyncTaskComingUp = ((AsyncTask<String, Void, String>) todoDao);
+					asyncTaskComingUp.execute(new String[] { PropertyProvider
+							.getProperty("url")
+							+ "/api/v1/courses/"
+							+ courseID
+							+ "/todo" });
+				}
 
 				final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView
 						.findViewById(R.id.swipe);
@@ -346,8 +420,8 @@ public class CourseActivity extends BaseActivity implements
 										}
 									});
 	
-									asyncTaskForRefresh = ((AsyncTask<String, Void, String>) todoDaoo);
-									asyncTaskForRefresh.execute(new String[] { PropertyProvider
+									asyncTaskForRefreshComingUp = ((AsyncTask<String, Void, String>) todoDaoo);
+									asyncTaskForRefreshComingUp.execute(new String[] { PropertyProvider
 											.getProperty("url")
 											+ "/api/v1/courses/"
 											+ courseID
@@ -377,18 +451,26 @@ public class CourseActivity extends BaseActivity implements
 							int position, long id) {
 						Assignment assignment = assignments.get(position);
 
+						if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+								PropertyProvider.getProperty("url")
+									+ "/api/v1/courses/"
+									+ assignment.getCourseId()
+									+ "/assignments/"
+									+ assignment.getId()) && !CheckNetwork.isNetworkOnline(getActivity())) {
+							Toast.makeText(getActivity(), "No network connection!",
+									Toast.LENGTH_LONG).show();
+						} else {
 						Intent assignmentIntent = new Intent(getActivity(),
-								InformationActivity.class);
+								AssignmentActivity.class);
 
 						Bundle bundle = new Bundle();
-						bundle.putSerializable("activity_type",
-								InformationActivity.AssignmentInformation);
 						bundle.putInt("course_id", assignment.getCourseId());
 						bundle.putInt("assignment_id", assignment.getId());
 
 						assignmentIntent.putExtras(bundle);
 
 						startActivity(assignmentIntent);
+						}
 					}
 				});
 
@@ -411,12 +493,22 @@ public class CourseActivity extends BaseActivity implements
 							}
 						});
 
-				asyncTask = ((AsyncTask<String, Void, String>) assignmentsDao);
-				asyncTask.execute(new String[] { PropertyProvider
+				if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+						PropertyProvider
 						.getProperty("url")
 						+ "/api/v1/courses/"
 						+ courseID
-						+ "/assignments" });
+						+ "/assignments") && !CheckNetwork.isNetworkOnline(getActivity())) {
+						setProgressGone();
+				} else {
+					asyncTaskAssignment = ((AsyncTask<String, Void, String>) assignmentsDao);
+					asyncTaskAssignment.execute(new String[] { PropertyProvider
+							.getProperty("url")
+							+ "/api/v1/courses/"
+							+ courseID
+							+ "/assignments" });
+				}
+
 				final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView
 						.findViewById(R.id.swipe);
 
@@ -455,8 +547,8 @@ public class CourseActivity extends BaseActivity implements
 												}
 											});
 	
-									asyncTaskForRefresh = ((AsyncTask<String, Void, String>) assignmentsDaoo);
-									asyncTaskForRefresh.execute(new String[] { PropertyProvider
+									asyncTaskForRefreshAssignment = ((AsyncTask<String, Void, String>) assignmentsDaoo);
+									asyncTaskForRefreshAssignment.execute(new String[] { PropertyProvider
 											.getProperty("url")
 											+ "/api/v1/courses/"
 											+ courseID
@@ -481,19 +573,29 @@ public class CourseActivity extends BaseActivity implements
 							int position, long id) {
 						Announcement announcement = announcements.get(position);
 
-						Intent announcementIntent = new Intent(getActivity(),
-								InformationActivity.class);
-
-						Bundle bundle = new Bundle();
-						bundle.putSerializable("activity_type",
-								InformationActivity.AnnouncementInformation);
-						bundle.putInt("course_id", announcement.getCourseId());
-						bundle.putInt("announcement_id",
-								announcement.getAnnouncementId());
-
-						announcementIntent.putExtras(bundle);
-
-						startActivity(announcementIntent);
+						if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+								PropertyProvider.getProperty("url")
+									+ "/api/v1/courses/"
+									+ announcement.getCourseId()
+									+ "/discussion_topics/"
+									+ announcement.getAnnouncementId()) && !CheckNetwork.isNetworkOnline(getActivity())) {
+							Toast.makeText(getActivity(), "No network connection!",
+									Toast.LENGTH_LONG).show();
+						} else {
+							Intent announcementIntent = new Intent(getActivity(),
+									InformationActivity.class);
+	
+							Bundle bundle = new Bundle();
+							bundle.putSerializable("activity_type",
+									InformationActivity.AnnouncementInformation);
+							bundle.putInt("course_id", announcement.getCourseId());
+							bundle.putInt("announcement_id",
+									announcement.getAnnouncementId());
+	
+							announcementIntent.putExtras(bundle);
+	
+							startActivity(announcementIntent);
+						}
 					}
 				});
 
@@ -517,12 +619,22 @@ public class CourseActivity extends BaseActivity implements
 							}
 						});
 
-				asyncTask = ((AsyncTask<String, Void, String>) announcementDao);
-				asyncTask.execute(new String[] { PropertyProvider
+				if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+						PropertyProvider
 						.getProperty("url")
 						+ "/api/v1/courses/"
 						+ courseID
-						+ "/activity_stream" });
+						+ "/activity_stream") && !CheckNetwork.isNetworkOnline(getActivity())) {
+					setProgressGone();
+				} else {
+					asyncTaskAnnouncement = ((AsyncTask<String, Void, String>) announcementDao);
+					asyncTaskAnnouncement.execute(new String[] { PropertyProvider
+							.getProperty("url")
+							+ "/api/v1/courses/"
+							+ courseID
+							+ "/activity_stream" });
+				}
+
 				final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView
 						.findViewById(R.id.swipe);
 
@@ -559,8 +671,8 @@ public class CourseActivity extends BaseActivity implements
 												}
 											});
 	
-									asyncTaskForRefresh = ((AsyncTask<String, Void, String>) announcementDaooo);
-									asyncTaskForRefresh.execute(new String[] { PropertyProvider
+									asyncTaskForRefreshAnnouncement = ((AsyncTask<String, Void, String>) announcementDaooo);
+									asyncTaskForRefreshAnnouncement.execute(new String[] { PropertyProvider
 											.getProperty("url")
 											+ "/api/v1/courses/"
 											+ courseID
@@ -596,7 +708,7 @@ public class CourseActivity extends BaseActivity implements
 						swipeView.setRefreshing(false);
 					}
 				};
-
+				
 				swipeView
 						.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 							@Override
@@ -616,8 +728,8 @@ public class CourseActivity extends BaseActivity implements
 	
 									Folder currentFolder = folderStack.getHead();
 	
-									asyncTask = ((AsyncTask<String, Void, String>) folderDao);
-									asyncTask.execute(new String[] {
+									asyncTaskForRefreshFolder = ((AsyncTask<String, Void, String>) folderDao);
+									asyncTaskForRefreshFolder.execute(new String[] {
 											currentFolder.getFoldersUrl(),
 											currentFolder.getFilesUrl() });
 				        		}
@@ -635,30 +747,54 @@ public class CourseActivity extends BaseActivity implements
 						// if we are in the root folder
 						if (fileTreeElement != null) {
 							if (fileTreeElement instanceof File) {
-								// File file = (File) fileTreeElement;
-								// toDO file download
+								File file = (File) fileTreeElement;
+								
+								if (!CheckNetwork.isNetworkOnline(getActivity())) {
+									
+									Toast.makeText(getActivity(), "No network connection!",
+											Toast.LENGTH_SHORT).show();
+									
+								} else {
+									downloadManager = new RestDownloadManager(getActivity());
+									downloadManager.registerActionDownloadCompleteReceiver();
+									downloadManager.registerActionNotificationClickedReceiver();
+									downloadManager.downloadFile(file);
+									
+									Toast.makeText(getActivity(), file.getName() + " downloading...",
+											Toast.LENGTH_LONG).show();
+								}
+								
 							} else {
 								Folder folder = (Folder) fileTreeElement;
 
-								if (folder != null) {
-									swipeView.setRefreshing(true);
-
-									if (position == 0) {
-										folderStack.removeHead();
-									} else
-										folderStack.push(folder);
-
-									FolderDAO folderDao;
-									folderDao = df.getFolderDAO();
-									folderDao.setSharedPreferences(sp);
-
-									folderDao
-											.addInformationListener(folderInformationListener);
-
-									asyncTask = ((AsyncTask<String, Void, String>) folderDao);
-									asyncTask.execute(new String[] {
-											folder.getFoldersUrl(),
-											folder.getFilesUrl() });
+								if((!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+										folder.getFoldersUrl()) || 
+									!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+										folder.getFilesUrl())) && 
+									!CheckNetwork.isNetworkOnline(getActivity())) {
+										Toast.makeText(getActivity(), "No network connection!",
+											Toast.LENGTH_LONG).show();
+								} else {
+									if (folder != null) {
+										swipeView.setRefreshing(true);
+	
+										if (position == 0) {
+											folderStack.removeHead();
+										} else
+											folderStack.push(folder);
+	
+										FolderDAO folderDao;
+										folderDao = df.getFolderDAO();
+										folderDao.setSharedPreferences(sp);
+	
+										folderDao
+												.addInformationListener(folderInformationListener);
+	
+										asyncTaskFolder = ((AsyncTask<String, Void, String>) folderDao);
+										asyncTaskFolder.execute(new String[] {
+												folder.getFoldersUrl(),
+												folder.getFilesUrl() });
+									}
 								}
 							}
 						}
@@ -685,19 +821,29 @@ public class CourseActivity extends BaseActivity implements
 						folderDAOforRootElements
 								.addInformationListener(folderInformationListener);
 
-						asyncTask = ((AsyncTask<String, Void, String>) folderDAOforRootElements);
-						asyncTask.execute(new String[] {
+						asyncTaskFolder = ((AsyncTask<String, Void, String>) folderDAOforRootElements);
+						asyncTaskFolder.execute(new String[] {
 								rootfolder.getFoldersUrl(),
 								rootfolder.getFilesUrl() });
 					}
 				});
 
-				asyncTask = ((AsyncTask<String, Void, String>) folderDao);
-				asyncTask.execute(new String[] { PropertyProvider
+				
+				if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+						PropertyProvider
 						.getProperty("url")
 						+ "/api/v1/courses/"
 						+ courseID
-						+ "/folders/by_path" });
+						+ "/folders/by_path") && !CheckNetwork.isNetworkOnline(getActivity())) {
+					setProgressGone();
+				} else {
+					asyncTaskFolder = ((AsyncTask<String, Void, String>) folderDao);
+					asyncTaskFolder.execute(new String[] { PropertyProvider
+							.getProperty("url")
+							+ "/api/v1/courses/"
+							+ courseID
+							+ "/folders/by_path" });
+				}
 
 				break;
 			}
@@ -710,13 +856,41 @@ public class CourseActivity extends BaseActivity implements
 
 		@Override
 		public void onStop() {
-			if (asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
-				asyncTask.cancel(true);
+			if (asyncTaskComingUp != null && asyncTaskComingUp.getStatus() == Status.RUNNING) {
+				asyncTaskComingUp.cancel(true);
 			}
-			if (asyncTaskForRefresh != null
-					&& asyncTaskForRefresh.getStatus() == Status.RUNNING) {
-				asyncTaskForRefresh.cancel(true);
+			if (asyncTaskForRefreshComingUp != null
+					&& asyncTaskForRefreshComingUp.getStatus() == Status.RUNNING) {
+				asyncTaskForRefreshComingUp.cancel(true);
 			}
+			
+			if (asyncTaskAnnouncement != null && asyncTaskAnnouncement.getStatus() == Status.RUNNING) {
+				asyncTaskAnnouncement.cancel(true);
+			}
+			if (asyncTaskForRefreshAnnouncement != null
+					&& asyncTaskForRefreshAnnouncement.getStatus() == Status.RUNNING) {
+				asyncTaskForRefreshAnnouncement.cancel(true);
+			}
+			
+			if (asyncTaskAssignment != null && asyncTaskAssignment.getStatus() == Status.RUNNING) {
+				asyncTaskAssignment.cancel(true);
+			}
+			if (asyncTaskForRefreshAssignment != null
+					&& asyncTaskForRefreshAssignment.getStatus() == Status.RUNNING) {
+				asyncTaskForRefreshAssignment.cancel(true);
+			}
+			
+			if (asyncTaskFolder != null && asyncTaskFolder.getStatus() == Status.RUNNING) {
+				asyncTaskFolder.cancel(true);
+			}
+			if (asyncTaskForRefreshFolder != null
+					&& asyncTaskForRefreshFolder.getStatus() == Status.RUNNING) {
+				asyncTaskForRefreshFolder.cancel(true);
+			}
+			
+			if (downloadManager != null)
+				downloadManager.unRegisterReceiver();
+
 			super.onStop();
 		}
 

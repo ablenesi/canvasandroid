@@ -1,5 +1,6 @@
 package edu.ubbcluj.canvasAndroid;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -8,10 +9,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
+import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.adapters.CustomArrayAdapterCourseSelection;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
+import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 
 public class CourseSelectionActivity extends ActionBarActivity {
 
@@ -64,9 +69,16 @@ public class CourseSelectionActivity extends ActionBarActivity {
 			startActivity(intent);
 			return true;
 		case R.id.messages:
-			intent = new Intent(this, MessagesActivity.class);
-			startActivity(intent);
-			return true;
+			if(!CookieHandler.checkData(this.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+					PropertyProvider.getProperty("url")
+					+ "/api/v1/conversations") && !CheckNetwork.isNetworkOnline(this)) {
+				Toast.makeText(this, "No network connection!",
+						Toast.LENGTH_LONG).show();
+			} else {
+				intent = new Intent(this, MessagesActivity.class);
+				startActivity(intent);
+				return true;
+			}
 		case R.id.settings:
 			return true;
 		case R.id.logout:

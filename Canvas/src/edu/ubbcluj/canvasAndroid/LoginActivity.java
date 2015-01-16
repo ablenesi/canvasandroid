@@ -4,16 +4,20 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.backend.repository.CoursesDAO;
 import edu.ubbcluj.canvasAndroid.backend.repository.DAOFactory;
 import edu.ubbcluj.canvasAndroid.backend.repository.UserDAO;
+import edu.ubbcluj.canvasAndroid.backend.repository.restApi.RestInformationDAO;
 import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.ServiceProvider;
@@ -30,12 +34,26 @@ public class LoginActivity extends Activity {
 	private CheckSavedSession savedSession;
 	private UserDAO userDAO;
 	private String username;
-
+	
+	private TextView userTw;
+	private TextView passTw;
+	private EditText userField;
+	private EditText passField;
+	private Button loginButton;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		dialog = null;
+		
+		userTw = (TextView) findViewById(R.id.textView2);
+		passTw = (TextView) findViewById(R.id.textView3);
+		userField = (EditText) findViewById(R.id.username);
+		passField = (EditText) findViewById(R.id.password);
+		loginButton = (Button) findViewById(R.id.login_button);
+		
+		setVisibility(View.INVISIBLE);
 		
 		// Set the singleton context to make a global context
 		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
@@ -83,11 +101,9 @@ public class LoginActivity extends Activity {
 			Toast.makeText(this, "No network connection!",
 					Toast.LENGTH_LONG).show();
 		} else {
+			RestInformationDAO.clearData();
+			
 			userDAO = df.getUserDAO();
-	
-			// Get user info
-			EditText userField = (EditText) findViewById(R.id.username);
-			EditText passField = (EditText) findViewById(R.id.password);
 	
 			// Set user data to login asyncTasc
 			userDAO.setLoginActivity(this);
@@ -151,5 +167,13 @@ public class LoginActivity extends Activity {
 	public void closeDialog() {
 		if (dialog != null)
 			dialog.dismiss();
+	}
+	
+	public void setVisibility(int visibility) {
+		userTw.setVisibility(visibility);
+		passTw.setVisibility(visibility);
+		userField.setVisibility(visibility);
+		passField.setVisibility(visibility);
+		loginButton.setVisibility(visibility);
 	}
 }

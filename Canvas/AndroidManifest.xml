@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -55,7 +56,6 @@
         <activity
             android:name=".MessagesActivity"
             android:label="@string/title_activity_messages"
-            android:noHistory="true"
             android:parentActivityName=".DashBoardActivity"
             android:screenOrientation="portrait" >
             <meta-data
@@ -65,7 +65,6 @@
         <activity
             android:name=".MessageItemActivity"
             android:label="@string/title_activity_message_item"
-            android:noHistory="true"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -92,7 +91,9 @@
         <activity
             android:name=".AssignmentActivity"
             android:label="@string/title_activity_assignment"
-            android:parentActivityName=".DashBoardActivity" >
+            android:parentActivityName=".DashBoardActivity" 
+            android:noHistory="true"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />

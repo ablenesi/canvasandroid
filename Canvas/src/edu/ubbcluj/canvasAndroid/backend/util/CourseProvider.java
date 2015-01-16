@@ -15,6 +15,7 @@ import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
 public class CourseProvider {
 
 	private static CourseProvider instance;
+	private String username;
 	private SharedPreferences sp;
 	private String spName;
 	private List<ActiveCourse> courses;
@@ -23,6 +24,7 @@ public class CourseProvider {
 	private CourseProvider() {
 		this.sp = null;
 		this.spName = null;
+		this.username = null;
 		courses = new ArrayList<ActiveCourse>();
 		selectedCourses = new ArrayList<ActiveCourse>();
 	}
@@ -47,9 +49,7 @@ public class CourseProvider {
 			String value = (String) savedCourses.get(key);
 			String[] splittedValue = value.split(";");
 			
-			boolean isSelected = false;
-			if (splittedValue[1].compareTo("true") == 0)
-				isSelected = true;
+			boolean isSelected = splittedValue[1].compareTo("true") == 0;
 			ActiveCourse course = new ActiveCourse(Integer.parseInt(key), splittedValue[0], isSelected);
 			courses.add(course);
 		}
@@ -58,13 +58,21 @@ public class CourseProvider {
 		Log.d("CourseProvider", "Loaded " + courses.size() + " courses from SharedPreferences");
 	}
 	
+	public void initialize(Context context) {
+		SharedPreferences userSp = context.getSharedPreferences(
+				"CanvasAndroid-users", Context.MODE_PRIVATE);
+		username = CookieHandler.getData(userSp, "lastusername").replace('@', '.');
+		
+		initalize(context, username);
+	}
+	
 	public List<ActiveCourse> getAllCourses() {
 		Log.d("CourseProvider", "Returning " + selectedCourses.size() + " courses");
 		return courses;
 	}
 	
 	public List<ActiveCourse> getSelectedCourses() {		
-		Log.d("CourseProvider", "Returning " + selectedCourses.size() + " courses");
+		Log.d("CourseProvider", "Returning " + selectedCourses.size() + " selected courses");
 		return selectedCourses;
 	}
 	
@@ -83,7 +91,6 @@ public class CourseProvider {
 		for (ActiveCourse course : courseList) {
 			ActiveCourse c = getCourseWithID(course.getId());
 			if (c != null) {
-				c.setName(course.getName());
 				newCourses.add(c);
 			} else {
 				course.setSelected(true);
@@ -127,7 +134,7 @@ public class CourseProvider {
 		return false;
 	}
 	
-	private ActiveCourse getCourseWithID(int id) {
+	public ActiveCourse getCourseWithID(int id) {
 		Iterator<ActiveCourse> it = courses.iterator();
 		
 		while (it.hasNext()) {

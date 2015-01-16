@@ -5,51 +5,37 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import edu.ubbcluj.canvasAndroid.backend.repository.AnnouncementCommentDAO;
-import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
-import edu.ubbcluj.canvasAndroid.backend.util.PersistentCookieStore;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
-import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
-import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
-import edu.ubbcluj.canvasAndroid.model.AnnouncementComment;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import edu.ubbcluj.canvasAndroid.backend.repository.SubmissionCommentDAO;
+import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationEvent;
+import edu.ubbcluj.canvasAndroid.backend.util.informListener.InformationListener;
 
-public class RestAnnouncementCommentDAO extends AsyncTask<String, Void, String> implements
-		AnnouncementCommentDAO {
-	
+public class RestSubmissionCommentDAO extends AsyncTask<String, Void, String> implements SubmissionCommentDAO {
+
 	private List<InformationListener> actionList;
-	private String comment;
 
-	public RestAnnouncementCommentDAO() {
+	private String comment;
+	
+	
+	public RestSubmissionCommentDAO() {
 		actionList = new ArrayList<InformationListener>();
 		comment = new String();
 	}
 	
 	@Override
 	public void addInformationListener(InformationListener il) {
-		actionList.add(il);		
+		actionList.add(il);
 	}
 
 	@Override
 	public void removeInformationListener(InformationListener il) {
 		actionList.remove(il);
 	}
-	
-	public synchronized void notifyListeners() {
-		for (InformationListener il: actionList) {
-			il.onComplete(new InformationEvent(this));
-		}
-	}	
 
 	@Override
 	protected String doInBackground(String... urls) {	
-		Log.d("sendmymess","doinback");
 		String response = "";
 
 		for (String url : urls) {
@@ -62,7 +48,7 @@ public class RestAnnouncementCommentDAO extends AsyncTask<String, Void, String> 
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
-		Log.d("AnnounceComment", "Response: " + result);
+		Log.d("SubmissionComment", "Response: " + result);
 		notifyListeners();
 	}
 
@@ -75,12 +61,19 @@ public class RestAnnouncementCommentDAO extends AsyncTask<String, Void, String> 
 		String response = "";
 		
 		List<NameValuePair> formData = new ArrayList<NameValuePair>();
-		formData.add(new BasicNameValuePair("announcement[comment]", comment));
-		formData.add(new BasicNameValuePair("_method", "PUT"));
+		formData.add(new BasicNameValuePair("submission[comment]", comment));
+		formData.add(new BasicNameValuePair("_method", "POST"));
 		Log.d("sendmymess",url);
 		Log.d("sendmymess",comment);
 		response = RestInformationDAO.postData(url, formData);
 		
 		return response;
 	}
+	
+	public synchronized void notifyListeners() {
+		for (InformationListener il: actionList) {
+			il.onComplete(new InformationEvent(this));
+		}
+	}	
+
 }

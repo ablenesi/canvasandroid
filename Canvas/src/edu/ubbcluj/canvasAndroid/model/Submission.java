@@ -2,6 +2,7 @@ package edu.ubbcluj.canvasAndroid.model;
 
 public class Submission {
 
+	private int id;
 	private int assignmentId;
 	private Assignment assignment;
 	private ActiveCourse course;
@@ -22,6 +23,14 @@ public class Submission {
 	private int graderId;
 	private User user;
 	private boolean late;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public int getAssignmentId() {
 		return assignmentId;
