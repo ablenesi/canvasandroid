@@ -11,6 +11,7 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
         android:src="@drawable/ic_launcher" >
     </ImageView>
 
@@ -20,6 +21,8 @@
         android:layout_height="wrap_content"
         android:text="@+id/label"
         android:textSize="18sp"
+        android:minHeight="40dp"
+		android:gravity="center_vertical"
         android:textColor="#000"
         android:layout_toRightOf="@+id/icon" />
 </RelativeLayout>

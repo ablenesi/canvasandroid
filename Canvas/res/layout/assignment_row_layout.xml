@@ -11,6 +11,7 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
         android:src="@drawable/ic_launcher" >
     </ImageView>    
     
@@ -19,7 +20,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:textColor="#000"
+   	    android:minHeight="40dp"
+		android:gravity="center_vertical"
+        android:textColor="@color/black"
         android:layout_toRightOf="@+id/icon"
         />
 
@@ -27,7 +30,7 @@
         android:id="@+id/outof"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="right"
+        android:gravity="center_vertical"      
         android:textSize="15sp" 
         android:textColor="#222"
         android:layout_toRightOf="@+id/label"
