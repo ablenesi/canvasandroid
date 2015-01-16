@@ -21,7 +21,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.backend.util.ServiceProvider;
+import edu.ubbcluj.canvasAndroid.backend.util.CookieHandler;
+import edu.ubbcluj.canvasAndroid.backend.util.CourseProvider;
+import edu.ubbcluj.canvasAndroid.backend.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonCookie;
+import edu.ubbcluj.canvasAndroid.backend.util.model.SingletonSharedPreferences;
 import edu.ubbcluj.canvasAndroid.backend.util.network.CheckNetwork;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
 
@@ -69,6 +73,7 @@ public class BaseActivity extends ActionBarActivity implements
 	@Override
 	protected void onResume() {
 		Log.d("LifeCycle-base", "onResume");
+		mNavigationDrawerFragment.setMenu();
 		super.onResume();
 	}
 
@@ -99,15 +104,22 @@ public class BaseActivity extends ActionBarActivity implements
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		Log.d("LifeCycle-base", "onRestoreInsatace");
+		CourseProvider.getInstance().initialize(this);
+		
+		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
+				.getInstance();
+		sPreferences.init(BaseActivity.this.getSharedPreferences(
+				"CanvasAndroid", Context.MODE_PRIVATE));
+		
 		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
-		if(!CheckNetwork.isNetworkOnline(this)) {
-			Toast.makeText(this, "No network connection!",
-					Toast.LENGTH_SHORT).show();
-		} else {
+//		if(!CheckNetwork.isNetworkOnline(this)) {
+//			Toast.makeText(this, "No network connection!",
+//					Toast.LENGTH_SHORT).show();
+//		} else {
 			Intent courseIntent = new Intent(this, CourseActivity.class);
 	
 			Bundle bundle = new Bundle();
@@ -121,7 +133,7 @@ public class BaseActivity extends ActionBarActivity implements
 	
 			courseIntent.putExtras(bundle); // Put the id to the Course Intent
 			startActivity(courseIntent);
-		}
+//		}
 	}
 
 	public void onSectionAttached(int number) {
@@ -184,9 +196,11 @@ public class BaseActivity extends ActionBarActivity implements
 			}
 			return true;
 		case R.id.messages:
-			if (this.getClass() == MessagesActivity.class) {
-				finish();
-				startActivity(getIntent());
+			if(!CookieHandler.checkData(this.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
+					PropertyProvider.getProperty("url")
+					+ "/api/v1/conversations") && !CheckNetwork.isNetworkOnline(this)) {
+				Toast.makeText(this, "No network connection!",
+						Toast.LENGTH_LONG).show();
 			} else {
 				intent = new Intent(this, MessagesActivity.class);
 				startActivity(intent);
@@ -197,13 +211,15 @@ public class BaseActivity extends ActionBarActivity implements
 			startActivity(intent);
 			return true;
 		case R.id.logout:
-			Intent intent4 = new Intent(this,MyService.class);
-			ServiceProvider.getInstance().setService_started(false);
-			ServiceProvider.getInstance().setNewAnnouncementUnreadCount(0);
-			ServiceProvider.getInstance().setAnnouncementUnreadCount(0);
-			Toast.makeText(this, "Service Stopped", Toast.LENGTH_LONG).show();
-			MyService.alarm.cancel(PendingIntent.getService(this, 0, new Intent(this, MyService.class), 0));
-			stopService(intent4);
+			if (ServiceProvider.getInstance().getService_started()){
+				Intent intent4 = new Intent(this,MyService.class);
+				ServiceProvider.getInstance().setService_started(false);
+				ServiceProvider.getInstance().setNewAnnouncementUnreadCount(0);
+				ServiceProvider.getInstance().setAnnouncementUnreadCount(0);
+				Toast.makeText(this, "Service Stopped", Toast.LENGTH_LONG).show();
+				MyService.alarm.cancel(PendingIntent.getService(this, 0, new Intent(this, MyService.class), 0));
+				stopService(intent4);
+			}
 			SingletonCookie.getInstance().deleteCookieStore();
 			
 			intent = new Intent(this, LoginActivity.class);
