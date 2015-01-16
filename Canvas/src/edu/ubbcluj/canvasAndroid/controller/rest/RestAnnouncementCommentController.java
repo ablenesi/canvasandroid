@@ -77,8 +77,7 @@ public class RestAnnouncementCommentController extends AsyncTask<String, Void, S
 		List<NameValuePair> formData = new ArrayList<NameValuePair>();
 		formData.add(new BasicNameValuePair("announcement[comment]", comment));
 		formData.add(new BasicNameValuePair("_method", "PUT"));
-		Log.d("sendmymess",url);
-		Log.d("sendmymess",comment);
+		
 		response = RestInformation.postData(url, formData);
 		
 		return response;
