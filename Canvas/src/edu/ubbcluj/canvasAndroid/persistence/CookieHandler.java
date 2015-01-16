@@ -25,7 +25,6 @@ public class CookieHandler {
 	}
 
 	public static void saveData(SharedPreferences sp, String url, String data) {
-		// ez a cookie elmentese
 		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(
 				sp);
 

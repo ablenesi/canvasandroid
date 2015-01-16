@@ -17,7 +17,6 @@ import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
 import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
-import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
 
 public class RestCoursesController extends AsyncTask<String, Void, String> implements
 		CoursesController {
@@ -110,8 +109,6 @@ public class RestCoursesController extends AsyncTask<String, Void, String> imple
 		try {
 			activeCourse.setId(jObj.getInt("id"));
 			activeCourse.setName(jObj.getString("name"));
-
-			// Log.d("Course", jObj.getString("name"));
 		} catch (JSONException e) {
 			Log.e("JSON Courses", e.getMessage());
 		}

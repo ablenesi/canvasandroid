@@ -23,7 +23,6 @@ import org.apache.http.protocol.HTTP;
 
 import android.util.Log;
 
-//Custom HttpClient to solve ssl problems
 public class RestHttpClient {
 
 	public static HttpClient getNewHttpClient() {

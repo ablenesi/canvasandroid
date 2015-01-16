@@ -25,7 +25,6 @@ public class RestNewMessageController extends AsyncTask<String, Void, String>
 
 	private MessageSequence data;
 	
-	
 	private MessageItemActivity messageItemActivity;
 	private List<InformationListener> actionList;
 	
@@ -61,7 +60,6 @@ public class RestNewMessageController extends AsyncTask<String, Void, String>
 		String response = "";
 		
 		for (String url : urls) {
-			Log.d("url", url);
 			response = sendMessage(url);
 		}
 		
@@ -109,7 +107,6 @@ public class RestNewMessageController extends AsyncTask<String, Void, String>
 		MessageSequence messageSequence = new MessageSequence();
 
 		try {
-			messageSequence.setName("fuck");
 			// messages - every message contain : id, body, created_at, author
 			// (the author is an id, from the participants arraylist, so have to
 			// find the corresponding name from the list)
@@ -151,8 +148,6 @@ public class RestNewMessageController extends AsyncTask<String, Void, String>
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
-			
-		Log.d("new message", result);
 		
 		notifyListeners();
 	}

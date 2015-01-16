@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,8 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.R;
-import edu.ubbcluj.canvasAndroid.controller.CoursesController;
 import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
+import edu.ubbcluj.canvasAndroid.controller.CoursesController;
 import edu.ubbcluj.canvasAndroid.controller.UserController;
 import edu.ubbcluj.canvasAndroid.controller.rest.RestInformation;
 import edu.ubbcluj.canvasAndroid.persistence.CourseProvider;
@@ -121,7 +120,6 @@ public class LoginActivity extends Activity {
 	}
 
 	public void loginCompleted() {
-		//showDialog("Connecting... Please wait!");
 		final CoursesController coursesController = cf.getCoursesController();
 		coursesController.setSharedPreferences(LoginActivity.this
 				.getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE));

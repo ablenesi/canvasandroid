@@ -130,7 +130,6 @@ public class RestFolderController extends AsyncTask<String, Void, String> implem
 			Log.d("AsyncTask", "Folder asynctask cancelled");
 		}
 
-		// this should be a JSON string, but I don't know why
 		return null;
 	}
 

@@ -234,11 +234,6 @@ public class CourseActivity extends BaseActivity implements
 				return getString(R.string.tab_announcements).toUpperCase(l);
 			case 3:
 				return getString(R.string.tab_files).toUpperCase(l);
-				/*
-				 * case 4: return getString(R.string.tab_grades).toUpperCase(l);
-				 * case 5: return
-				 * getString(R.string.tab_syllabus).toUpperCase(l);
-				 */
 			}
 			return null;
 		}
@@ -314,7 +309,7 @@ public class CourseActivity extends BaseActivity implements
 
 			switch (sectionNumber) {
 			case 1: {
-				ToDoController todoDao;
+				ToDoController todoController;
 
 				rootView = inflater.inflate(R.layout.fragment_assignment, null);
 
@@ -353,10 +348,10 @@ public class CourseActivity extends BaseActivity implements
 				});
 
 				assignments = new ArrayList<Assignment>();
-				todoDao = cf.getToDoController();
-				todoDao.setSharedPreferences(sp);
+				todoController = cf.getToDoController();
+				todoController.setSharedPreferences(sp);
 
-				todoDao.addInformationListener(new InformationListener() {
+				todoController.addInformationListener(new InformationListener() {
 
 					@Override
 					public void onComplete(InformationEvent e) {
@@ -378,7 +373,7 @@ public class CourseActivity extends BaseActivity implements
 						+ "/todo") && !CheckNetwork.isNetworkOnline(getActivity())) {
 					setProgressGone();
 				} else {
-					asyncTaskComingUp = ((AsyncTask<String, Void, String>) todoDao);
+					asyncTaskComingUp = ((AsyncTask<String, Void, String>) todoController);
 					asyncTaskComingUp.execute(new String[] { PropertyProvider
 							.getProperty("url")
 							+ "/api/v1/courses/"
@@ -398,13 +393,13 @@ public class CourseActivity extends BaseActivity implements
 									Toast.makeText(getActivity(), "No network connection!",
 											Toast.LENGTH_LONG).show();
 				        		} else {
-									ToDoController todoDaoo;
+									ToDoController todoController;
 									assignments = new ArrayList<Assignment>();
-									todoDaoo = cf.getToDoController();
-									todoDaoo.setSharedPreferences(sp);
+									todoController = cf.getToDoController();
+									todoController.setSharedPreferences(sp);
 									RestInformation.clearData();
 	
-									todoDaoo.addInformationListener(new InformationListener() {
+									todoController.addInformationListener(new InformationListener() {
 	
 										@Override
 										public void onComplete(InformationEvent e) {
@@ -419,7 +414,7 @@ public class CourseActivity extends BaseActivity implements
 										}
 									});
 	
-									asyncTaskForRefreshComingUp = ((AsyncTask<String, Void, String>) todoDaoo);
+									asyncTaskForRefreshComingUp = ((AsyncTask<String, Void, String>) todoController);
 									asyncTaskForRefreshComingUp.execute(new String[] { PropertyProvider
 											.getProperty("url")
 											+ "/api/v1/courses/"
@@ -439,9 +434,9 @@ public class CourseActivity extends BaseActivity implements
 				viewContainer = rootView.findViewById(R.id.linProg);
 				viewContainer.setVisibility(View.VISIBLE);
 
-				AssignmentsController assignmentsDao;
-				assignmentsDao = cf.getAssignmentsController();
-				assignmentsDao.setSharedPreferences(sp);
+				AssignmentsController assignmentsController;
+				assignmentsController = cf.getAssignmentsController();
+				assignmentsController.setSharedPreferences(sp);
 
 				list.setOnItemClickListener(new OnItemClickListener() {
 
@@ -475,8 +470,8 @@ public class CourseActivity extends BaseActivity implements
 
 				assignments = new ArrayList<Assignment>();
 
-				// assignmentsDao.setPlaceholderFragment(this);
-				assignmentsDao
+				// assignmentsController.setPlaceholderFragment(this);
+				assignmentsController
 						.addInformationListener(new InformationListener() {
 
 							@Override
@@ -500,7 +495,7 @@ public class CourseActivity extends BaseActivity implements
 						+ "/assignments") && !CheckNetwork.isNetworkOnline(getActivity())) {
 						setProgressGone();
 				} else {
-					asyncTaskAssignment = ((AsyncTask<String, Void, String>) assignmentsDao);
+					asyncTaskAssignment = ((AsyncTask<String, Void, String>) assignmentsController);
 					asyncTaskAssignment.execute(new String[] { PropertyProvider
 							.getProperty("url")
 							+ "/api/v1/courses/"
@@ -520,14 +515,14 @@ public class CourseActivity extends BaseActivity implements
 									Toast.makeText(getActivity(), "No network connection!",
 											Toast.LENGTH_LONG).show();
 				        		} else {
-									AssignmentsController assignmentsDaoo;
-									assignmentsDaoo = cf.getAssignmentsController();
-									assignmentsDaoo.setSharedPreferences(sp);
+									AssignmentsController assignmentsController;
+									assignmentsController = cf.getAssignmentsController();
+									assignmentsController.setSharedPreferences(sp);
 									assignments = new ArrayList<Assignment>();
 									RestInformation.clearData();
 	
-									// assignmentsDao.setPlaceholderFragment(this);
-									assignmentsDaoo
+									// assignmentsController.setPlaceholderFragment(this);
+									assignmentsController
 											.addInformationListener(new InformationListener() {
 	
 												@Override
@@ -546,7 +541,7 @@ public class CourseActivity extends BaseActivity implements
 												}
 											});
 	
-									asyncTaskForRefreshAssignment = ((AsyncTask<String, Void, String>) assignmentsDaoo);
+									asyncTaskForRefreshAssignment = ((AsyncTask<String, Void, String>) assignmentsController);
 									asyncTaskForRefreshAssignment.execute(new String[] { PropertyProvider
 											.getProperty("url")
 											+ "/api/v1/courses/"
@@ -596,11 +591,11 @@ public class CourseActivity extends BaseActivity implements
 					}
 				});
 
-				AnnouncementController announcementDao;
-				announcementDao = cf.getAnnouncementController();
-				announcementDao.setSharedPreferences(sp);
+				AnnouncementController announcementController;
+				announcementController = cf.getAnnouncementController();
+				announcementController.setSharedPreferences(sp);
 
-				announcementDao
+				announcementController
 						.addInformationListener(new InformationListener() {
 
 							@Override
@@ -624,7 +619,7 @@ public class CourseActivity extends BaseActivity implements
 						+ "/activity_stream") && !CheckNetwork.isNetworkOnline(getActivity())) {
 					setProgressGone();
 				} else {
-					asyncTaskAnnouncement = ((AsyncTask<String, Void, String>) announcementDao);
+					asyncTaskAnnouncement = ((AsyncTask<String, Void, String>) announcementController);
 					asyncTaskAnnouncement.execute(new String[] { PropertyProvider
 							.getProperty("url")
 							+ "/api/v1/courses/"
@@ -644,12 +639,12 @@ public class CourseActivity extends BaseActivity implements
 									Toast.makeText(getActivity(), "No network connection!",
 											Toast.LENGTH_LONG).show();
 				        		} else {
-									AnnouncementController announcementDaooo;
-									announcementDaooo = cf.getAnnouncementController();
-									announcementDaooo.setSharedPreferences(sp);
+									AnnouncementController announcementController;
+									announcementController = cf.getAnnouncementController();
+									announcementController.setSharedPreferences(sp);
 									RestInformation.clearData();
 	
-									announcementDaooo
+									announcementController
 											.addInformationListener(new InformationListener() {
 	
 												@Override
@@ -668,7 +663,7 @@ public class CourseActivity extends BaseActivity implements
 												}
 											});
 	
-									asyncTaskForRefreshAnnouncement = ((AsyncTask<String, Void, String>) announcementDaooo);
+									asyncTaskForRefreshAnnouncement = ((AsyncTask<String, Void, String>) announcementController);
 									asyncTaskForRefreshAnnouncement.execute(new String[] { PropertyProvider
 											.getProperty("url")
 											+ "/api/v1/courses/"
@@ -715,17 +710,17 @@ public class CourseActivity extends BaseActivity implements
 									Toast.makeText(getActivity(), "No network connection!",
 											Toast.LENGTH_LONG).show();
 				        		} else {
-									FolderController folderDao;
-									folderDao = cf.getFolderController();
-									folderDao.setSharedPreferences(sp);
+									FolderController folderController;
+									folderController = cf.getFolderController();
+									folderController.setSharedPreferences(sp);
 									RestInformation.clearData();
 	
-									folderDao
+									folderController
 											.addInformationListener(folderInformationListener);
 	
 									Folder currentFolder = folderStack.getHead();
 	
-									asyncTaskForRefreshFolder = ((AsyncTask<String, Void, String>) folderDao);
+									asyncTaskForRefreshFolder = ((AsyncTask<String, Void, String>) folderController);
 									asyncTaskForRefreshFolder.execute(new String[] {
 											currentFolder.getFoldersUrl(),
 											currentFolder.getFilesUrl() });
@@ -780,14 +775,14 @@ public class CourseActivity extends BaseActivity implements
 										} else
 											folderStack.push(folder);
 	
-										FolderController folderDao;
-										folderDao = cf.getFolderController();
-										folderDao.setSharedPreferences(sp);
+										FolderController folderController;
+										folderController = cf.getFolderController();
+										folderController.setSharedPreferences(sp);
 	
-										folderDao
+										folderController
 												.addInformationListener(folderInformationListener);
 	
-										asyncTaskFolder = ((AsyncTask<String, Void, String>) folderDao);
+										asyncTaskFolder = ((AsyncTask<String, Void, String>) folderController);
 										asyncTaskFolder.execute(new String[] {
 												folder.getFoldersUrl(),
 												folder.getFilesUrl() });
@@ -798,11 +793,11 @@ public class CourseActivity extends BaseActivity implements
 					}
 				});
 
-				FolderController folderDao;
-				folderDao = cf.getFolderController();
-				folderDao.setSharedPreferences(sp);
+				FolderController folderController;
+				folderController = cf.getFolderController();
+				folderController.setSharedPreferences(sp);
 
-				folderDao.addInformationListener(new InformationListener() {
+				folderController.addInformationListener(new InformationListener() {
 
 					@Override
 					public void onComplete(InformationEvent e) {
@@ -834,7 +829,7 @@ public class CourseActivity extends BaseActivity implements
 						+ "/folders/by_path") && !CheckNetwork.isNetworkOnline(getActivity())) {
 					setProgressGone();
 				} else {
-					asyncTaskFolder = ((AsyncTask<String, Void, String>) folderDao);
+					asyncTaskFolder = ((AsyncTask<String, Void, String>) folderController);
 					asyncTaskFolder.execute(new String[] { PropertyProvider
 							.getProperty("url")
 							+ "/api/v1/courses/"

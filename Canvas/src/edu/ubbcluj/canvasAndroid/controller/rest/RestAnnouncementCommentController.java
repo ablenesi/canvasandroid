@@ -5,20 +5,11 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
+import android.os.AsyncTask;
 import edu.ubbcluj.canvasAndroid.controller.AnnouncementCommentController;
-import edu.ubbcluj.canvasAndroid.model.AnnouncementComment;
-import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
-import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
-import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.util.Log;
 
 public class RestAnnouncementCommentController extends AsyncTask<String, Void, String> implements
 		AnnouncementCommentController {
@@ -48,8 +39,7 @@ public class RestAnnouncementCommentController extends AsyncTask<String, Void, S
 	}	
 
 	@Override
-	protected String doInBackground(String... urls) {	
-		Log.d("sendmymess","doinback");
+	protected String doInBackground(String... urls) {
 		String response = "";
 
 		for (String url : urls) {
@@ -62,7 +52,6 @@ public class RestAnnouncementCommentController extends AsyncTask<String, Void, S
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
-		Log.d("AnnounceComment", "Response: " + result);
 		notifyListeners();
 	}
 
@@ -77,8 +66,6 @@ public class RestAnnouncementCommentController extends AsyncTask<String, Void, S
 		List<NameValuePair> formData = new ArrayList<NameValuePair>();
 		formData.add(new BasicNameValuePair("announcement[comment]", comment));
 		formData.add(new BasicNameValuePair("_method", "PUT"));
-		Log.d("sendmymess",url);
-		Log.d("sendmymess",comment);
 		response = RestInformation.postData(url, formData);
 		
 		return response;

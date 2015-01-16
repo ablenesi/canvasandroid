@@ -28,7 +28,6 @@ public class PersistentCookieStore implements CookieStore, Serializable {
 	private final SharedPreferences cookiePreferences;
 	private final List<String> persistentCookieNames;
 	
-	/* Constructor */
 	public PersistentCookieStore(SharedPreferences settings) {
 		cookiePreferences = settings;
 		persistentCookieNames = new ArrayList<String>();
@@ -172,7 +171,6 @@ public class PersistentCookieStore implements CookieStore, Serializable {
 	public synchronized boolean existCookie(String key) {
 		//Clear out expired cookies
 	    clearExpired(new Date());			
-		//return cookiePreferences.contains(cookie_prefix + key);
 	    return (persistentCookieNames.contains(key));
 	}
 	

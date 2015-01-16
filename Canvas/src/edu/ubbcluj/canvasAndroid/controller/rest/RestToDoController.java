@@ -16,7 +16,6 @@ import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
 import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
-import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
 
 public class RestToDoController extends AsyncTask<String, Void, String> implements
 		ToDoController {

@@ -7,7 +7,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.os.AsyncTask;
-import android.util.Log;
 import edu.ubbcluj.canvasAndroid.controller.SubmissionCommentController;
 import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
@@ -48,7 +47,6 @@ public class RestSubmissionCommentController extends AsyncTask<String, Void, Str
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
-		Log.d("SubmissionComment", "Response: " + result);
 		notifyListeners();
 	}
 
@@ -63,8 +61,6 @@ public class RestSubmissionCommentController extends AsyncTask<String, Void, Str
 		List<NameValuePair> formData = new ArrayList<NameValuePair>();
 		formData.add(new BasicNameValuePair("submission[comment]", comment));
 		formData.add(new BasicNameValuePair("_method", "POST"));
-		Log.d("sendmymess",url);
-		Log.d("sendmymess",comment);
 		response = RestInformation.postData(url, formData);
 		
 		return response;

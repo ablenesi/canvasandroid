@@ -14,12 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.R;
-import edu.ubbcluj.canvasAndroid.controller.ConversationController;
 import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
+import edu.ubbcluj.canvasAndroid.controller.ConversationController;
 import edu.ubbcluj.canvasAndroid.model.Conversation;
 import edu.ubbcluj.canvasAndroid.persistence.CookieHandler;
 import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
@@ -107,8 +107,6 @@ public class MessagesActivity extends ActionBarActivity {
 									Context.MODE_PRIVATE));
 
 			conversation = new ArrayList<Conversation>();
-
-			// dashboardController.setDba(this);
 
 			conversationController.addInformationListener(new InformationListener() {
 

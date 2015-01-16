@@ -12,7 +12,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,8 +40,6 @@ public class BaseActivity extends ActionBarActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Log.d("LifeCycle-base", "onCreate");
-
 		setContentView(R.layout.activity_base);
 		
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
@@ -60,51 +57,18 @@ public class BaseActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	protected void onStart() {
-		Log.d("LifeCycle-base", "onStart");
-		super.onStart();
-	}
-
-	@Override
-	protected void onRestart() {
-		Log.d("LifeCycle-base", "onRestart");
-		super.onRestart();
-	}
-
-	@Override
 	protected void onResume() {
-		Log.d("LifeCycle-base", "onResume");
 		mNavigationDrawerFragment.setMenu();
 		super.onResume();
 	}
 
 	@Override
-	protected void onPause() {
-		Log.d("LifeCycle-base", "onPause");
-		super.onPause();
-	}
-
-	@Override
-	protected void onStop() {
-		Log.d("LifeCycle-base", "onStop");
-		super.onStop();
-	}
-
-	@Override
-	protected void onDestroy() {
-		Log.d("LifeCycle-base", "onDestroy");
-		super.onDestroy();
-	}
-
-	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		Log.d("LifeCycle-base", "onSaveInsatace");
 		super.onSaveInstanceState(outState);
 	}
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		Log.d("LifeCycle-base", "onRestoreInsatace");
 		CourseProvider.getInstance().initialize(this);
 		
 		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
@@ -117,24 +81,19 @@ public class BaseActivity extends ActionBarActivity implements
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
-//		if(!CheckNetwork.isNetworkOnline(this)) {
-//			Toast.makeText(this, "No network connection!",
-//					Toast.LENGTH_SHORT).show();
-//		} else {
-			Intent courseIntent = new Intent(this, CourseActivity.class);
-	
-			Bundle bundle = new Bundle();
-			// courseID
-			bundle.putInt("id",
-					mNavigationDrawerFragment.getActiveCourses().get(position)
-							.getId());
-			// course name
-			bundle.putString("name", mNavigationDrawerFragment.getActiveCourses()
-					.get(position).getName());
-	
-			courseIntent.putExtras(bundle); // Put the id to the Course Intent
-			startActivity(courseIntent);
-//		}
+		Intent courseIntent = new Intent(this, CourseActivity.class);
+
+		Bundle bundle = new Bundle();
+		// courseID
+		bundle.putInt("id",
+				mNavigationDrawerFragment.getActiveCourses().get(position)
+						.getId());
+		// course name
+		bundle.putString("name", mNavigationDrawerFragment.getActiveCourses()
+				.get(position).getName());
+
+		courseIntent.putExtras(bundle); // Put the id to the Course Intent
+		startActivity(courseIntent);
 	}
 
 	public void onSectionAttached(int number) {
@@ -182,7 +141,6 @@ public class BaseActivity extends ActionBarActivity implements
 			return true;
 
 		case R.id.refresh:
-			// RestInformationDAO.clearData();
 			finish();
 			startActivity(getIntent());
 			return true;
@@ -281,12 +239,9 @@ public class BaseActivity extends ActionBarActivity implements
 					.getActiveCourses();
 
 			if (activeCourses.size() != 0) {
-				Toast.makeText(activity, "valami", Toast.LENGTH_SHORT).show();
-
 				((BaseActivity) activity).onSectionAttached(getArguments()
 						.getInt(ARG_SECTION_NUMBER));
-			} else
-				Log.e("Courses", "Number of courses = 0");
+			}
 		}
 	}
 

@@ -2,12 +2,6 @@ package edu.ubbcluj.canvasAndroid.view.activity;
 
 import java.util.Random;
 
-import edu.ubbcluj.canvasAndroid.R;
-import edu.ubbcluj.canvasAndroid.controller.ActivityStreamSummaryController;
-import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
-import edu.ubbcluj.canvasAndroid.persistence.ServiceProvider;
-import edu.ubbcluj.canvasAndroid.persistence.model.SingletonSharedPreferences;
-import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -18,6 +12,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import edu.ubbcluj.canvasAndroid.R;
+import edu.ubbcluj.canvasAndroid.controller.ActivityStreamSummaryController;
+import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
+import edu.ubbcluj.canvasAndroid.persistence.ServiceProvider;
+import edu.ubbcluj.canvasAndroid.persistence.model.SingletonSharedPreferences;
+import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
 
 public class MyService extends Service{
 	public static AlarmManager alarm;
@@ -36,8 +36,6 @@ public class MyService extends Service{
 	@SuppressWarnings("unchecked")
 	@Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-		
-		
 		SingletonSharedPreferences sPreferences = SingletonSharedPreferences.getInstance();
 		sPreferences.init(getApplicationContext().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE));
 		ServiceProvider sp = ServiceProvider.getInstance();

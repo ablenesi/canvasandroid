@@ -39,7 +39,7 @@ public class RestInformation extends AsyncTask<String, Void, String> {
 		HttpResponse httpResponse = null;
 		HttpPost httpPost = new HttpPost(url);
 		ResponseHandler<String> handler = new BasicResponseHandler();
-			
+		
 		if (!CheckNetwork.isNetworkOnline(null))
 			return "No connection";
 		
@@ -71,7 +71,6 @@ public class RestInformation extends AsyncTask<String, Void, String> {
 			Log.e("IO error", e.getLocalizedMessage());
 			e.printStackTrace();
 		} 
-
 		
 		return response;
 	}
@@ -118,7 +117,6 @@ public class RestInformation extends AsyncTask<String, Void, String> {
 		HttpResponse httpResponse;
 		HttpClient httpClient;
 
-		// ide kerult az url
 		HttpGet httpget = new HttpGet(url);
 		ResponseHandler<String> handler = new BasicResponseHandler();
 		
@@ -137,12 +135,9 @@ public class RestInformation extends AsyncTask<String, Void, String> {
 				cookieStore.addCookie(c);
 			}
 
-			// context.setAttribute(ClientContext.COOKIE_STORE,
-			// SingletonCookie.getInstance().getCookieStore());
 			context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 			httpResponse = httpClient.execute(httpget, context);
 
-			// get keres
 			response = handler.handleResponse(httpResponse);
 		} catch (ClientProtocolException e) {
 			Log.e("Data transfer error", e.getMessage());
@@ -203,7 +198,6 @@ public class RestInformation extends AsyncTask<String, Void, String> {
 
 	@Override
 	protected String doInBackground(String... urls) {
-		Log.d("Rest","doinbackground");
 		String response = "";
 		for (String url : urls) {
 			response = RestInformation.getData(url);

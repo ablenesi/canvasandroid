@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import edu.ubbcluj.canvasAndroid.R;
-import edu.ubbcluj.canvasAndroid.model.File;
 import edu.ubbcluj.canvasAndroid.model.FileTreeElement;
 import edu.ubbcluj.canvasAndroid.model.Folder;
 

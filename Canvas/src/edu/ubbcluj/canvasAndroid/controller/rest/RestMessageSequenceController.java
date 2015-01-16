@@ -52,7 +52,6 @@ public class RestMessageSequenceController extends AsyncTask<String, Void, Strin
 	
 	@Override
 	public void clearData() {
-		
 		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(sp);
 		
 		persistentCookieStore.clear();		
@@ -60,7 +59,6 @@ public class RestMessageSequenceController extends AsyncTask<String, Void, Strin
 
 	@Override
 	protected String doInBackground(String... urls) {
-
 		String response = "";
 
 		// Get JSON data from url
@@ -82,7 +80,7 @@ public class RestMessageSequenceController extends AsyncTask<String, Void, Strin
 		try {
 			JSONObject jObj = new JSONObject(jsonSource);
 
-			// participants - this is in the front of the json respons. contains
+			// participants - this is in the front of the json response
 			// contains id-name pairs
 			JSONArray participantsArr = jObj.getJSONArray("participants");
 			ArrayList<Person> participants = new ArrayList<Person>();
@@ -135,7 +133,6 @@ public class RestMessageSequenceController extends AsyncTask<String, Void, Strin
 		MessageSequence messageSequence = new MessageSequence();
 
 		try {
-			messageSequence.setName("fuck");
 			// messages - every message contain : id, body, created_at, author
 			// (the author is an id, from the participants arraylist, so have to
 			// find the corresponding name from the list)

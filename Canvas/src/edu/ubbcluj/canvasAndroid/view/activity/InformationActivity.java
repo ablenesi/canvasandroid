@@ -9,7 +9,6 @@ import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +22,6 @@ import edu.ubbcluj.canvasAndroid.controller.AnnouncementCommentController;
 import edu.ubbcluj.canvasAndroid.controller.AnnouncementController;
 import edu.ubbcluj.canvasAndroid.controller.AssignmentsController;
 import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;
-import edu.ubbcluj.canvasAndroid.controller.SubmissionCommentController;
 import edu.ubbcluj.canvasAndroid.controller.rest.RestInformation;
 import edu.ubbcluj.canvasAndroid.model.Announcement;
 import edu.ubbcluj.canvasAndroid.model.AnnouncementComment;
@@ -34,7 +32,6 @@ import edu.ubbcluj.canvasAndroid.persistence.ServiceProvider;
 import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
-import edu.ubbcluj.canvasAndroid.view.activity.AssignmentActivity.PlaceholderFragment;
 
 public class InformationActivity extends BaseActivity {
 

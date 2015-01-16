@@ -46,7 +46,6 @@ public class RestUserController extends AsyncTask<String, Void, String> implemen
 	private String password;
 	private SharedPreferences sp;
 
-	// Try to login
 	@Override
 	public String loginUser(String host) {
 		

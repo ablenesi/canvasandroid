@@ -20,7 +20,6 @@ import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.util.PropertyProvider;
 import edu.ubbcluj.canvasAndroid.util.listener.InformationEvent;
 import edu.ubbcluj.canvasAndroid.util.listener.InformationListener;
-import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
 
 public class RestAssignmentsController extends AsyncTask<String, Void, String>
 		implements AssignmentsController {
@@ -119,7 +118,6 @@ public class RestAssignmentsController extends AsyncTask<String, Void, String>
 	}
 
 	private Assignment convertJSONtoAssignment(JSONObject jObj) {
-
 		Assignment assignment = new Assignment();
 		int courseId;
 		int assignmentId;

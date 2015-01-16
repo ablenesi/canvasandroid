@@ -66,7 +66,6 @@ public class RestActivityStreamSummaryController extends AsyncTask<String, Void,
 			JSONObject obj = jArr.getJSONObject(0);
 			ServiceProvider.getInstance().setNewAnnouncementUnreadCount(
 					convertJSONtoASS(obj).getUnread_count());
-			//MyService.newAnnouncementUnreadCount = convertJSONtoASS(obj).getUnread_count();
 
 		} catch (JSONException e) {
 			Log.e("Json", e.getMessage(), new Error());

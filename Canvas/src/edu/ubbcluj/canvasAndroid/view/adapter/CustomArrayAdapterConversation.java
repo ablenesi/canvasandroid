@@ -35,9 +35,7 @@ public class CustomArrayAdapterConversation extends ArrayAdapter<Conversation> {
 		TextView clockTextView = (TextView) rowView.findViewById(R.id.clock);
 		TextView lastMessageView = (TextView) rowView.findViewById(R.id.last_message);
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-		
 
-		
 		//participants in the conversation
 		String text = "";
 		List<Person> participants = values.get(position).getParticipants();

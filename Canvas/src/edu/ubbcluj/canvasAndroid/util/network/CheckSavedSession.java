@@ -6,7 +6,6 @@ import org.apache.http.cookie.Cookie;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 import edu.ubbcluj.canvasAndroid.persistence.PersistentCookieStore;
 import edu.ubbcluj.canvasAndroid.persistence.model.SingletonCookie;

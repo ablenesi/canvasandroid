@@ -6,7 +6,6 @@ import java.util.Set;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
 
 public class ServiceProvider {
 
@@ -36,8 +35,6 @@ public class ServiceProvider {
 		spName = new String("ServiceInfo");
 		sp = context.getSharedPreferences(spName, Context.MODE_PRIVATE);
 		
-		Log.d("ServiceProvider", "Init called ");
-		
 		Map<String, ?> savedCourses = sp.getAll();
 		Set<String> keySet = savedCourses.keySet();
 		
@@ -48,8 +45,6 @@ public class ServiceProvider {
 			announcementUnreadCount = Integer.parseInt(splittedValue[1]);
 			newAnnouncementUnreadCount = Integer.parseInt(splittedValue[2]);
 		}
-		
-		Log.d("ServiceProvider", "Service state:  " + (service_started?"started":"stopped"));
 	}
 
 	public int getAnnouncementUnreadCount() {
@@ -88,7 +83,6 @@ public class ServiceProvider {
 		
 		editor.putString(key, value);
 		editor.commit();
-		Log.d("ServiceProvider", "Saved service state");
 	}
 
 }

@@ -9,7 +9,6 @@ import java.util.Set;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
 import edu.ubbcluj.canvasAndroid.model.ActiveCourse;
 
 public class CourseProvider {
@@ -40,8 +39,6 @@ public class CourseProvider {
 		spName = new String("CourseInfo_" + username);
 		sp = context.getSharedPreferences(spName, Context.MODE_PRIVATE);
 		
-		Log.d("CourseProvider", "Init called for: " + spName);
-		
 		Map<String, ?> savedCourses = sp.getAll();
 		Set<String> keySet = savedCourses.keySet();
 		
@@ -55,7 +52,6 @@ public class CourseProvider {
 		}
 		
 		updateSelectedCourses();
-		Log.d("CourseProvider", "Loaded " + courses.size() + " courses from SharedPreferences");
 	}
 	
 	public void initialize(Context context) {
@@ -67,12 +63,10 @@ public class CourseProvider {
 	}
 	
 	public List<ActiveCourse> getAllCourses() {
-		Log.d("CourseProvider", "Returning " + selectedCourses.size() + " courses");
 		return courses;
 	}
 	
-	public List<ActiveCourse> getSelectedCourses() {		
-		Log.d("CourseProvider", "Returning " + selectedCourses.size() + " selected courses");
+	public List<ActiveCourse> getSelectedCourses() {
 		return selectedCourses;
 	}
 	
@@ -107,8 +101,6 @@ public class CourseProvider {
 		courses = newCourses;
 		saveStateToSharedPreferences();
 		updateSelectedCourses();
-		
-		Log.d("CourseProvider", "Updated Courses; " + courses.size() + " courses in list");
 	}
 	
 	private void updateSelectedCourses() {
@@ -158,7 +150,6 @@ public class CourseProvider {
 		}
 		
 		editor.commit();
-		Log.d("CourseProvider", "Saved selected courses to SharedPreferences");
 	}
 	
 }

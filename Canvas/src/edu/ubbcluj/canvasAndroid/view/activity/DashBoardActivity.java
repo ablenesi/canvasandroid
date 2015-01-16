@@ -46,19 +46,14 @@ public class DashBoardActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		Log.d("LifeCycle-dash", "onCreate");
 		
 		// Set the progressbar visibility 
 		list = (ListView) findViewById(R.id.list);
-		/*TextView tv = (TextView) findViewById(R.id.label); 
-        tv.setTypeface(null, Typeface.BOLD); */
 		viewContainer = findViewById(R.id.linProg);
 		viewContainer.setVisibility(View.VISIBLE);
 
 		// Get the activity stream
 		cf = ControllerFactory.getInstance();
-		
 		
 		ActivityStreamController dashboardController;
 		dashboardController = cf.getDashboardController();
@@ -240,30 +235,6 @@ public class DashBoardActivity extends BaseActivity {
 	}
 
 	@Override
-	protected void onStart() {
-		Log.d("LifeCycle-dash", "onStart");
-		super.onStart();
-	}
-
-	@Override
-	protected void onRestart() {
-		Log.d("LifeCycle-dash", "onRestart");
-		super.onRestart();
-	}
-
-	@Override
-	protected void onResume() {
-		Log.d("LifeCycle-dash", "onResume");
-		super.onResume();
-	}
-
-	@Override
-	protected void onPause() {
-		Log.d("LifeCycle-dash", "onPause");
-		super.onPause();
-	}
-
-	@Override
 	protected void onStop() {
 		Log.d("LifeCycle-dash", "onStop");
 		if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {
@@ -277,20 +248,12 @@ public class DashBoardActivity extends BaseActivity {
 	}
 
 	@Override
-	protected void onDestroy() {
-		Log.d("LifeCycle-dash", "onDestroy");
-		super.onDestroy();
-	}
-
-	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		Log.d("LifeCycle-dash", "onSaveInsatace");
 		super.onSaveInstanceState(outState);
 	}
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		Log.d("LifeCycle-dash", "onRestoreInsatace");
 		super.onRestoreInstanceState(savedInstanceState);
 	}
 

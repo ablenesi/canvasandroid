@@ -7,7 +7,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="#4b555d"
-    tools:context=".LoginActivity" >
+    tools:context=".LoginActivity"
+    android:gravity="center" >
 
     
     <ImageView
@@ -18,7 +19,7 @@
         android:layout_marginLeft="40dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="0dp"
-        android:src="@drawable/logo_instructure" >
+        android:src="@drawable/logo_instructure"  >
     </ImageView> 
     
 
