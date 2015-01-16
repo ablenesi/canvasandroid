@@ -341,8 +341,6 @@ public class CourseActivity extends BaseActivity implements
 									getActivity(), AssignmentActivity.class);
 	
 							Bundle bundle = new Bundle();
-							bundle.putSerializable("activity_type",
-									InformationActivity.AssignmentInformation);
 							bundle.putInt("course_id", assignment.getCourseId());
 							bundle.putInt("assignment_id", assignment.getId());
 	
@@ -583,11 +581,9 @@ public class CourseActivity extends BaseActivity implements
 									Toast.LENGTH_LONG).show();
 						} else {
 							Intent announcementIntent = new Intent(getActivity(),
-									InformationActivity.class);
+									AnnouncementActivity.class);
 	
 							Bundle bundle = new Bundle();
-							bundle.putSerializable("activity_type",
-									InformationActivity.AnnouncementInformation);
 							bundle.putInt("course_id", announcement.getCourseId());
 							bundle.putInt("announcement_id",
 									announcement.getAnnouncementId());

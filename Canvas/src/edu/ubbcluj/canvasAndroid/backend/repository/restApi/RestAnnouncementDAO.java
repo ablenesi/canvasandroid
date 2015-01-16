@@ -176,7 +176,8 @@ public class RestAnnouncementDAO extends AsyncTask<String, Void, String>
 	}
 
 	private AnnouncementComment[] convertJSONtoAC(JSONObject obj) {
-		AnnouncementComment[] ac = new AnnouncementComment[100];
+		AnnouncementComment[] ac = null;
+		
 		try {
 			ac = new AnnouncementComment[obj.getJSONArray("view").length()];
 			JSONArray participants = obj.getJSONArray("participants");
@@ -188,9 +189,10 @@ public class RestAnnouncementDAO extends AsyncTask<String, Void, String>
 				ac[i].setMessage(mess.substring(3, mess.length()-4));
 				ac[i].setId(commentObj.getInt("id"));
 				ac[i].setUserId(commentObj.getInt("user_id"));
-				if (commentObj.getJSONArray("replies")!=null){
+				AnnouncementCommentReplies[] acr = new AnnouncementCommentReplies[0];
+				if (!commentObj.isNull("replies")){
 					JSONArray replies = commentObj.getJSONArray("replies");
-					AnnouncementCommentReplies[] acr = new AnnouncementCommentReplies[replies.length()];
+					acr = new AnnouncementCommentReplies[replies.length()];
 					for(int k=0;k<replies.length();k++){
 						acr[k] = new AnnouncementCommentReplies();
 						JSONObject replieObj = replies.getJSONObject(k);

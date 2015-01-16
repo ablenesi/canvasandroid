@@ -54,7 +54,7 @@ public class MyService extends Service{
 		    long when = System.currentTimeMillis();
 		    Random rng = new Random();
 		    nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE) ;
-		    Intent intent2=new Intent(getApplicationContext(),DashBoardActivity.class);
+		    Intent intent2=new Intent(getApplicationContext(),LoginActivity.class);
 		    int x = rng.nextInt();
 		    PendingIntent  pending=PendingIntent.getActivity(getApplicationContext(), x, intent2, 0);
 		    Notification notification;
@@ -81,7 +81,7 @@ public class MyService extends Service{
 	        alarm = (AlarmManager)getSystemService(ALARM_SERVICE);
 	        alarm.set(
 	            AlarmManager.RTC_WAKEUP,
-	            System.currentTimeMillis() + (1000*180),
+	            System.currentTimeMillis() + (1000*30),
 	            PendingIntent.getService(this, 0, new Intent(this, MyService.class), 0)
 	        );
         }

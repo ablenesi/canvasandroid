@@ -235,7 +235,7 @@ public class AssignmentActivity extends BaseActivity {
 				aPossibleGrade.setText("Not graded\n");
 			}
 			
-			aPossibleGrade.append("(Maximum grade possible: "
+			aPossibleGrade.append("(Max grade: "
 					+ assignment.getPointsPossible() + ")");
 
 			if (assignment.getLockExplanation() != null) {

@@ -71,7 +71,7 @@
                 android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
         </activity>
         <activity
-            android:name=".InformationActivity"
+            android:name=".AnnouncementActivity"
             android:label="@string/title_activity_information"
             android:noHistory="true"
             android:parentActivityName=".DashBoardActivity"
