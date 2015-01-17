@@ -84,6 +84,8 @@ public class DashBoardActivity extends BaseActivity {
 						Toast.makeText(DashBoardActivity.this, "No network connection!",
 								Toast.LENGTH_LONG).show();
 					} else {
+						as.setRead_state(true);
+						activityStream.set(position, as);
 						Intent informationIntent = new Intent(
 								DashBoardActivity.this, AnnouncementActivity.class);
 	
@@ -105,6 +107,8 @@ public class DashBoardActivity extends BaseActivity {
 						Toast.makeText(DashBoardActivity.this, "No network connection!",
 								Toast.LENGTH_LONG).show();
 					} else {
+						as.setRead_state(true);
+						activityStream.set(position, as);
 						Intent informationIntent = new Intent(
 								DashBoardActivity.this, AssignmentActivity.class);
 	
@@ -118,6 +122,8 @@ public class DashBoardActivity extends BaseActivity {
 				}
 
 				if (as.getType().equals("Message")) {
+					as.setRead_state(true);
+					activityStream.set(position, as);
 					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 							PropertyProvider
 							.getProperty("url")
@@ -139,6 +145,8 @@ public class DashBoardActivity extends BaseActivity {
 				}
 
 				if (as.getType().equals("Conversation")) {
+					as.setRead_state(true);
+					activityStream.set(position, as);
 					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 							PropertyProvider
 							.getProperty("url")
@@ -158,6 +166,8 @@ public class DashBoardActivity extends BaseActivity {
 				}
 
 				if (as.getType().equals("DiscussionTopic")) {
+					as.setRead_state(true);
+					activityStream.set(position, as);
 					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 							PropertyProvider.getProperty("url")
 								+ "/api/v1/courses/"
@@ -255,6 +265,8 @@ public class DashBoardActivity extends BaseActivity {
 	protected void onResume() {
 		Log.d("LifeCycle-dash", "onResume");
 		super.onResume();
+		if(adapter!=null)
+			setList();
 	}
 
 	@Override

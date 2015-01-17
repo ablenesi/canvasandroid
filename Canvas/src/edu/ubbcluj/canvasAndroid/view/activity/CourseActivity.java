@@ -571,7 +571,7 @@ public class CourseActivity extends BaseActivity implements
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						Announcement announcement = announcements.get(position);
-
+						
 						if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 								PropertyProvider.getProperty("url")
 									+ "/api/v1/courses/"
@@ -581,6 +581,11 @@ public class CourseActivity extends BaseActivity implements
 							Toast.makeText(getActivity(), "No network connection!",
 									Toast.LENGTH_LONG).show();
 						} else {
+							announcement.setRead_state(true);
+							announcements.set(position,announcement);
+							announcementAdapter = new CustomArrayAdapterAnnouncements(
+									getActivity(), announcements);
+							list.setAdapter(announcementAdapter);
 							Intent announcementIntent = new Intent(getActivity(),
 									AnnouncementActivity.class);
 	
