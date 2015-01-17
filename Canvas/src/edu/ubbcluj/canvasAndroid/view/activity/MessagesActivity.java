@@ -61,6 +61,8 @@ public class MessagesActivity extends ActionBarActivity {
 		
 		private CustomArrayAdapterConversation adapter;
 
+		private SwipeRefreshLayout swipeView;
+		
 		public PlaceholderFragment() {
 			cf = ControllerFactory.getInstance();
 		}
@@ -82,6 +84,12 @@ public class MessagesActivity extends ActionBarActivity {
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
 
+					if (asyncTaskForRefresh != null)
+						asyncTaskForRefresh.cancel(true);
+					
+					if (swipeView != null)
+						swipeView.setRefreshing(false);
+					
 					if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 							PropertyProvider.getProperty("url")
 							+ "/api/v1/conversations/" + conversation.get(position).getId()) && !CheckNetwork.isNetworkOnline(getActivity())) {
@@ -128,7 +136,7 @@ public class MessagesActivity extends ActionBarActivity {
 				}
 			});
 
-			final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe);
+			swipeView = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe);
 
 	        swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 	        	
@@ -146,8 +154,6 @@ public class MessagesActivity extends ActionBarActivity {
 	        							.getSharedPreferences("CanvasAndroid",
 	        									Context.MODE_PRIVATE));
 	        			RestInformation.clearData();
-	        			
-	        			conversation = new ArrayList<Conversation>();
 	        		
 		        		conversationController.addInformationListener(new InformationListener() {
 		        				
