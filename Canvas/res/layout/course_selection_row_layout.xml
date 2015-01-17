@@ -2,23 +2,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    
-     <ImageView
+
+    <ImageView
         android:id="@+id/courseicon"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/ic_launcher" 
-    />    
-    
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_launcher" />
+
     <TextView
         android:id="@+id/coursename"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:textSize="18sp"
-        android:textColor="#000"
         android:layout_toRightOf="@+id/courseicon"
-     />
-    
+        android:gravity="center_vertical"
+        android:minHeight="50dp"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
 
 </RelativeLayout>

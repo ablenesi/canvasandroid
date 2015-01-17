@@ -7,30 +7,32 @@
         android:id="@+id/author"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
         android:textSize="14sp"
-        android:textStyle="bold"
-        android:textColor="#000" />
-
-    <TextView
-        android:id="@+id/body"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_below="@+id/author"
-        android:textSize="14sp" 
-        android:textColor="#000"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/date"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/author"
         android:gravity="right|top"
-        android:textSize="10sp" 
-        android:textColor="#000"/>
+        android:textColor="@color/black"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/body"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/author"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:textSize="14sp" />
 
 </RelativeLayout>
