@@ -161,6 +161,9 @@ public class AnnouncementActivity extends BaseActivity {
 
 
 		@SuppressWarnings("unchecked")
+		/**
+		 * Send comment for the actual announcement.
+		 */
 		public void sendComment() {
 
 			String comment = sComment.getText().toString();

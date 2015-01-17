@@ -156,6 +156,9 @@ public class AssignmentActivity extends BaseActivity {
 		}
 
 		@SuppressWarnings("unchecked")
+		/**
+		 * Send comment for the actual assignment.
+		 */
 		public void sendComment() {
 			
 			String comment = sComment.getText().toString();

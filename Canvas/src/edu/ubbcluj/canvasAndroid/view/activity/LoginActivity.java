@@ -86,7 +86,9 @@ public class LoginActivity extends Activity {
         stopService(new Intent(getBaseContext(), MyService.class));
     }
 
-	// Login after button is pressed
+	/**
+	 *  Login after button is pressed.
+	 */
 	@SuppressWarnings("unchecked")
 	public void sendMessage(View vire) {
 		if (!CheckNetwork.isNetworkOnline(this)) {
