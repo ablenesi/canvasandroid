@@ -62,9 +62,8 @@ public class RestSubmissionCommentController extends AsyncTask<String, Void, Str
 		
 		List<NameValuePair> formData = new ArrayList<NameValuePair>();
 		formData.add(new BasicNameValuePair("submission[comment]", comment));
-		formData.add(new BasicNameValuePair("_method", "POST"));
-		Log.d("sendmymess",url);
-		Log.d("sendmymess",comment);
+		formData.add(new BasicNameValuePair("_method", "PUT"));
+		
 		response = RestInformation.postData(url, formData);
 		
 		return response;

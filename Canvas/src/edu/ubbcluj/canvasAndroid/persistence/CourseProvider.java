@@ -37,6 +37,10 @@ public class CourseProvider {
 	}
 
 	public void initalize(Context context, String username) {
+		
+		courses.clear();
+		selectedCourses.clear();
+		
 		spName = new String("CourseInfo_" + username);
 		sp = context.getSharedPreferences(spName, Context.MODE_PRIVATE);
 		
