@@ -2,6 +2,7 @@ package edu.ubbcluj.canvasAndroid.view.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -41,6 +42,8 @@ public class DashBoardActivity extends BaseActivity {
 	private AsyncTask<String, Void, String> asyncTask;
 	private AsyncTask<String, Void, String> asynTaskForRefresh;
 	
+	private SwipeRefreshLayout swipeView = null;
+	
 	@SuppressWarnings("unchecked")
 	@SuppressLint("NewApi")
 	@Override
@@ -69,6 +72,12 @@ public class DashBoardActivity extends BaseActivity {
 					int position, long id) {
 				ActivityStream as = activityStream.get(position);
 
+				if (asynTaskForRefresh != null)
+					asynTaskForRefresh.cancel(true);
+				
+				if (swipeView != null)
+					swipeView.setRefreshing(false);
+				
 				if (as.getType().equals("Announcement")) {
 					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 							PropertyProvider.getProperty("url")
@@ -79,6 +88,8 @@ public class DashBoardActivity extends BaseActivity {
 						Toast.makeText(DashBoardActivity.this, "No network connection!",
 								Toast.LENGTH_LONG).show();
 					} else {
+						as.setRead_state(true);
+						activityStream.set(position, as);
 						Intent informationIntent = new Intent(
 								DashBoardActivity.this, AnnouncementActivity.class);
 	
@@ -100,6 +111,8 @@ public class DashBoardActivity extends BaseActivity {
 						Toast.makeText(DashBoardActivity.this, "No network connection!",
 								Toast.LENGTH_LONG).show();
 					} else {
+						as.setRead_state(true);
+						activityStream.set(position, as);
 						Intent informationIntent = new Intent(
 								DashBoardActivity.this, AssignmentActivity.class);
 	
@@ -113,6 +126,8 @@ public class DashBoardActivity extends BaseActivity {
 				}
 
 				if (as.getType().equals("Message")) {
+					as.setRead_state(true);
+					activityStream.set(position, as);
 					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 							PropertyProvider
 							.getProperty("url")
@@ -134,6 +149,8 @@ public class DashBoardActivity extends BaseActivity {
 				}
 
 				if (as.getType().equals("Conversation")) {
+					as.setRead_state(true);
+					activityStream.set(position, as);
 					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 							PropertyProvider
 							.getProperty("url")
@@ -153,6 +170,8 @@ public class DashBoardActivity extends BaseActivity {
 				}
 
 				if (as.getType().equals("DiscussionTopic")) {
+					as.setRead_state(true);
+					activityStream.set(position, as);
 					if(!CookieHandler.checkData(getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 							PropertyProvider.getProperty("url")
 								+ "/api/v1/courses/"
@@ -192,7 +211,8 @@ public class DashBoardActivity extends BaseActivity {
 
 		// Initialize the dashboard list
 		setList();
-		final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) findViewById(R.id.swipe);
+		
+		swipeView = (SwipeRefreshLayout) findViewById(R.id.swipe);
 
         swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
         	
@@ -209,10 +229,7 @@ public class DashBoardActivity extends BaseActivity {
 	        				"CanvasAndroid", Context.MODE_PRIVATE));
 	        		RestInformation.clearData();
 	        		
-	        		
-	        		activityStream = new ArrayList<ActivityStream>();
-	        		dashboardController.addInformationListener(new InformationListener() {
-	        			
+	        		dashboardController.addInformationListener(new InformationListener() {	
 	        			
 	        			@Override
 	        			public void onComplete(InformationEvent e) {
@@ -235,6 +252,13 @@ public class DashBoardActivity extends BaseActivity {
 	}
 
 	@Override
+	protected void onResume() {
+		Log.d("LifeCycle-dash", "onResume");
+		super.onResume();
+		if(adapter!=null)
+			setList();
+	}
+
 	protected void onStop() {
 		Log.d("LifeCycle-dash", "onStop");
 		if ( asyncTask != null && asyncTask.getStatus() == Status.RUNNING) {

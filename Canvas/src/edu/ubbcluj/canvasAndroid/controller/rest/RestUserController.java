@@ -143,9 +143,8 @@ public class RestUserController extends AsyncTask<String, Void, String> implemen
 					Gson gson = new Gson();
 					String userString = gson.toJson(users);
 					CookieHandler.saveData(sp, "usernames", userString, null);
-					CookieHandler.saveData(sp, "lastusername", username, null);
 				}
-
+				CookieHandler.saveData(sp, "lastusername", username, null);
 				loginActivity.loginCompleted();
 			}
 		}

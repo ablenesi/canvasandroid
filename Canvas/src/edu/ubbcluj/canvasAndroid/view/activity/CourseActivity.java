@@ -276,6 +276,8 @@ public class CourseActivity extends BaseActivity implements
 		private AsyncTask<String, Void, String> asyncTaskComingUp;
 		private AsyncTask<String, Void, String> asyncTaskForRefreshComingUp;
 
+		private SwipeRefreshLayout swipeView;
+		
 		private RestDownloadManager downloadManager;
 		
 		/**
@@ -324,6 +326,12 @@ public class CourseActivity extends BaseActivity implements
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						Assignment assignment = assignments.get(position);
+						
+						if (asyncTaskComingUp != null)
+							asyncTaskComingUp.cancel(true);
+						if (swipeView != null)
+							swipeView.setRefreshing(false);
+						
 						if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 								PropertyProvider.getProperty("url")
 									+ "/api/v1/courses/"
@@ -381,7 +389,7 @@ public class CourseActivity extends BaseActivity implements
 							+ "/todo" });
 				}
 
-				final SwipeRefreshLayout swipeView = (SwipeRefreshLayout) rootView
+				swipeView = (SwipeRefreshLayout) rootView
 						.findViewById(R.id.swipe);
 
 				swipeView
@@ -394,7 +402,6 @@ public class CourseActivity extends BaseActivity implements
 											Toast.LENGTH_LONG).show();
 				        		} else {
 									ToDoController todoController;
-									assignments = new ArrayList<Assignment>();
 									todoController = cf.getToDoController();
 									todoController.setSharedPreferences(sp);
 									RestInformation.clearData();
@@ -445,6 +452,11 @@ public class CourseActivity extends BaseActivity implements
 							int position, long id) {
 						Assignment assignment = assignments.get(position);
 
+						if (asyncTaskAssignment != null)
+							asyncTaskAssignment.cancel(true);
+						if (swipeView != null)
+							swipeView.setRefreshing(false);
+						
 						if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 								PropertyProvider.getProperty("url")
 									+ "/api/v1/courses/"
@@ -518,7 +530,6 @@ public class CourseActivity extends BaseActivity implements
 									AssignmentsController assignmentsController;
 									assignmentsController = cf.getAssignmentsController();
 									assignmentsController.setSharedPreferences(sp);
-									assignments = new ArrayList<Assignment>();
 									RestInformation.clearData();
 	
 									// assignmentsController.setPlaceholderFragment(this);
@@ -566,7 +577,12 @@ public class CourseActivity extends BaseActivity implements
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						Announcement announcement = announcements.get(position);
-
+						
+						if (asyncTaskAssignment != null)
+							asyncTaskAssignment.cancel(true);
+						if (swipeView != null)
+							swipeView.setRefreshing(false);
+						
 						if(!CookieHandler.checkData(getActivity().getSharedPreferences("CanvasAndroid", Context.MODE_PRIVATE), 
 								PropertyProvider.getProperty("url")
 									+ "/api/v1/courses/"
@@ -576,6 +592,11 @@ public class CourseActivity extends BaseActivity implements
 							Toast.makeText(getActivity(), "No network connection!",
 									Toast.LENGTH_LONG).show();
 						} else {
+							announcement.setRead_state(true);
+							announcements.set(position,announcement);
+							announcementAdapter = new CustomArrayAdapterAnnouncements(
+									getActivity(), announcements);
+							list.setAdapter(announcementAdapter);
 							Intent announcementIntent = new Intent(getActivity(),
 									AnnouncementActivity.class);
 	

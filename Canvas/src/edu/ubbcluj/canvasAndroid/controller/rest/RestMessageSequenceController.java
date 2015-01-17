@@ -69,13 +69,13 @@ public class RestMessageSequenceController extends AsyncTask<String, Void, Strin
 
 		// Get JSON data from url
 		for (String url : urls) {
-			if (CookieHandler.checkData(sp, url))
-				response = CookieHandler.getData(sp, url);
-			else
-			{
+//			if (CookieHandler.checkData(sp, url))
+//				response = CookieHandler.getData(sp, url);
+//			else
+//			{
 				response = RestInformation.getData(url);
 				CookieHandler.saveData(sp, url, response);
-			}
+//			}
 		}
 
 		data = new ArrayList<MessageSequence>();
