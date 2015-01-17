@@ -57,6 +57,9 @@ public class RestConversationController extends AsyncTask<String, Void, String>
 		persistentCookieStore.clear();		
 	}
 	
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {
 
@@ -99,19 +102,27 @@ public class RestConversationController extends AsyncTask<String, Void, String>
 
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 		notifyListeners();
 	}
 
+	/**
+	 * Notifies listeners that the data has been retrieved from the server, and it's conversion is finished.
+	 */
 	public synchronized void notifyListeners() {
 		for (InformationListener il : actionList) {
 			il.onComplete(new InformationEvent(this));
 		}
 	}
 
-	// Convert JSON object to ActivityStream object
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.Conversation} object.
+	 */
 	private Conversation convertJSONtoAS(JSONObject obj) {
 		Conversation conversation = new Conversation();
 

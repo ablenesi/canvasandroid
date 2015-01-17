@@ -18,7 +18,6 @@ import android.util.Log;
 
 public class RestActivityStreamSummaryController extends AsyncTask<String, Void, String> implements ActivityStreamSummaryController
 {
-
 	private List<ActivityStreamSummary> data;
 	private SharedPreferences	sp;
 	
@@ -43,6 +42,9 @@ public class RestActivityStreamSummaryController extends AsyncTask<String, Void,
 		persistentCookieStore.clear();	
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {
 		String response = "";
@@ -78,19 +80,21 @@ public class RestActivityStreamSummaryController extends AsyncTask<String, Void,
 		return response;
 	}
 	
-	// Convert JSON object to ActivityStream object
-		private ActivityStreamSummary convertJSONtoASS(JSONObject obj) {
-			ActivityStreamSummary ass = new ActivityStreamSummary();
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.ActivityStreamSummary} object.
+	 */
+	private ActivityStreamSummary convertJSONtoASS(JSONObject obj) {
+		ActivityStreamSummary ass = new ActivityStreamSummary();
 
-			try {
-				ass.setType(obj.getString("type"));
-				ass.setCount(obj.getInt("count"));
-				ass.setUnread_count(obj.getInt("unread_count"));
-			} catch (JSONException e) {
-				Log.e("JSON", e.getMessage());
-			}
-
-			return ass;
+		try {
+			ass.setType(obj.getString("type"));
+			ass.setCount(obj.getInt("count"));
+			ass.setUnread_count(obj.getInt("unread_count"));
+		} catch (JSONException e) {
+			Log.e("JSON", e.getMessage());
 		}
+
+		return ass;
+	}
 
 }

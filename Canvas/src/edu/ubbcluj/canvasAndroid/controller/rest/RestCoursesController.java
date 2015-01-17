@@ -28,12 +28,12 @@ public class RestCoursesController extends AsyncTask<String, Void, String> imple
 	public RestCoursesController() {
 		actionList = new LinkedList<InformationListener>();
 	}
-	
+
 	@Override
 	public void setSharedPreferences(SharedPreferences sp) {
 		this.sp = sp;
 	};
-	
+
 	@Override
 	public void addInformationListener(InformationListener il) {
 		actionList.add(il);
@@ -44,12 +44,15 @@ public class RestCoursesController extends AsyncTask<String, Void, String> imple
 		actionList.remove(il);
 	}
 	
+	/**
+	 * Notifies listeners that the data has been retrieved from the server, and it's conversion is finished.
+	 */
 	public synchronized void notifyListeners() {
 		for (InformationListener il: actionList) {
 			il.onComplete(new InformationEvent(this));
 		}
 	}	
-	
+
 	@Override
 	public void clearData() {
 		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(sp);
@@ -57,6 +60,9 @@ public class RestCoursesController extends AsyncTask<String, Void, String> imple
 		persistentCookieStore.clear();		
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {
 		String response = "";
@@ -96,12 +102,18 @@ public class RestCoursesController extends AsyncTask<String, Void, String> imple
 		return response;
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 		notifyListeners();
 	}
 
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.ActiveCourse} object.
+	 */
 	private ActiveCourse convertJSONtoStr(JSONObject jObj) {
 
 		ActiveCourse activeCourse = new ActiveCourse();

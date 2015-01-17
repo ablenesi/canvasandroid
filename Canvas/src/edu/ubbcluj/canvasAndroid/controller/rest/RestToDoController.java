@@ -40,6 +40,9 @@ public class RestToDoController extends AsyncTask<String, Void, String> implemen
 		actionList.remove(il);
 	}
 
+	/**
+	 * Notifies listeners that the data has been retrieved from the server, and it's conversion is finished.
+	 */
 	public synchronized void notifyListeners() {
 		for (InformationListener il : actionList) {
 			il.onComplete(new InformationEvent(this));
@@ -63,6 +66,9 @@ public class RestToDoController extends AsyncTask<String, Void, String> implemen
 		persistentCookieStore.clear();		
 	}
 	
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {
 		String response = "";
@@ -112,6 +118,9 @@ public class RestToDoController extends AsyncTask<String, Void, String> implemen
 		return response;
 	}
 
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.Assignment} object.
+	 */
 	private Assignment convertJSONtoStr(JSONObject jObj) {
 
 		JSONObject assignmentObj;
@@ -158,6 +167,9 @@ public class RestToDoController extends AsyncTask<String, Void, String> implemen
 		return assignment;
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);

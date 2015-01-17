@@ -33,14 +33,19 @@ public class RestAssignmentsController extends AsyncTask<String, Void, String>
 		actionList = new ArrayList<InformationListener>();
 	}
 
+	@Override
 	public synchronized void addInformationListener(InformationListener il) {
 		actionList.add(il);
 	}
 
+	@Override
 	public synchronized void removeInformationListener(InformationListener il) {
 		actionList.remove(il);
 	}
 
+	/**
+	 * Notifies listeners that the data has been retrieved from the server, and it's conversion is finished.
+	 */
 	public synchronized void notifyListeners() {
 		for (InformationListener il : actionList) {
 			il.onComplete(new InformationEvent(this));
@@ -63,6 +68,9 @@ public class RestAssignmentsController extends AsyncTask<String, Void, String>
 		persistentCookieStore.clear();		
 	}
 	
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {
 		String response = "";
@@ -111,12 +119,18 @@ public class RestAssignmentsController extends AsyncTask<String, Void, String>
 		return response;
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 		notifyListeners();
 	}
 
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.Assignment} object.
+	 */
 	private Assignment convertJSONtoAssignment(JSONObject jObj) {
 		Assignment assignment = new Assignment();
 		int courseId;
@@ -173,6 +187,9 @@ public class RestAssignmentsController extends AsyncTask<String, Void, String>
 		return assignment;
 	}
 	
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.Submission} object.
+	 */
 	private Submission convertJSONtoSubmission(JSONObject jObj) {
 		Submission submission = new Submission();
 		
@@ -240,6 +257,9 @@ public class RestAssignmentsController extends AsyncTask<String, Void, String>
 		return submission;
 	}
 	
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.Attachment} object.
+	 */
 	private SubmissionAttachment convertJSONtoAttachment(JSONObject jObj) {
 		SubmissionAttachment attachment = new SubmissionAttachment();
 		
@@ -268,6 +288,9 @@ public class RestAssignmentsController extends AsyncTask<String, Void, String>
 		return attachment;
 	}
 	
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.Comment} object.
+	 */
 	private SubmissionComment convertJSONtoComment(JSONObject jObj) {
 		SubmissionComment comment = new SubmissionComment();
 		

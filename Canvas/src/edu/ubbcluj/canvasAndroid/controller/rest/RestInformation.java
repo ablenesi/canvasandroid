@@ -31,6 +31,9 @@ import edu.ubbcluj.canvasAndroid.util.network.CheckNetwork;
 
 public class RestInformation extends AsyncTask<String, Void, String> {
 
+	/**
+	 * Sends data provided by the user to the given url with post method.
+	 */
 	public static String postData(String url, List<NameValuePair> formData) {
 		String response = "";
 		
@@ -75,6 +78,9 @@ public class RestInformation extends AsyncTask<String, Void, String> {
 		return response;
 	}
 	
+	/**
+	 * Sends data provided by the user to the given url with put method.
+	 */
 	public static String putData(String url){
 		HttpContext context;
 		HttpClient httpClient;
@@ -111,7 +117,9 @@ public class RestInformation extends AsyncTask<String, Void, String> {
 		return resp;
 	}
 	
-	// Get informations from the given url
+	/**
+	 * Retrieves data from the given url.
+	 */
 	public static String getData(String url) {
 		HttpContext context;
 		HttpResponse httpResponse;
@@ -150,10 +158,10 @@ public class RestInformation extends AsyncTask<String, Void, String> {
 		return response;
 	}
 
-	/*
-	 * Clears all cookies from cookie store except the login cookies
-	 * (_normandy_session, pseudonym_credentials)
+	/**
+	 * Clears all cookies from cookie store except the login cookies.
 	 */
+	//(_normandy_session, pseudonym_credentials)
 	public static void clearData() {
 		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
 				.getInstance();
@@ -172,8 +180,8 @@ public class RestInformation extends AsyncTask<String, Void, String> {
 		
 	}
 
-	/*
-	 * Get cookies needed to user authorization
+	/**
+	 * Get cookies needed to user authorization.
 	 */
 	private static List<Cookie> getLoginCookies() {
 		SingletonSharedPreferences sPreferences = SingletonSharedPreferences
@@ -196,6 +204,9 @@ public class RestInformation extends AsyncTask<String, Void, String> {
 		return loginCookies;
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {
 		String response = "";

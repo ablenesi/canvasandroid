@@ -91,6 +91,9 @@ public class RestUserController extends AsyncTask<String, Void, String> implemen
 		return response;
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {
 
@@ -110,8 +113,9 @@ public class RestUserController extends AsyncTask<String, Void, String> implemen
 		loginActivity.showDialog("Connecting... Please wait!");
 	}
 
-	// Store cookie in SingletonCookie if logged in
-	// Else show the errorMessage
+	/**
+	 * AsyncTask method overridden. Store cookie in SingletonCookie if logged in.
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 

@@ -32,12 +32,18 @@ public class RestAnnouncementCommentController extends AsyncTask<String, Void, S
 		actionList.remove(il);
 	}
 	
+	/**
+	 * Notifies listeners that the data has been retrieved from the server, and it's conversion is finished.
+	 */
 	public synchronized void notifyListeners() {
 		for (InformationListener il: actionList) {
 			il.onComplete(new InformationEvent(this));
 		}
 	}	
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {
 		String response = "";
@@ -49,6 +55,9 @@ public class RestAnnouncementCommentController extends AsyncTask<String, Void, S
 		return response;
 	}
 	
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
@@ -60,6 +69,9 @@ public class RestAnnouncementCommentController extends AsyncTask<String, Void, S
 		this.comment = comment;
 	}
 
+	/**
+	 * Sends the data provided by the user to the specified url.
+	 */
 	public String sendComment(String url) {
 		String response = "";
 		

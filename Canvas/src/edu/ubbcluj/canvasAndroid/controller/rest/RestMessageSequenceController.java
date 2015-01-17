@@ -29,7 +29,7 @@ public class RestMessageSequenceController extends AsyncTask<String, Void, Strin
 		data = new ArrayList<MessageSequence>();
 		actionList = new ArrayList<InformationListener>();
 	}
-
+	
 	@Override
 	public void addInformationListener(InformationListener il) {
 		actionList.add(il);
@@ -50,6 +50,9 @@ public class RestMessageSequenceController extends AsyncTask<String, Void, Strin
 		this.sp = sp;
 	}
 	
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	public void clearData() {
 		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(sp);
@@ -57,6 +60,9 @@ public class RestMessageSequenceController extends AsyncTask<String, Void, Strin
 		persistentCookieStore.clear();		
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {
 		String response = "";
@@ -114,19 +120,27 @@ public class RestMessageSequenceController extends AsyncTask<String, Void, Strin
 
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 		notifyListeners();
 	}
 
+	/**
+	 * Notifies listeners that the data has been retrieved from the server, and it's conversion is finished.
+	 */
 	public synchronized void notifyListeners() {
 		for (InformationListener il : actionList) {
 			il.onComplete(new InformationEvent(this));
 		}
 	}
 
-	// Convert JSON object to MessageSequence object
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.Folder} object.
+	 */
 	private MessageSequence convertJSONtoMS(JSONObject obj,
 			ArrayList<Person> participants) {
 

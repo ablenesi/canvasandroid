@@ -1,0 +1,12 @@
+android.support.v7.appcompat
+edu.ubbcluj.canvasAndroid
+edu.ubbcluj.canvasAndroid.controller
+edu.ubbcluj.canvasAndroid.controller.rest
+edu.ubbcluj.canvasAndroid.model
+edu.ubbcluj.canvasAndroid.persistence
+edu.ubbcluj.canvasAndroid.persistence.model
+edu.ubbcluj.canvasAndroid.util
+edu.ubbcluj.canvasAndroid.util.listener
+edu.ubbcluj.canvasAndroid.util.network
+edu.ubbcluj.canvasAndroid.view.activity
+edu.ubbcluj.canvasAndroid.view.adapter

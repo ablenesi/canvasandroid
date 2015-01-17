@@ -43,6 +43,9 @@ public class RestAnnouncementController extends AsyncTask<String, Void, String>
 		actionList.remove(il);
 	}
 
+	/**
+	 * Notifies listeners that the data has been retrieved from the server, and it's conversion is finished.
+	 */
 	public synchronized void notifyListeners() {
 		for (InformationListener il : actionList) {
 			il.onComplete(new InformationEvent(this));
@@ -66,6 +69,9 @@ public class RestAnnouncementController extends AsyncTask<String, Void, String>
 		persistentCookieStore.clear();		
 	}
 	
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {
 		String response = "";
@@ -113,12 +119,18 @@ public class RestAnnouncementController extends AsyncTask<String, Void, String>
 		return response;
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 		notifyListeners();
 	}
 
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.Announcement} object.
+	 */
 	private Announcement convertJSONtoA(JSONObject obj) {
 		Announcement announcement = new Announcement();
 
@@ -175,6 +187,9 @@ public class RestAnnouncementController extends AsyncTask<String, Void, String>
 		return announcement;
 	}
 
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.AnnouncementComment} object.
+	 */
 	private AnnouncementComment[] convertJSONtoAC(JSONObject obj) {
 		AnnouncementComment[] ac = null;
 		

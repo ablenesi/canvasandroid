@@ -41,6 +41,9 @@ public class RestActivityStreamController extends AsyncTask<String, Void, String
 		actionList.remove(il);
 	}
 	
+	/**
+	 * Notifies listeners that the data has been retrieved from the server, and it's conversion is finished.
+	 */
 	public synchronized void notifyListeners() {
 		for (InformationListener il: actionList) {
 			il.onComplete(new InformationEvent(this));
@@ -56,7 +59,7 @@ public class RestActivityStreamController extends AsyncTask<String, Void, String
 	public void setSharedPreferences(SharedPreferences sp) {
 		this.sp = sp;
 	}
-	
+
 	@Override
 	public void clearData() {
 		PersistentCookieStore persistentCookieStore = new PersistentCookieStore(sp);
@@ -64,6 +67,9 @@ public class RestActivityStreamController extends AsyncTask<String, Void, String
 		persistentCookieStore.clear();		
 	}
 	
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {
 		String response = "";
@@ -107,13 +113,18 @@ public class RestActivityStreamController extends AsyncTask<String, Void, String
 		return response;
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 		notifyListeners();
 	}
 
-	// Convert JSON object to ActivityStream object
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.ActivityStream} object.
+	 */
 	private ActivityStream convertJSONtoAS(JSONObject obj) {
 		ActivityStream as = new ActivityStream();
 

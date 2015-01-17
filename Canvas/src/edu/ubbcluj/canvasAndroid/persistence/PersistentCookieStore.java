@@ -45,8 +45,8 @@ public class PersistentCookieStore implements CookieStore, Serializable {
 		}		 
 	}
 
-	/*
-	 * Save a new cookie to SavedPreferences Data encoded using Base64
+	/**
+	 * Save a new cookie to SavedPreferences Data encoded using Base64.
 	 */
 	@Override
 	public synchronized void addCookie(Cookie cookie) {
@@ -90,7 +90,9 @@ public class PersistentCookieStore implements CookieStore, Serializable {
 		return decodedCookies;
 	}
 	
-	//Get a cookie by key
+	/**
+	 * Get a cookie by key.
+	 */
 	public synchronized Cookie getCookie(String key) {
 		//Clear out expired cookies
 	    clearExpired(new Date());	
@@ -107,8 +109,10 @@ public class PersistentCookieStore implements CookieStore, Serializable {
 		 return new BasicClientCookie2("Epmty","");
 	}
 	
+	/**
+	 * Clear the expired cookies.
+	 */
 	@Override
-	//Clear the expired cookies
 	public synchronized boolean clearExpired(Date date) {
         boolean clearedAny = false;
         final SharedPreferences.Editor editor = cookiePreferences.edit();
@@ -141,8 +145,10 @@ public class PersistentCookieStore implements CookieStore, Serializable {
 		return clearedAny;
 	}	
 	
+	/**
+	 * Clear all cookies.
+	 */
 	@Override
-	//Clear all cookies
 	public synchronized void clear() {
 		final SharedPreferences.Editor editor = cookiePreferences.edit();
 		for (String cookieName:persistentCookieNames) {
@@ -167,14 +173,18 @@ public class PersistentCookieStore implements CookieStore, Serializable {
 		editor.commit();		
 	}
 	
-	//Check if exist a cookie
+	/**
+	 * Check if a cookie exists.
+	 */
 	public synchronized boolean existCookie(String key) {
 		//Clear out expired cookies
 	    clearExpired(new Date());			
 	    return (persistentCookieNames.contains(key));
 	}
 	
-	//Encode the serializable cookie
+	/**
+	 * Encode the serializable cookie.
+	 */
     protected String encodeCookie(SerializableCookie cookie) {
         if (cookie == null)
             return null;
@@ -189,7 +199,9 @@ public class PersistentCookieStore implements CookieStore, Serializable {
         return Base64.encodeToString(os.toByteArray(),Base64.DEFAULT);
     }
     
-    //Decode the serializable cookie
+    /**
+     * Decode the serializable cookie.
+     */
     protected Cookie decodeCookie(String cookieString) {
         byte[] bytes =  Base64.decode(cookieString,Base64.DEFAULT);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);

@@ -63,6 +63,9 @@ public class RestFolderController extends AsyncTask<String, Void, String> implem
 		persistentCookieStore.clear();
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {
 
@@ -133,18 +136,27 @@ public class RestFolderController extends AsyncTask<String, Void, String> implem
 		return null;
 	}
 
+	/**
+	 * Notifies listeners that the data has been retrieved from the server, and it's conversion is finished.
+	 */
 	public synchronized void notifyListeners() {
 		for (InformationListener il : actionList) {
 			il.onComplete(new InformationEvent(this));
 		}
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 		notifyListeners();
 	}
 
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.Folder} object.
+	 */
 	private Folder convertJSONtoFolder(JSONObject obj) {
 
 		Folder folder = new Folder();
@@ -161,6 +173,9 @@ public class RestFolderController extends AsyncTask<String, Void, String> implem
 		return folder;
 	}
 
+	/**
+	 * Converts a JSON Object to an {@link edu.ubbcluj.canvasAndroid.model.File} object.
+	 */
 	private File convertJSONtoFile(JSONObject obj) {
 		File file = new File();
 

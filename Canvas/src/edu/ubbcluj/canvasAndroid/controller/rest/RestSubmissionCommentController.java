@@ -33,6 +33,9 @@ public class RestSubmissionCommentController extends AsyncTask<String, Void, Str
 		actionList.remove(il);
 	}
 
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected String doInBackground(String... urls) {	
 		String response = "";
@@ -44,6 +47,9 @@ public class RestSubmissionCommentController extends AsyncTask<String, Void, Str
 		return response;
 	}
 	
+	/**
+	 * AsyncTask method overridden.
+	 */
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
@@ -55,6 +61,9 @@ public class RestSubmissionCommentController extends AsyncTask<String, Void, Str
 		this.comment = comment;
 	}
 
+	/**
+	 * Sends data provided by the user to the given url.
+	 */
 	public String sendComment(String url) {
 		String response = "";
 		
@@ -67,6 +76,9 @@ public class RestSubmissionCommentController extends AsyncTask<String, Void, Str
 		return response;
 	}
 	
+	/**
+	 * Notifies listeners that the data has been retrieved from the server, and it's conversion is finished.
+	 */
 	public synchronized void notifyListeners() {
 		for (InformationListener il: actionList) {
 			il.onComplete(new InformationEvent(this));

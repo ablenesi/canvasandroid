@@ -17,6 +17,9 @@ public class CheckSavedSession extends AsyncTask<LoginActivity, Void, Void> {
 	private LoginActivity activity;
 	private boolean cookieIsAvailable = false;
 	
+	/**
+	 * AsyncTask overridden method.
+	 */
 	@Override
 	protected Void doInBackground(LoginActivity... activities) {
 		
@@ -37,6 +40,9 @@ public class CheckSavedSession extends AsyncTask<LoginActivity, Void, Void> {
 		return null;
 	}
 
+	/**
+	 * AsyncTask overridden method.
+	 */
 	@Override
 	protected void onPostExecute(Void result) {
 		super.onPostExecute(result);
