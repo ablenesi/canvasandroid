@@ -30,10 +30,10 @@
         android:id="@+id/outof"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"      
+		android:gravity="end"
         android:textSize="15sp" 
-        android:textColor="#222"
-        android:layout_toRightOf="@+id/label"
+        android:textColor="#222"      
+        android:layout_toRightOf="@+id/label"    
         />
 
 </RelativeLayout>
