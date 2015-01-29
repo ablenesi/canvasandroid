@@ -2,7 +2,6 @@ package edu.ubbcluj.canvasAndroid.view.activity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,9 +13,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 import edu.ubbcluj.canvasAndroid.R;
 import edu.ubbcluj.canvasAndroid.controller.ActivityStreamController;
 import edu.ubbcluj.canvasAndroid.controller.ControllerFactory;

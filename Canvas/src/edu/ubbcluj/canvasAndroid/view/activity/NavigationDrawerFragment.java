@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -107,6 +108,7 @@ public class NavigationDrawerFragment extends Fragment {
 	}
 
 	public boolean isDrawerOpen() {
+		
 		return mDrawerLayout != null
 				&& mDrawerLayout.isDrawerOpen(mFragmentContainerView);
 	}
@@ -222,11 +224,6 @@ public class NavigationDrawerFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-		if (mDrawerLayout != null && isDrawerOpen()) {
-			inflater.inflate(R.menu.default_menu, menu);
-			showGlobalContextActionBar();
-		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
