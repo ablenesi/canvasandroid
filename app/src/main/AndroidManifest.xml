@@ -2,11 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.ubbcluj.canvasAndroid"
     android:versionCode="1"
-    android:versionName="1.0" >
-
-    <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="21" />
+    android:versionName="1.0">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,90 +10,86 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".storage.nonpersistent.CanvasApplicaiton"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".view.activity.LoginActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".view.activity.DashBoardActivity"
             android:label="@string/title_activity_dashboard"
-            android:parentActivityName=".view.activity.DashBoardActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
+                android:value="view.activity.DashBoardActivity" />
         </activity>
+
         <activity
             android:name=".view.activity.BaseActivity"
             android:label="@string/title_activity_base"
-            android:parentActivityName=".view.activity.DashBoardActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.CourseActivity"
             android:label="@string/title_activity_course"
             android:noHistory="true"
-            android:parentActivityName=".view.activity.DashBoardActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
+                android:value="view.activity.DashBoardActivity" />
         </activity>
+
         <activity
             android:name=".view.activity.MessagesActivity"
             android:label="@string/title_activity_messages"
-            android:parentActivityName=".view.activity.DashBoardActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
+                android:value="view.activity.DashBoardActivity" />
         </activity>
         <activity
             android:name=".view.activity.MessageItemActivity"
             android:label="@string/title_activity_message_item"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
+                android:value="view.activity.DashBoardActivity" />
         </activity>
         <activity
             android:name=".view.activity.AnnouncementActivity"
             android:label="@string/title_activity_information"
             android:noHistory="true"
-            android:parentActivityName=".view.activity.DashBoardActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
+                android:value="view.activity.DashBoardActivity" />
         </activity>
         <activity
             android:name=".view.activity.CourseSelectionActivity"
-            android:label="@string/title_activity_course_selection"
-            android:parentActivityName=".view.activity.DashBoardActivity" >
+            android:label="@string/title_activity_course_selection">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
+                android:value="view.activity.DashBoardActivity" />
         </activity>
         <activity
             android:name=".view.activity.AssignmentActivity"
             android:label="@string/title_activity_assignment"
-            android:parentActivityName=".view.activity.DashBoardActivity" 
-            android:noHistory="true"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.ubbcluj.canvasAndroid.DashBoardActivity" />
+                android:value="view.activity.DashBoardActivity" />
         </activity>
+
         <service android:name=".view.activity.MyService" />
     </application>
 

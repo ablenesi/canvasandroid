@@ -52,8 +52,6 @@ public class BaseActivity extends ActionBarActivity implements
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		
-
 	}
 
 	@Override
