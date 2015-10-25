@@ -7,6 +7,12 @@
     <color name="white">#FFFFFF</color>
     <color name="gray">#BDBDBD</color>
     <color name="actionBarColor">#222222</color>
-    <color name="black">#000000</color>
-    
+
+
+    <color name="colorPrimary">#4B5662</color>
+    <color name="colorPrimaryDark">#31383E</color>
+    <color name="colorAccent">#e33b29</color>
+
+    <!--Login-->
+    <color name="login_btn">@android:color/white</color>
 </resources>
