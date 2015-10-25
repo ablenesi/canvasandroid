@@ -11,7 +11,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:contentDescription="@+id/icon"
-        android:src="@drawable/ic_launcher" >
+        android:src="@drawable/ic_logo" >
     </ImageView>
 
     <TextView
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/icon"
-        android:textColor="@color/black"
+        android:textColor="@android:color/black"
         android:textSize="14sp"
         android:textStyle="bold" />
 
@@ -32,7 +32,7 @@
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/label"
         android:gravity="right|top"
-        android:textColor="@color/black"
+        android:textColor="@android:color/black"
         android:textSize="10sp" />
 
     <TextView
@@ -43,7 +43,7 @@
         android:layout_marginRight="5dp"
         android:layout_toRightOf="@+id/label"
         android:gravity="right|top"
-        android:textColor="@color/black"
+        android:textColor="@android:color/black"
         android:textSize="10sp" />
 
     <TextView
@@ -54,7 +54,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_toRightOf="@+id/icon"
-        android:textColor="@color/black"
+        android:textColor="@android:color/black"
         android:textSize="12sp" />
 
 </RelativeLayout>
