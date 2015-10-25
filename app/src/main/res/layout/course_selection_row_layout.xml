@@ -10,7 +10,8 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:src="@drawable/ic_logo" />
+        android:src="@drawable/ic_announcement" />
+
 
     <TextView
         android:id="@+id/coursename"
