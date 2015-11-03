@@ -34,8 +34,6 @@ public class LoginActivity extends Activity {
 	private UserController userController;
 	private String username;
 	
-	private TextView userTw;
-	private TextView passTw;
 	private EditText userField;
 	private EditText passField;
 	private Button loginButton;
@@ -43,11 +41,9 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
+		setContentView(R.layout.activity_login);/*
 		dialog = null;
 		
-		userTw = (TextView) findViewById(R.id.textView2);
-		passTw = (TextView) findViewById(R.id.textView3);
 		userField = (EditText) findViewById(R.id.username);
 		passField = (EditText) findViewById(R.id.password);
 		loginButton = (Button) findViewById(R.id.login_button);
@@ -73,7 +69,7 @@ public class LoginActivity extends Activity {
 				.execute(new LoginActivity[] { this });
 
 		AutoCompleteTextView userNameTextView = (AutoCompleteTextView) findViewById(R.id.username);
-		userNameTextView.setAdapter(userController.getSavedUsersAdapter());
+		userNameTextView.setAdapter(userController.getSavedUsersAdapter());*/
 	}
 	
 	// Method to start the service
@@ -163,8 +159,6 @@ public class LoginActivity extends Activity {
 	}
 	
 	public void setVisibility(int visibility) {
-		userTw.setVisibility(visibility);
-		passTw.setVisibility(visibility);
 		userField.setVisibility(visibility);
 		passField.setVisibility(visibility);
 		loginButton.setVisibility(visibility);
